@@ -80,8 +80,11 @@
     <Compile Include="AutoItNative.cs" />
     <Compile Include="Screens\Controls\PixelAnchor.cs" />
     <Compile Include="Screens\Controls\TemplateCoordinate.cs" />
+    <Compile Include="Screens\IntroThree.cs" />
+    <Compile Include="Screens\IntroTwo.cs" />
     <Compile Include="Screens\GameSummary.cs" />
     <Compile Include="Screens\InGame.cs" />
+    <Compile Include="Screens\IntroOne.cs" />
     <Compile Include="TemplateLoader.cs" />
     <Compile Include="TemplateSearchResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -113,11 +116,11 @@
     <EmbeddedResource Include="Templates\GameSummary.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\ForwardButton.png" />
-    <Content Include="Templates\IntroOne.png" />
-    <Content Include="Templates\IntroThree.png" />
-    <Content Include="Templates\IntroTwo.png" />
-    <Content Include="Templates\OkButton.png" />
+    <EmbeddedResource Include="Templates\ForwardButton.png" />
+    <EmbeddedResource Include="Templates\IntroOne.png" />
+    <EmbeddedResource Include="Templates\IntroThree.png" />
+    <EmbeddedResource Include="Templates\IntroTwo.png" />
+    <EmbeddedResource Include="Templates\OkButton.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

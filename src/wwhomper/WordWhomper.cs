@@ -16,6 +16,9 @@ namespace wwhomper
         private readonly WordList _wordList;
 
         private readonly MainMenu _mainMenu;
+        private readonly IntroOne _introOne;
+        private readonly IntroTwo _introTwo;
+        private readonly IntroThree _introThree;
         private readonly Farm _farm;
         private readonly InGame _inGame;
         private readonly GameSummary _gameSummary;
@@ -31,6 +34,9 @@ namespace wwhomper
             _wordList.Load("wordsEn.txt");
 
             _mainMenu = new MainMenu();
+            _introOne = new IntroOne();
+            _introTwo = new IntroTwo();
+            _introThree = new IntroThree();
             _farm = new Farm();
             _inGame = new InGame();
             _gameSummary = new GameSummary();
@@ -48,8 +54,33 @@ namespace wwhomper
         {
             _mainMenu.Play.Click();
 
+            var search = AutoIt.WaitForTemplate(WindowTitle, _farm.Template, _introOne.Template);
+            if (!search.Success)
+            {
+                // Unexpected screen
+                return;
+            }
+
+            if (search.Template == _introOne.Template)
+            {
+                _introOne.Forward.Click();
+                
+                // Move the mouse offscreen so it doesn't affect our
+                // ability to find the button again (hover highlight)
+                AutoIt.MoveMouseOffscreen();
+
+                _introTwo.WaitUntilLoaded();
+                _introTwo.Forward.Click();
+
+                AutoIt.MoveMouseOffscreen();
+
+                _introThree.WaitUntilLoaded();
+                _introThree.Ok.Click();
+
+                _farm.WaitUntilLoaded();
+            }
+
             // Click whichever level we're on
-            _farm.WaitUntilLoaded();
             _farm.GopherHole.Click();
 
             while (true)
@@ -68,6 +99,11 @@ namespace wwhomper
                         // Unknown screen
                         break;
                     }
+                }
+                else
+                {
+                    // Unknown screen
+                    break;
                 }
             }
         }
@@ -97,8 +133,11 @@ namespace wwhomper
                 }
             }
 
+            // Not really needed, but looks neat to do them in order
+            var sorted = guesses.OrderBy(x => x.Length).ThenBy(x => x);
+
             // Type each guess
-            foreach (var guess in guesses)
+            foreach (var guess in sorted)
             {
                 AutoIt.Type(WindowTitle, guess + Environment.NewLine);
                 Thread.Sleep(random.Next(20, 100));
