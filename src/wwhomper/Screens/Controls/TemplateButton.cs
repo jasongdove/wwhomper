@@ -5,21 +5,21 @@ using Emgu.CV.Structure;
 
 namespace wwhomper.Screens.Controls
 {
-    public class IconButton : ButtonBase
+    public class TemplateButton : ButtonBase
     {
-        private readonly Image<Gray, byte> _icon;
+        private readonly Image<Gray, byte> _template;
 
-        public IconButton(string iconName)
+        public TemplateButton(string templateName)
         {
-            _icon = IconLoader.LoadIcon(iconName);
+            _template = TemplateLoader.LoadTemplate(templateName);
         }
 
         public override void Click()
         {
-            var searchResult = AutoIt.WaitUntilActive(WordWhomper.WindowTitle, _icon);
+            var searchResult = AutoIt.WaitForTemplate(WordWhomper.WindowTitle, _template);
             if (searchResult.Success)
             {
-                Click(new Rectangle(searchResult.Point, _icon.Size));
+                Click(new Rectangle(searchResult.Point, _template.Size));
             }
             else
             {

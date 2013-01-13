@@ -4,15 +4,15 @@ namespace wwhomper.Screens
 {
     public class Farm : ScreenBase
     {
-        private readonly IconButton _gopherHole;
+        private readonly TemplateButton _gopherHole;
 
         public Farm()
             : base("Farm.bmp")
         {
-            _gopherHole = new IconButton("GopherHole.bmp");
+            _gopherHole = new TemplateButton("GopherHole.bmp");
         }
 
-        public IconButton GopherHole
+        public TemplateButton GopherHole
         {
             get { return _gopherHole; }
         }

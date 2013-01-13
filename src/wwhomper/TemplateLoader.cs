@@ -7,9 +7,9 @@ using wwhomper.Screens;
 
 namespace wwhomper
 {
-    public static class IconLoader
+    public static class TemplateLoader
     {
-        public static Image<Gray, byte> LoadIcon(string iconName)
+        public static Image<Gray, byte> LoadTemplate(string iconName)
         {
             var assembly = Assembly.GetAssembly(typeof(ScreenBase));
             using (var stream = assembly.GetManifestResourceStream(String.Format("wwhomper.Icons.{0}", iconName)))

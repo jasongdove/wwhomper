@@ -2,7 +2,7 @@
 
 namespace wwhomper
 {
-    public class IconSearchResult
+    public class TemplateSearchResult
     {
         public bool Success { get; set; }
         public Point Point { get; set; }

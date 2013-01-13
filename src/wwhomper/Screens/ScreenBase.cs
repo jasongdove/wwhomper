@@ -9,7 +9,7 @@ namespace wwhomper.Screens
 
         protected ScreenBase(string iconName)
         {
-            _icon = IconLoader.LoadIcon(iconName);
+            _icon = TemplateLoader.LoadTemplate(iconName);
         }
 
         public Image<Gray, byte> Icon
@@ -17,9 +17,9 @@ namespace wwhomper.Screens
             get { return _icon; }
         }
 
-        public IconSearchResult WaitUntilLoaded()
+        public TemplateSearchResult WaitUntilLoaded()
         {
-            return AutoIt.WaitUntilActive(WordWhomper.WindowTitle, _icon);
+            return AutoIt.WaitForTemplate(WordWhomper.WindowTitle, _icon);
         }
     }
 }

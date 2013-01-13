@@ -11,6 +11,8 @@ namespace wwhomper
 {
     internal static class AutoIt
     {
+        private static readonly Random Random = new Random();
+
         static AutoIt()
         {
             AutoItNative.AU3_AutoItSetOption("MouseCoordMode", 0);
@@ -49,30 +51,25 @@ namespace wwhomper
             return bmp;
         }
 
-        public static IconSearchResult IsIconInWindow(string title, string iconName, float tolerance = 0.95f)
+        public static TemplateSearchResult IsTemplateInWindow(
+            string title,
+            string iconName,
+            float tolerance = 0.95f)
         {
-            Image<Gray, byte> template;
-
-            using (Stream stream = Assembly.GetAssembly(typeof(WordWhomper)).GetManifestResourceStream(String.Format("wwhomper.Icons.{0}", iconName)))
-            {
-                using (var bmp = new Bitmap(stream))
-                {
-                    template = new Image<Gray, Byte>(bmp);
-                }
-            }
-
-            return IsIconInWindow(title, template, tolerance);
+            Image<Gray, byte> template = TemplateLoader.LoadTemplate(iconName);
+            return IsTemplateInWindow(title, template, tolerance);
         }
 
-        public static IconSearchResult IsIconInWindow(string title, Image<Gray, byte> icon, float tolerance = 0.95f)
+        public static TemplateSearchResult IsTemplateInWindow(
+            string title,
+            Image<Gray, byte> template,
+            float tolerance = 0.95f)
         {
             Image<Gray, Byte> source;
-            using (var bmp = GetWindowContents(title))
+            using (Bitmap bmp = GetWindowContents(title))
             {
                 source = new Image<Gray, Byte>(bmp);
             }
-
-            Image<Gray, Byte> template = icon;
 
             var match = source.MatchTemplate(template, Emgu.CV.CvEnum.TM_TYPE.CV_TM_CCOEFF_NORMED);
             float[, ,] matches = match.Data;
@@ -83,17 +80,17 @@ namespace wwhomper
                     double matchScore = matches[y, x, 0];
                     if (matchScore > tolerance)
                     {
-                        return new IconSearchResult { Success = true, Point = new Point(x, y) };
+                        return new TemplateSearchResult { Success = true, Point = new Point(x, y) };
                     }
                 }
             }
 
-            return new IconSearchResult { Success = false };
+            return new TemplateSearchResult { Success = false };
         }
 
         public static bool IsScreenActive(string title, ScreenBase screen, float tolerance = 0.95f)
         {
-            return IsIconInWindow(title, screen.Icon, tolerance).Success;
+            return IsTemplateInWindow(title, screen.Icon, tolerance).Success;
         }
 
         public static void Click(string title, int x, int y, int speed)
@@ -102,18 +99,18 @@ namespace wwhomper
             AutoItNative.AU3_MouseClick("left", x, y, 1, speed);
         }
 
-        public static IconSearchResult WaitUntilActive(string title, Image<Gray, byte> icon)
+        public static TemplateSearchResult WaitForTemplate(string title, Image<Gray, byte> template)
         {
             var endTime = DateTime.Now.Add(WordWhomper.ControlTimeout);
 
-            IconSearchResult active;
+            TemplateSearchResult search;
             do
             {
-                active = IsIconInWindow(WordWhomper.WindowTitle, icon);
-                Thread.Sleep(500);
-            } while (DateTime.Now < endTime && !active.Success);
+                search = IsTemplateInWindow(title, template);
+                Thread.Sleep(Random.Next(300, 700));
+            } while (DateTime.Now < endTime && !search.Success);
 
-            return active;
+            return search;
         }
     }
 }
