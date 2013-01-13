@@ -101,6 +101,20 @@ namespace wwhomper
             return IsTemplateInWindow(windowContents, screen.Template, tolerance).Success;
         }
 
+        public static bool IsScreenActiveFast(ScreenBase screen)
+        {
+            foreach (var anchor in screen.Anchors)
+            {
+                var color = AutoItNative.AU3_PixelGetColor(anchor.Point.X, anchor.Point.Y);
+                if (color != anchor.Color)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         public static void Click(string title, int x, int y, int speed)
         {
             ActivateWindow(title);
@@ -131,11 +145,28 @@ namespace wwhomper
             return search;
         }
 
-        private static Image<Gray, byte> GetWindowImage(string title)
+        public static Image<Gray, byte> GetWindowImage(string title)
         {
             using (Bitmap bmp = GetWindowContents(title))
             {
                 return new Image<Gray, Byte>(bmp);
+            }
+        }
+
+        public static void MoveMouseOffscreen()
+        {
+            int x = Random.Next(-20, 20);
+            int y = Random.Next(-20, 20);
+            int speed = Random.Next(2, 6);
+
+            AutoItNative.AU3_MouseMove(x, y, speed);
+        }
+
+        public static void Type(string title, string text)
+        {
+            if (AutoItNative.AU3_WinActive(title, String.Empty) != 0)
+            {
+                AutoItNative.AU3_Send(text, 1);
             }
         }
     }

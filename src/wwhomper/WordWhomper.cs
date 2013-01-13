@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using Combinatorics.Collections;
 using wwhomper.Screens;
 
 namespace wwhomper
@@ -9,10 +13,12 @@ namespace wwhomper
         
         public static readonly TimeSpan ControlTimeout = TimeSpan.FromSeconds(10);
 
+        private readonly WordList _wordList;
+
         private readonly MainMenu _mainMenu;
         private readonly Farm _farm;
-        private readonly LearnHowToPlay _learnHowToPlay;
         private readonly InGame _inGame;
+        private readonly GameSummary _gameSummary;
 
         public WordWhomper()
         {
@@ -21,10 +27,13 @@ namespace wwhomper
                 throw new InvalidOperationException("Unable to find Word Whomp Underground!");
             }
 
+            _wordList = new WordList();
+            _wordList.Load("wordsEn.txt");
+
             _mainMenu = new MainMenu();
             _farm = new Farm();
-            _learnHowToPlay = new LearnHowToPlay();
             _inGame = new InGame();
+            _gameSummary = new GameSummary();
         }
 
         public void Run()
@@ -43,27 +52,64 @@ namespace wwhomper
             _farm.WaitUntilLoaded();
             _farm.GopherHole.Click();
 
-            var gameScreenSearch = AutoIt.WaitForTemplate(WindowTitle, _learnHowToPlay.Template, _inGame.Template);
-            if (gameScreenSearch.Success)
+            while (true)
             {
-                // Dismiss the "learn how to play" dialog if it shows up
-                if (gameScreenSearch.Template == _learnHowToPlay.Template)
+                // TODO: Check for bonus game or new gear or summary
+                var gameScreenSearch = AutoIt.WaitForTemplate(WindowTitle, _inGame.Template);
+                if (gameScreenSearch.Success)
                 {
-                    _learnHowToPlay.No.Click();
-                }
-                // Play the game
-                else if (gameScreenSearch.Template == _inGame.Template)
-                {
-                    PlayRound();
+                    // Play the game
+                    if (gameScreenSearch.Template == _inGame.Template)
+                    {
+                        PlayRound();
+                    }
+                    else
+                    {
+                        // Unknown screen
+                        break;
+                    }
                 }
             }
         }
 
         private void PlayRound()
         {
-            // TODO: Win the round
-            var letters = _inGame.GetLetters();
-            Console.WriteLine(letters);
+            var random = new Random();
+
+            // Don't want the mouse to be in any of the screenshots we use
+            AutoIt.MoveMouseOffscreen();
+
+            // Get available letters
+            List<char> letters = _inGame.GetLetters().ToList();
+
+            // Preload our guesses
+            var guesses = new List<string>();
+            for (int len = 3; len <= 6; len++)
+            {
+                var variations = new Variations<char>(letters, len, GenerateOption.WithoutRepetition);
+                foreach (var variation in variations)
+                {
+                    var guess = new String(variation.ToArray());
+                    if (_wordList.ContainsWord(guess))
+                    {
+                        guesses.Add(guess);
+                    }
+                }
+            }
+
+            // Type each guess
+            foreach (var guess in guesses)
+            {
+                AutoIt.Type(WindowTitle, guess + Environment.NewLine);
+                Thread.Sleep(random.Next(20, 100));
+            }
+
+            // Dismiss the scoreboard
+            var wait = _gameSummary.WaitUntilLoaded();
+            if (wait.Success)
+            {
+                _gameSummary.OkeyDokey.Click();
+            }
         }
     }
 }

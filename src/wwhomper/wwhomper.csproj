@@ -48,6 +48,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Combinatorics">
+      <HintPath>..\..\sln\wwhomper.sln\packages\Combinatorics.1.0.3.2\lib\net40\Combinatorics.dll</HintPath>
+    </Reference>
     <Reference Include="Emgu.CV">
       <HintPath>..\..\lib\emgucv\Emgu.CV.dll</HintPath>
     </Reference>
@@ -75,7 +78,9 @@
   <ItemGroup>
     <Compile Include="AutoIt.cs" />
     <Compile Include="AutoItNative.cs" />
+    <Compile Include="Screens\Controls\PixelAnchor.cs" />
     <Compile Include="Screens\Controls\TemplateCoordinate.cs" />
+    <Compile Include="Screens\GameSummary.cs" />
     <Compile Include="Screens\InGame.cs" />
     <Compile Include="TemplateLoader.cs" />
     <Compile Include="TemplateSearchResult.cs" />
@@ -84,9 +89,9 @@
     <Compile Include="Screens\Controls\CoordinateButton.cs" />
     <Compile Include="Screens\Controls\TemplateButton.cs" />
     <Compile Include="Screens\Farm.cs" />
-    <Compile Include="Screens\LearnHowToPlay.cs" />
     <Compile Include="Screens\MainMenu.cs" />
     <Compile Include="Screens\ScreenBase.cs" />
+    <Compile Include="WordList.cs" />
     <Compile Include="WordWhomper.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -99,10 +104,20 @@
     <EmbeddedResource Include="Templates\GopherHole.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Templates\LearnHowToPlay.bmp" />
+    <EmbeddedResource Include="Templates\InGame.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Templates\InGame.bmp" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Templates\GameSummary.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\ForwardButton.png" />
+    <Content Include="Templates\IntroOne.png" />
+    <Content Include="Templates\IntroThree.png" />
+    <Content Include="Templates\IntroTwo.png" />
+    <Content Include="Templates\OkButton.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

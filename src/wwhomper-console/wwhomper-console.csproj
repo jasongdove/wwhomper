@@ -52,6 +52,9 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Combinatorics">
+      <HintPath>..\..\sln\wwhomper.sln\packages\Combinatorics.1.0.3.2\lib\net40\Combinatorics.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -66,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\wwhomper\wwhomper.csproj">
@@ -86,5 +90,6 @@
   <Target Name="AfterBuild">
     <Copy SourceFiles="@(AutoItX)" DestinationFiles="@(AutoItX->'$(TargetDir)\%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
     <Copy SourceFiles="@(EmguCV)" DestinationFiles="@(EmguCV->'$(TargetDir)\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\..\..\lib\wordsEn.txt" DestinationFiles="$(TargetDir)\wordsEn.txt" SkipUnchangedFiles="true"/>
   </Target>
 </Project>
