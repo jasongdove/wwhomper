@@ -75,7 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <AutoItX Include="$(MSBuildProjectDirectory)\..\..\lib\AutoItX\AutoItX3.dll" />
-    <EmguCV Include="$(MSBuildProjectDirectory)\..\..\lib\EmguCV\*.dll" />
+    <EmguCV Include="$(MSBuildProjectDirectory)\..\..\lib\EmguCV\**" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -85,6 +85,6 @@
   -->
   <Target Name="AfterBuild">
     <Copy SourceFiles="@(AutoItX)" DestinationFiles="@(AutoItX->'$(TargetDir)\%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
-    <Copy SourceFiles="@(EmguCV)" DestinationFiles="@(EmguCV->'$(TargetDir)\%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(EmguCV)" DestinationFiles="@(EmguCV->'$(TargetDir)\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>
 </Project>

@@ -42,8 +42,9 @@ namespace wwhomper.Screens
             }
 
             var tesseract = new Tesseract("tessdata", "eng", Tesseract.OcrEngineMode.OEM_TESSERACT_ONLY);
+            tesseract.SetVariable("tessedit_char_whitelist", "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
             tesseract.Recognize(result);
-            return tesseract.GetText();
+            return tesseract.GetText().Trim();
         }
     }
 }
