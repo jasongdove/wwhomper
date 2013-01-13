@@ -14,7 +14,7 @@ namespace wwhomper.Screens
         private readonly List<TemplateCoordinate> _gamePieces = new List<TemplateCoordinate>();
 
         public InGame()
-            : base("InGame.bmp")
+            : base("InGame.png")
         {
             _gamePieces.Add(new TemplateCoordinate(184, 425, 58, 34));
             _gamePieces.Add(new TemplateCoordinate(261, 420, 58, 34));

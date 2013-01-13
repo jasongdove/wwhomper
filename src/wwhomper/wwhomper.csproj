@@ -109,9 +109,6 @@
     <EmbeddedResource Include="Templates\GopherHole.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Templates\InGame.bmp" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -130,6 +127,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Templates\NewGear.png" />
     <EmbeddedResource Include="Templates\NoButton.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Templates\InGame.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
