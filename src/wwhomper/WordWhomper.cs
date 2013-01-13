@@ -12,6 +12,7 @@ namespace wwhomper
         private readonly MainMenu _mainMenu;
         private readonly Farm _farm;
         private readonly LearnHowToPlay _learnHowToPlay;
+        private readonly InGame _inGame;
 
         public WordWhomper()
         {
@@ -23,6 +24,7 @@ namespace wwhomper
             _mainMenu = new MainMenu();
             _farm = new Farm();
             _learnHowToPlay = new LearnHowToPlay();
+            _inGame = new InGame();
         }
 
         public void Run()
@@ -41,19 +43,27 @@ namespace wwhomper
             _farm.WaitUntilLoaded();
             _farm.GopherHole.Click();
 
-            // Dismiss the "learn how to play" dialog if it shows up
-            var learnHowToPlaySearch = _learnHowToPlay.WaitUntilLoaded();
-            if (learnHowToPlaySearch.Success)
+            var gameScreenSearch = AutoIt.WaitForTemplate(WindowTitle, _learnHowToPlay.Template, _inGame.Template);
+            if (gameScreenSearch.Success)
             {
-                _learnHowToPlay.No.Click();
+                // Dismiss the "learn how to play" dialog if it shows up
+                if (gameScreenSearch.Template == _learnHowToPlay.Template)
+                {
+                    _learnHowToPlay.No.Click();
+                }
+                // Play the game
+                else if (gameScreenSearch.Template == _inGame.Template)
+                {
+                    PlayRound();
+                }
             }
-
-            PlayRound();
         }
 
         private void PlayRound()
         {
             // TODO: Win the round
+            var letters = _inGame.GetLetters();
+            Console.WriteLine(letters);
         }
     }
 }

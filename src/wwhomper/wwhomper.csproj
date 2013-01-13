@@ -51,14 +51,17 @@
     <Reference Include="Emgu.CV">
       <HintPath>..\..\lib\emgucv\Emgu.CV.dll</HintPath>
     </Reference>
+    <Reference Include="Emgu.CV.GPU">
+      <HintPath>..\..\lib\emgucv\Emgu.CV.GPU.dll</HintPath>
+    </Reference>
+    <Reference Include="Emgu.CV.OCR">
+      <HintPath>..\..\lib\emgucv\Emgu.CV.OCR.dll</HintPath>
+    </Reference>
+    <Reference Include="Emgu.CV.Stitching">
+      <HintPath>..\..\lib\emgucv\Emgu.CV.Stitching.dll</HintPath>
+    </Reference>
     <Reference Include="Emgu.Util">
       <HintPath>..\..\lib\emgucv\Emgu.Util.dll</HintPath>
-    </Reference>
-    <Reference Include="IPoVn.IPCore">
-      <HintPath>..\..\lib\tesseract\IPoVn.IPCore.dll</HintPath>
-    </Reference>
-    <Reference Include="IPoVnSystem">
-      <HintPath>..\..\lib\tesseract\IPoVnSystem.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -68,13 +71,12 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="tesseract">
-      <HintPath>..\..\lib\tesseract\tesseract.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutoIt.cs" />
     <Compile Include="AutoItNative.cs" />
+    <Compile Include="Screens\Controls\TemplateCoordinate.cs" />
+    <Compile Include="Screens\InGame.cs" />
     <Compile Include="TemplateLoader.cs" />
     <Compile Include="TemplateSearchResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -88,16 +90,19 @@
     <Compile Include="WordWhomper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Icons\MainMenu.bmp" />
+    <EmbeddedResource Include="Templates\MainMenu.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Icons\Farm.bmp" />
+    <EmbeddedResource Include="Templates\Farm.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Icons\GopherHole.bmp" />
+    <EmbeddedResource Include="Templates\GopherHole.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Icons\LearnHowToPlay.bmp" />
+    <EmbeddedResource Include="Templates\LearnHowToPlay.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Templates\InGame.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -5,21 +5,21 @@ namespace wwhomper.Screens
 {
     public abstract class ScreenBase
     {
-        private readonly Image<Gray, byte> _icon;
+        private readonly Image<Gray, byte> _template;
 
-        protected ScreenBase(string iconName)
+        protected ScreenBase(string templateName)
         {
-            _icon = TemplateLoader.LoadTemplate(iconName);
+            _template = TemplateLoader.LoadTemplate(templateName);
         }
 
-        public Image<Gray, byte> Icon
+        public Image<Gray, byte> Template
         {
-            get { return _icon; }
+            get { return _template; }
         }
 
         public TemplateSearchResult WaitUntilLoaded()
         {
-            return AutoIt.WaitForTemplate(WordWhomper.WindowTitle, _icon);
+            return AutoIt.WaitForTemplate(WordWhomper.WindowTitle, _template);
         }
     }
 }

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.IO;
-using System.Reflection;
 using System.Threading;
 using Emgu.CV;
 using Emgu.CV.Structure;
@@ -18,31 +16,36 @@ namespace wwhomper
             AutoItNative.AU3_AutoItSetOption("MouseCoordMode", 0);
         }
 
-        public static bool WindowExists(string title, string text = "")
+        public static bool WindowExists(string title)
         {
-            return AutoItNative.AU3_WinExists(title, text) != 0;
+            return AutoItNative.AU3_WinExists(title, String.Empty) != 0;
         }
 
-        public static Rectangle GetWindowRectangle(string title, string text = "")
+        public static Rectangle GetWindowRectangle(string title)
         {
-            var x = AutoItNative.AU3_WinGetPosX(title, text);
-            var y = AutoItNative.AU3_WinGetPosY(title, text);
-            var width = AutoItNative.AU3_WinGetPosWidth(title, text);
-            var height = AutoItNative.AU3_WinGetPosHeight(title, text);
+            var x = AutoItNative.AU3_WinGetPosX(title, String.Empty);
+            var y = AutoItNative.AU3_WinGetPosY(title, String.Empty);
+            var width = AutoItNative.AU3_WinGetPosWidth(title, String.Empty);
+            var height = AutoItNative.AU3_WinGetPosHeight(title, String.Empty);
 
             return new Rectangle(x, y, width, height);
         }
 
-        public static void ActivateWindow(string title, string text = "")
+        public static void ActivateWindow(string title)
         {
-            AutoItNative.AU3_WinActivate(title, text);
+            AutoItNative.AU3_WinActivate(title, String.Empty);
         }
 
-        public static Bitmap GetWindowContents(string title, string text = "")
+        public static Bitmap GetWindowContents(string title)
+        {
+            return GetWindowContents(title, Rectangle.Empty);
+        }
+
+        public static Bitmap GetWindowContents(string title, Rectangle rect)
         {
             ActivateWindow(title);
 
-            var rect = GetWindowRectangle(title);
+            rect = rect == Rectangle.Empty ? GetWindowRectangle(title) : rect;
             var bmp = new Bitmap(rect.Width, rect.Height);
             using (var g = Graphics.FromImage(bmp))
             {
@@ -53,25 +56,29 @@ namespace wwhomper
 
         public static TemplateSearchResult IsTemplateInWindow(
             string title,
-            string iconName,
+            string templateName,
             float tolerance = 0.95f)
         {
-            Image<Gray, byte> template = TemplateLoader.LoadTemplate(iconName);
-            return IsTemplateInWindow(title, template, tolerance);
+            var windowContents = GetWindowImage(title);
+            Image<Gray, byte> template = TemplateLoader.LoadTemplate(templateName);
+            return IsTemplateInWindow(windowContents, template, tolerance);
         }
 
         public static TemplateSearchResult IsTemplateInWindow(
-            string title,
+            Image<Gray, byte> windowContents,
+            string templateName,
+            float tolerance = 0.95f)
+        {
+            Image<Gray, byte> template = TemplateLoader.LoadTemplate(templateName);
+            return IsTemplateInWindow(windowContents, template, tolerance);
+        }
+
+        public static TemplateSearchResult IsTemplateInWindow(
+            Image<Gray, byte> windowContents,
             Image<Gray, byte> template,
             float tolerance = 0.95f)
         {
-            Image<Gray, Byte> source;
-            using (Bitmap bmp = GetWindowContents(title))
-            {
-                source = new Image<Gray, Byte>(bmp);
-            }
-
-            var match = source.MatchTemplate(template, Emgu.CV.CvEnum.TM_TYPE.CV_TM_CCOEFF_NORMED);
+            var match = windowContents.MatchTemplate(template, Emgu.CV.CvEnum.TM_TYPE.CV_TM_CCOEFF_NORMED);
             float[, ,] matches = match.Data;
             for (int y = 0; y < matches.GetLength(0); y++)
             {
@@ -90,7 +97,8 @@ namespace wwhomper
 
         public static bool IsScreenActive(string title, ScreenBase screen, float tolerance = 0.95f)
         {
-            return IsTemplateInWindow(title, screen.Icon, tolerance).Success;
+            var windowContents = GetWindowImage(title);
+            return IsTemplateInWindow(windowContents, screen.Template, tolerance).Success;
         }
 
         public static void Click(string title, int x, int y, int speed)
@@ -99,18 +107,36 @@ namespace wwhomper
             AutoItNative.AU3_MouseClick("left", x, y, 1, speed);
         }
 
-        public static TemplateSearchResult WaitForTemplate(string title, Image<Gray, byte> template)
+        public static TemplateSearchResult WaitForTemplate(string title, params Image<Gray, byte>[] templates)
         {
             var endTime = DateTime.Now.Add(WordWhomper.ControlTimeout);
 
-            TemplateSearchResult search;
+            var search = new TemplateSearchResult();
             do
             {
-                search = IsTemplateInWindow(title, template);
-                Thread.Sleep(Random.Next(300, 700));
+                Thread.Sleep(Random.Next(300, 600));
+
+                var windowContents = GetWindowImage(title);
+                foreach (var template in templates)
+                {
+                    search = IsTemplateInWindow(windowContents, template);
+                    if (search.Success)
+                    {
+                        search.Template = template;
+                        break;
+                    }
+                }
             } while (DateTime.Now < endTime && !search.Success);
 
             return search;
+        }
+
+        private static Image<Gray, byte> GetWindowImage(string title)
+        {
+            using (Bitmap bmp = GetWindowContents(title))
+            {
+                return new Image<Gray, Byte>(bmp);
+            }
         }
     }
 }

@@ -9,10 +9,10 @@ namespace wwhomper
 {
     public static class TemplateLoader
     {
-        public static Image<Gray, byte> LoadTemplate(string iconName)
+        public static Image<Gray, byte> LoadTemplate(string templateName)
         {
             var assembly = Assembly.GetAssembly(typeof(ScreenBase));
-            using (var stream = assembly.GetManifestResourceStream(String.Format("wwhomper.Icons.{0}", iconName)))
+            using (var stream = assembly.GetManifestResourceStream(String.Format("wwhomper.Templates.{0}", templateName)))
             {
                 using (var bmp = new Bitmap(stream))
                 {
