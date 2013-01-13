@@ -11,7 +11,7 @@ namespace wwhomper
     {
         public const string WindowTitle = "[REGEXPTITLE:^Word Whomp Underground]";
         
-        public static readonly TimeSpan ControlTimeout = TimeSpan.FromSeconds(10);
+        public static readonly TimeSpan ControlTimeout = TimeSpan.FromSeconds(15);
 
         private readonly WordList _wordList;
 
@@ -20,8 +20,10 @@ namespace wwhomper
         private readonly IntroTwo _introTwo;
         private readonly IntroThree _introThree;
         private readonly Farm _farm;
+        private readonly Welcome _welcome;
         private readonly InGame _inGame;
         private readonly GameSummary _gameSummary;
+        private readonly NewGear _newGear;
 
         public WordWhomper()
         {
@@ -38,61 +40,68 @@ namespace wwhomper
             _introTwo = new IntroTwo();
             _introThree = new IntroThree();
             _farm = new Farm();
+            _welcome = new Welcome();
             _inGame = new InGame();
             _gameSummary = new GameSummary();
+            _newGear = new NewGear();
         }
 
         public void Run()
         {
-            if (AutoIt.IsScreenActive(WindowTitle, _mainMenu))
+            var allStates = new[]
             {
-                PlayGame();
-            }
-        }
-
-        private void PlayGame()
-        {
-            _mainMenu.Play.Click();
-
-            var search = AutoIt.WaitForTemplate(WindowTitle, _farm.Template, _introOne.Template);
-            if (!search.Success)
-            {
-                // Unexpected screen
-                return;
-            }
-
-            if (search.Template == _introOne.Template)
-            {
-                _introOne.Forward.Click();
-                
-                // Move the mouse offscreen so it doesn't affect our
-                // ability to find the button again (hover highlight)
-                AutoIt.MoveMouseOffscreen();
-
-                _introTwo.WaitUntilLoaded();
-                _introTwo.Forward.Click();
-
-                AutoIt.MoveMouseOffscreen();
-
-                _introThree.WaitUntilLoaded();
-                _introThree.Ok.Click();
-
-                _farm.WaitUntilLoaded();
-            }
-
-            // Click whichever level we're on
-            _farm.GopherHole.Click();
+                _mainMenu.Template,
+                _introOne.Template,
+                _introTwo.Template,
+                _introThree.Template,
+                _farm.Template,
+                _inGame.Template,
+                _welcome.Template,
+                _gameSummary.Template,
+                _newGear.Template
+            };
 
             while (true)
             {
-                // TODO: Check for bonus game or new gear or summary
-                var gameScreenSearch = AutoIt.WaitForTemplate(WindowTitle, _inGame.Template);
-                if (gameScreenSearch.Success)
+                var stateSearch = AutoIt.WaitForTemplate(WindowTitle, allStates);
+                if (stateSearch.Success)
                 {
-                    // Play the game
-                    if (gameScreenSearch.Template == _inGame.Template)
+                    if (stateSearch.Template == _mainMenu.Template)
+                    {
+                        _mainMenu.Play.Click();
+                    }
+                    else if (stateSearch.Template == _introOne.Template)
+                    {
+                        _introOne.Forward.Click();
+                        AutoIt.MoveMouseOffscreen();
+                    }
+                    else if (stateSearch.Template == _introTwo.Template)
+                    {
+                        _introTwo.Forward.Click();
+                    }
+                    else if (stateSearch.Template == _introThree.Template)
+                    {
+                        _introThree.Ok.Click();
+                    }
+                    else if (stateSearch.Template == _farm.Template)
+                    {
+                        _farm.GopherHole.Click();
+                    }
+                    else if (stateSearch.Template == _welcome.Template)
+                    {
+                        _welcome.Ok.Click();
+                    }
+                    else if (stateSearch.Template == _inGame.Template)
                     {
                         PlayRound();
+                    }
+                    else if (stateSearch.Template == _gameSummary.Template)
+                    {
+                        _gameSummary.OkeyDokey.Click();
+                    }
+                    else if (stateSearch.Template == _newGear.Template)
+                    {
+                        _newGear.No.Click();
                     }
                     else
                     {
@@ -141,13 +150,6 @@ namespace wwhomper
             {
                 AutoIt.Type(WindowTitle, guess + Environment.NewLine);
                 Thread.Sleep(random.Next(20, 100));
-            }
-
-            // Dismiss the scoreboard
-            var wait = _gameSummary.WaitUntilLoaded();
-            if (wait.Success)
-            {
-                _gameSummary.OkeyDokey.Click();
             }
         }
     }

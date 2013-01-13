@@ -85,6 +85,8 @@
     <Compile Include="Screens\GameSummary.cs" />
     <Compile Include="Screens\InGame.cs" />
     <Compile Include="Screens\IntroOne.cs" />
+    <Compile Include="Screens\NewGear.cs" />
+    <Compile Include="Screens\Welcome.cs" />
     <Compile Include="TemplateLoader.cs" />
     <Compile Include="TemplateSearchResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -121,6 +123,13 @@
     <EmbeddedResource Include="Templates\IntroThree.png" />
     <EmbeddedResource Include="Templates\IntroTwo.png" />
     <EmbeddedResource Include="Templates\OkButton.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Templates\Welcome.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Templates\NewGear.png" />
+    <EmbeddedResource Include="Templates\NoButton.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

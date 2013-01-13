@@ -128,7 +128,7 @@ namespace wwhomper
             var search = new TemplateSearchResult();
             do
             {
-                Thread.Sleep(Random.Next(300, 600));
+                Thread.Sleep(100);
 
                 var windowContents = GetWindowImage(title);
                 foreach (var template in templates)
