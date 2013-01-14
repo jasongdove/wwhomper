@@ -117,8 +117,10 @@ namespace wwhomper
 
         public static void Click(string title, int x, int y, int speed)
         {
-            ActivateWindow(title);
-            AutoItNative.AU3_MouseClick("left", x, y, 1, speed);
+            if (AutoItNative.AU3_WinActive(title, String.Empty) != 0)
+            {
+                AutoItNative.AU3_MouseClick("left", x, y, 1, speed);
+            }
         }
 
         public static TemplateSearchResult WaitForTemplate(string title, params Image<Gray, byte>[] templates)
@@ -133,7 +135,7 @@ namespace wwhomper
                 var windowContents = GetWindowImage(title);
                 foreach (var template in templates)
                 {
-                    search = IsTemplateInWindow(windowContents, template);
+                    search = IsTemplateInWindow(windowContents, template, 0.98f);
                     if (search.Success)
                     {
                         search.Template = template;

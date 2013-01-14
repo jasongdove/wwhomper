@@ -1,4 +1,5 @@
-﻿using wwhomper;
+﻿using System;
+using wwhomper;
 
 namespace wwhomper_console
 {
@@ -8,6 +9,9 @@ namespace wwhomper_console
         {
             var whomper = new WordWhomper();
             whomper.Run();
+
+            Console.WriteLine("done");
+            Console.ReadKey();
         }
     }
 }
