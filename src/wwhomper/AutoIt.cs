@@ -173,8 +173,8 @@ namespace wwhomper
 
         public static void MoveMouseOffscreen()
         {
-            int x = Random.Next(-20, 20);
-            int y = Random.Next(-20, 20);
+            int x = Random.Next(0, 500);
+            int y = Random.Next(0, 20);
             int speed = Random.Next(2, 6);
 
             AutoItNative.AU3_MouseMove(x, y, speed);

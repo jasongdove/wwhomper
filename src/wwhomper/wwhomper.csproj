@@ -151,6 +151,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Templates\BonusGameWaiting.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Templates\BonusFour.png" />
+    <EmbeddedResource Include="Templates\BonusOne.png" />
+    <EmbeddedResource Include="Templates\BonusThree.png" />
+    <EmbeddedResource Include="Templates\BonusTwo.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

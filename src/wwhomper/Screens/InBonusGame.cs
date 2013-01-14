@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Emgu.CV;
+using Emgu.CV.Structure;
 using wwhomper.Screens.Controls;
 
 namespace wwhomper.Screens
 {
     public class InBonusGame : ScreenBase
     {
-        private readonly List<List<TemplateCoordinate>> _letterGroups = new List<List<TemplateCoordinate>>();
+        private readonly Dictionary<Image<Gray, byte>, List<TemplateCoordinate>> _letterGroups =
+            new Dictionary<Image<Gray, byte>, List<TemplateCoordinate>>();
 
         public InBonusGame()
             : base("InBonusGame.png")
@@ -54,11 +57,17 @@ namespace wwhomper.Screens
                 new TemplateCoordinate(228, 455, 24, 25)
             };
 
-            _letterGroups.Add(one);
-            _letterGroups.Add(two);
-            _letterGroups.Add(three);
-            _letterGroups.Add(four);
-            _letterGroups.Add(five);
+            var bonusOne = TemplateLoader.LoadTemplate("BonusOne.png");
+            var bonusTwo = TemplateLoader.LoadTemplate("BonusTwo.png");
+            var bonusThree = TemplateLoader.LoadTemplate("BonusThree.png");
+            var bonusFour = TemplateLoader.LoadTemplate("BonusFour.png");
+            var bonusFive = TemplateLoader.LoadTemplate("BonusGameWaiting.png");
+
+            _letterGroups.Add(bonusOne, one);
+            _letterGroups.Add(bonusTwo, two);
+            _letterGroups.Add(bonusThree, three);
+            _letterGroups.Add(bonusFour, four);
+            _letterGroups.Add(bonusFive, five);
         }
 
         public List<string> GetScrambledWords()
@@ -69,15 +78,20 @@ namespace wwhomper.Screens
 
             foreach (var group in _letterGroups)
             {
-                var letters = group.Select(letter => letter.Grab(windowContents));
-                var combined = Combine(letters);
-                var text = FixTesseract(GetText(combined));
-                
-                // If we've already solved any of the bonus words,
-                // they will return white space
-                if (!String.IsNullOrWhiteSpace(text))
+                // Make sure we haven't already completed this word
+                var search = AutoIt.IsTemplateInWindow(windowContents, group.Key);
+                if (!search.Success)
                 {
-                    result.Add(text);
+                    var letters = group.Value.Select(letter => letter.Grab(windowContents));
+                    var combined = Combine(letters);
+                    var text = FixTesseract(GetText(combined));
+
+                    // If we've already solved any of the bonus words,
+                    // they will return white space
+                    if (!String.IsNullOrWhiteSpace(text))
+                    {
+                        result.Add(text);
+                    }
                 }
             }
 

@@ -64,6 +64,9 @@ namespace wwhomper
             TemplateSearchResult state;
             do
             {
+                // Don't want the mouse to be in any of the screenshots we use
+                AutoIt.MoveMouseOffscreen();
+
                 state = AutoIt.WaitForScreen(WindowTitle, allScreens);
                 if (state.Success)
                 {
@@ -141,9 +144,6 @@ namespace wwhomper
         {
             var random = new Random();
 
-            // Don't want the mouse to be in any of the screenshots we use
-            AutoIt.MoveMouseOffscreen();
-
             // Get available letters
             List<char> letters = _inGame.GetLetters().ToList();
 
@@ -168,8 +168,8 @@ namespace wwhomper
             // Type each guess
             foreach (var guess in sorted)
             {
-                AutoIt.Type(WindowTitle, guess + "{ENTER}")
-            ;
+                // Initial enter to dismiss any tip dialog that may be up
+                AutoIt.Type(WindowTitle, "{ENTER}" + guess + "{ENTER}");
                 Thread.Sleep(random.Next(20, 100));
             }
         }
@@ -177,9 +177,6 @@ namespace wwhomper
         private void PlayBonusRound()
         {
             var random = new Random();
-
-            // Don't want the mouse to be in any of the screenshots we use
-            AutoIt.MoveMouseOffscreen();
 
             // Clear out any bad data
             for (int i = 0; i < 22; i++)
