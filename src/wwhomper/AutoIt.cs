@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Threading;
 using Emgu.CV;
 using Emgu.CV.Structure;
@@ -123,6 +124,21 @@ namespace wwhomper
             }
         }
 
+        public static TemplateSearchResult WaitForScreen(string title, params ScreenBase[] screens)
+        {
+            var templates = screens.Select(x => x.Template);
+            
+            var result = WaitForTemplate(title, templates.ToArray());
+            if (result.Success)
+            {
+                var screen = screens.Single(x => x.Template == result.Template);
+                var screenName = screen.GetType().Name;
+                Console.WriteLine("Detected screen: {0}", screenName);
+            }
+
+            return result;
+        }
+
         public static TemplateSearchResult WaitForTemplate(string title, params Image<Gray, byte>[] templates)
         {
             var endTime = DateTime.Now.Add(WordWhomper.ControlTimeout);
@@ -135,7 +151,7 @@ namespace wwhomper
                 var windowContents = GetWindowImage(title);
                 foreach (var template in templates)
                 {
-                    search = IsTemplateInWindow(windowContents, template, 0.98f);
+                    search = IsTemplateInWindow(windowContents, template);
                     if (search.Success)
                     {
                         search.Template = template;
@@ -168,7 +184,7 @@ namespace wwhomper
         {
             if (AutoItNative.AU3_WinActive(title, String.Empty) != 0)
             {
-                AutoItNative.AU3_Send(text, 1);
+                AutoItNative.AU3_Send(text, 0);
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using Combinatorics.Collections;
 using wwhomper.Screens;
@@ -42,28 +43,28 @@ namespace wwhomper
 
         public void Run()
         {
-            var allStates = new[]
+            var allScreens = new ScreenBase[]
             {
-                _paused.Template,
-                _mainMenu.Template,
-                _introOne.Template,
-                _introTwo.Template,
-                _introThree.Template,
-                _farm.Template,
-                _inGame.Template,
-                _welcome.Template,
-                _gameSummary.Template,
-                _newGear.Template,
-                _bonusAcorns.Template,
-                _inBonusGame.Template,
-                _bonusGameComplete.Template, // This needs to be before "_bonusGameWaiting"
-                _bonusGameWaiting.Template
+                _paused,
+                _mainMenu,
+                _introOne,
+                _introTwo,
+                _introThree,
+                _farm,
+                _gameSummary,
+                _inGame,
+                _welcome,
+                _newGear,
+                _bonusAcorns,
+                _inBonusGame,
+                _bonusGameComplete, // This needs to be before "_bonusGameWaiting"
+                _bonusGameWaiting
             };
 
             TemplateSearchResult state;
             do
             {
-                state = AutoIt.WaitForTemplate(WindowTitle, allStates);
+                state = AutoIt.WaitForScreen(WindowTitle, allScreens);
                 if (state.Success)
                 {
                     if (state.Template == _paused.Template)
@@ -167,7 +168,8 @@ namespace wwhomper
             // Type each guess
             foreach (var guess in sorted)
             {
-                AutoIt.Type(WindowTitle, guess + Environment.NewLine);
+                AutoIt.Type(WindowTitle, guess + "{ENTER}")
+            ;
                 Thread.Sleep(random.Next(20, 100));
             }
         }
@@ -178,6 +180,15 @@ namespace wwhomper
 
             // Don't want the mouse to be in any of the screenshots we use
             AutoIt.MoveMouseOffscreen();
+
+            // Clear out any bad data
+            for (int i = 0; i < 22; i++)
+            {
+                AutoIt.Type(WindowTitle, "{BACKSPACE}");
+            }
+
+            // Mix up the current word to give tesseract some variety
+            AutoIt.Type(WindowTitle, "{SPACE}");
 
             // Get scrambled words
             List<string> scrambled = _inBonusGame.GetScrambledWords();

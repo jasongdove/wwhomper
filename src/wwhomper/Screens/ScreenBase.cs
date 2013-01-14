@@ -60,14 +60,14 @@ namespace wwhomper.Screens
             tesseract.SetVariable("tessedit_char_whitelist", "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
             tesseract.Recognize(image);
             var result = tesseract.GetText();
-            Console.WriteLine("Tesseract recognized: {0}", result);
+            Console.WriteLine("Tesseract recognized: {0}", result.Trim());
             
-            var ticks = DateTime.Now.Ticks;
-            image.Save(String.Format(@"tesseract\{0}.png", ticks));
-            using (var file = File.CreateText(String.Format(@"tesseract\{0}.txt", ticks)))
-            {
-                file.WriteLine(result);
-            }
+            ////var ticks = DateTime.Now.Ticks;
+            ////image.Save(String.Format(@"tesseract\{0}.png", ticks));
+            ////using (var file = File.CreateText(String.Format(@"tesseract\{0}.txt", ticks)))
+            ////{
+            ////    file.WriteLine(result);
+            ////}
 
             return tesseract.GetText();
         }
