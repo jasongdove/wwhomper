@@ -84,7 +84,12 @@ namespace wwhomper.Screens
                 {
                     var letters = group.Value.Select(letter => letter.Grab(windowContents));
                     var combined = Combine(letters);
-                    var text = FixTesseract(GetText(combined));
+                    var text = GetText(combined).Trim().Replace(" ", String.Empty);
+                    if (text.Length > group.Value.Count)
+                    {
+                        // TODO: Figure out a better way to match characters
+                        text = text.Replace("II", "U");
+                    }
 
                     // If we've already solved any of the bonus words,
                     // they will return white space
@@ -96,11 +101,6 @@ namespace wwhomper.Screens
             }
 
             return result;
-        }
-
-        private string FixTesseract(string input)
-        {
-            return input.Trim().Replace(" ", String.Empty);
         }
     }
 }
