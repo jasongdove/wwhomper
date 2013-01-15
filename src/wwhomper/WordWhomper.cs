@@ -183,21 +183,25 @@ namespace wwhomper
             // Mix up the current word to give tesseract some variety
             AutoIt.Type(WindowTitle, "{SPACE}");
 
-            // Get scrambled words
-            List<string> scrambled = _inBonusGame.GetScrambledWords();
-            foreach (var word in scrambled)
+            string scrambled = _inBonusGame.GetNextScrambledWord();
+
+            var guesses = new HashSet<string>();
+            var variations = new Variations<char>(scrambled.ToArray(), scrambled.Length);
+            foreach (var variation in variations)
             {
-                var variations = new Variations<char>(word.ToArray(), word.Length, GenerateOption.WithoutRepetition);
-                foreach (var variation in variations)
+                var guess = new String(variation.ToArray());
+                if (_wordList.ContainsWord(guess))
                 {
-                    var guess = new String(variation.ToArray());
-                    if (_wordList.ContainsWord(guess))
-                    {
-                        AutoIt.Type(WindowTitle, guess);
-                        Thread.Sleep(random.Next(20, 100));
-                        break;
-                    }
+                    guesses.Add(guess);
                 }
+            }
+
+            // If tesseract didn't get the letters right, we may not have any words to try this cycle
+            if (guesses.Any())
+            {
+                // Type a random guess from the list
+                AutoIt.Type(WindowTitle, guesses.ToList()[random.Next(guesses.Count)]);
+                Thread.Sleep(random.Next(20, 100));
             }
         }
     }

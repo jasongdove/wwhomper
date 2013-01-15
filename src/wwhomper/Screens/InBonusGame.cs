@@ -70,10 +70,8 @@ namespace wwhomper.Screens
             _letterGroups.Add(bonusFive, five);
         }
 
-        public List<string> GetScrambledWords()
+        public string GetNextScrambledWord()
         {
-            var result = new List<string>();
-
             var windowContents = AutoIt.GetWindowImage(WordWhomper.WindowTitle);
 
             foreach (var group in _letterGroups)
@@ -95,12 +93,12 @@ namespace wwhomper.Screens
                     // they will return white space
                     if (!String.IsNullOrWhiteSpace(text))
                     {
-                        result.Add(text);
+                        return text;
                     }
                 }
             }
 
-            return result;
+            return String.Empty;
         }
     }
 }

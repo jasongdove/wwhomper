@@ -156,6 +156,11 @@ namespace wwhomper
             {
                 Thread.Sleep(100);
 
+                if (AutoItNative.AU3_WinActive(title, String.Empty) == 0)
+                {
+                    return search;
+                }
+
                 var windowContents = GetWindowImage(title);
                 foreach (var template in templates)
                 {
