@@ -41,14 +41,17 @@ namespace wwhomper.Screens
             var list = images.ToList();
 
             // Create a new image to hold all images side by side
-            var result = new Image<Gray, byte>(list.Sum(x => x.Width), list.Max(x => x.Height));
+            var result = new Image<Gray, byte>(
+                list.Sum(i => i.Width),
+                list.Max(i => i.Height));
 
             // Fill the new image with all images
-            int imagex = 0;
+            int x = 0;
             foreach (var image in list)
             {
-                image.CopyTo(result.GetSubRect(new Rectangle(imagex, 0, image.Width, image.Height)));
-                imagex += image.Width;
+                var targetRect = new Rectangle(x, 0, image.Width, image.Height);
+                image.CopyTo(result.GetSubRect(targetRect));
+                x += image.Width;
             }
 
             return result;
@@ -61,7 +64,7 @@ namespace wwhomper.Screens
             tesseract.Recognize(image);
             var result = tesseract.GetText();
             Console.WriteLine("Tesseract recognized: {0}", result.Trim());
-            
+
             ////var ticks = DateTime.Now.Ticks;
             ////image.Save(String.Format(@"tesseract\{0}.png", ticks));
             ////using (var file = File.CreateText(String.Format(@"tesseract\{0}.txt", ticks)))

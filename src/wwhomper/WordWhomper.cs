@@ -61,13 +61,9 @@ namespace wwhomper
                 _bonusGameWaiting
             };
 
-            TemplateSearchResult state;
             do
             {
-                // Don't want the mouse to be in any of the screenshots we use
-                AutoIt.MoveMouseOffscreen();
-
-                state = AutoIt.WaitForScreen(WindowTitle, allScreens);
+                TemplateSearchResult state = AutoIt.WaitForScreen(WindowTitle, allScreens);
                 if (state.Success)
                 {
                     if (state.Template == _paused.Template)
@@ -130,14 +126,14 @@ namespace wwhomper
                     {
                         _bonusGameComplete.Ok.Click();
                     }
-                    else
-                    {
-                        // Unknown screen
-                        break;
-                    }
+                }
+                else
+                {
+                    Console.WriteLine("No screen detected, sleeping...");
+                    Thread.Sleep(3000);
                 }
 
-            } while (state.Success);
+            } while (true);
         }
 
         private void PlayRound()
@@ -151,7 +147,7 @@ namespace wwhomper
             var guesses = new HashSet<string>();
             for (int len = 3; len <= 6; len++)
             {
-                var variations = new Variations<char>(letters, len, GenerateOption.WithoutRepetition);
+                var variations = new Variations<char>(letters, len);
                 foreach (var variation in variations)
                 {
                     var guess = new String(variation.ToArray());

@@ -126,6 +126,14 @@ namespace wwhomper
 
         public static TemplateSearchResult WaitForScreen(string title, params ScreenBase[] screens)
         {
+            if (AutoItNative.AU3_WinActive(title, String.Empty) == 0)
+            {
+                return new TemplateSearchResult();
+            }
+
+            // Don't want the mouse to be in any of the screenshots we use
+            MoveMouseOffscreen();
+
             var templates = screens.Select(x => x.Template);
             
             var result = WaitForTemplate(title, templates.ToArray());
