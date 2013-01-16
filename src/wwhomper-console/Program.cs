@@ -1,5 +1,6 @@
 ﻿using System;
 using wwhomper;
+using wwhomper_console.Properties;
 
 namespace wwhomper_console
 {
@@ -7,7 +8,7 @@ namespace wwhomper_console
     {
         public static void Main(string[] args)
         {
-            var whomper = new WordWhomper();
+            var whomper = new WordWhomper(Settings.Default.GameRoot);
             whomper.Run();
 
             Console.WriteLine("done");

@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using Combinatorics.Collections;
+using wwhomper.Pak;
 using wwhomper.Screens;
 
 namespace wwhomper
 {
     public class WordWhomper
     {
-        public const string WindowTitle = "[REGEXPTITLE:^Word Whomp Underground]";
+        public const string WindowTitle = "[REGEXPTITLE:^Word Whomp Underground -]";
         
         public static readonly TimeSpan ControlTimeout = TimeSpan.FromSeconds(15);
 
@@ -31,14 +32,18 @@ namespace wwhomper
         private readonly BonusGameWaiting _bonusGameWaiting = new BonusGameWaiting();
         private readonly BonusGameComplete _bonusGameComplete = new BonusGameComplete();
 
-        public WordWhomper()
+        public WordWhomper(string gameRoot)
         {
             if (!AutoIt.WindowExists(WindowTitle))
             {
                 throw new InvalidOperationException("Unable to find Word Whomp Underground!");
             }
 
-            _wordList.Load("wordsEn.txt");
+            var pakCatalog = new PakCatalog(Path.Combine(gameRoot, "images.pak"));
+            pakCatalog.Load();
+
+            var dictionaryEntry = pakCatalog.Entries.First(x => x.Name.EndsWith("dictionary.txt"));
+            _wordList.LoadFromDictionary(pakCatalog.GetEntryText(dictionaryEntry));
         }
 
         public void Run()
