@@ -1,20 +1,13 @@
-﻿using wwhomper.Screens.Controls;
+﻿using System.Drawing;
+using wwhomper.Pak;
 
 namespace wwhomper.Screens
 {
     public class GameSummary : ScreenBase
     {
-        private readonly CoordinateButton _okeyDokey;
-
-        public GameSummary()
-            : base("GameSummary.png")
+        public GameSummary(PakCatalog pakCatalog)
+            : base(pakCatalog, @"Images\ALL\Game\GameSummary\Dialog_GS_BG.jpg", new Rectangle(179, 360, 372, 71))
         {
-            _okeyDokey = new CoordinateButton(481, 550, 91, 37);
-        }
-
-        public CoordinateButton OkeyDokey
-        {
-            get { return _okeyDokey; }
         }
     }
 }

@@ -18,13 +18,13 @@ namespace wwhomper.Screens.Controls
             _rectangle = rectangle;
         }
 
-        public Image<Gray, byte> Grab()
+        public Image<Bgra, byte> Grab()
         {
             var image = AutoIt.GetWindowContents(WordWhomper.WindowTitle, _rectangle);
-            return new Image<Gray, byte>(image);
+            return new Image<Bgra, byte>(image);
         }
 
-        public Image<Gray, byte> Grab(Image<Gray, byte> windowContents)
+        public Image<Bgra, byte> Grab(Image<Bgra, byte> windowContents)
         {
             return windowContents.GetSubRect(_rectangle);
         }

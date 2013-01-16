@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using wwhomper.Pak;
 using wwhomper.Screens.Controls;
 
 namespace wwhomper.Screens
@@ -9,8 +11,8 @@ namespace wwhomper.Screens
     {
         private readonly List<TemplateCoordinate> _gamePieces = new List<TemplateCoordinate>();
 
-        public InGame()
-            : base("InGame.png")
+        public InGame(PakCatalog pakCatalog)
+            : base(pakCatalog, @"Images\EN_US\Game\Buttons\Button_Enter_Idle.jpg", new Rectangle(28, 11, 126, 18))
         {
             _gamePieces.Add(new TemplateCoordinate(184, 425, 58, 34));
             _gamePieces.Add(new TemplateCoordinate(261, 420, 58, 34));

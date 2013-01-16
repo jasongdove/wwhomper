@@ -61,22 +61,22 @@ namespace wwhomper
             float tolerance = 0.95f)
         {
             var windowContents = GetWindowImage(title);
-            Image<Gray, byte> template = TemplateLoader.LoadTemplate(templateName);
+            Image<Bgra, byte> template = TemplateLoader.LoadTemplate(templateName);
             return IsTemplateInWindow(windowContents, template, tolerance);
         }
 
         public static TemplateSearchResult IsTemplateInWindow(
-            Image<Gray, byte> windowContents,
+            Image<Bgra, byte> windowContents,
             string templateName,
             float tolerance = 0.95f)
         {
-            Image<Gray, byte> template = TemplateLoader.LoadTemplate(templateName);
+            Image<Bgra, byte> template = TemplateLoader.LoadTemplate(templateName);
             return IsTemplateInWindow(windowContents, template, tolerance);
         }
 
         public static TemplateSearchResult IsTemplateInWindow(
-            Image<Gray, byte> windowContents,
-            Image<Gray, byte> template,
+            Image<Bgra, byte> windowContents,
+            Image<Bgra, byte> template,
             float tolerance = 0.95f)
         {
             var match = windowContents.MatchTemplate(template, Emgu.CV.CvEnum.TM_TYPE.CV_TM_CCOEFF_NORMED);
@@ -147,7 +147,7 @@ namespace wwhomper
             return result;
         }
 
-        public static TemplateSearchResult WaitForTemplate(string title, params Image<Gray, byte>[] templates)
+        public static TemplateSearchResult WaitForTemplate(string title, params Image<Bgra, byte>[] templates)
         {
             var endTime = DateTime.Now.Add(WordWhomper.ControlTimeout);
 
@@ -176,11 +176,11 @@ namespace wwhomper
             return search;
         }
 
-        public static Image<Gray, byte> GetWindowImage(string title)
+        public static Image<Bgra, byte> GetWindowImage(string title)
         {
             using (Bitmap bmp = GetWindowContents(title))
             {
-                return new Image<Gray, Byte>(bmp);
+                return new Image<Bgra, Byte>(bmp);
             }
         }
 

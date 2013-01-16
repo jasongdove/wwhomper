@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Emgu.CV;
 using Emgu.CV.Structure;
@@ -21,11 +22,6 @@ namespace wwhomper.Pak
         {
             _fileName = fileName;
             _entries = new List<PakEntry>();
-        }
-
-        public ReadOnlyCollection<PakEntry> Entries
-        {
-            get { return _entries.AsReadOnly(); }
         }
 
         public void Load()
@@ -89,25 +85,57 @@ namespace wwhomper.Pak
             }
         }
 
-        public string GetEntryText(PakEntry entry)
+        public void Dump(string targetDirectory)
         {
+            foreach (var entry in _entries)
+            {
+                var fileName = Path.Combine(targetDirectory, entry.Name);
+                var directory = Path.GetDirectoryName(fileName);
+                if (directory != null)
+                {
+                    if (!Directory.Exists(directory))
+                    {
+                        Directory.CreateDirectory(directory);
+                    }
+
+                    using (var file = File.Create(fileName))
+                    {
+                        var bytes = GetEntryBytes(entry);
+                        file.Write(bytes, 0, bytes.Length);
+                    }
+                }
+            }
+        }
+
+        public string GetEntryText(string fileName)
+        {
+            var entry = GetEntry(fileName);
             return Encoding.ASCII.GetString(GetEntryBytes(entry));
         }
 
-        public Image<Bgra, byte> GetEntryImage(PakEntry entry)
+        public Image<Bgra, byte> GetEntryImage(string fileName)
         {
+            var entry = GetEntry(fileName);
             using (var stream = new MemoryStream(GetEntryBytes(entry)))
             {
                 return new Image<Bgra, byte>(new Bitmap(stream));
             }
         }
 
-        public Image<Bgra, byte> GetCompositeImage(PakEntry jpg, PakEntry png)
+        public Image<Bgra, byte> GetCompositeImage(string fileName)
         {
-            var jpgImage = GetEntryImage(jpg);
+            string pngFileName = fileName.Replace(".jpg", "_.png");
+
+            // If there isn't a matching alpha image, just return the one image directly
+            if (_entries.All(x => x.Name != pngFileName))
+            {
+                return GetEntryImage(fileName);
+            }
+
+            var jpgImage = GetEntryImage(fileName);
 
             // Convert png to grayscale so we get an intensity value
-            var pngImage = GetEntryImage(png).Convert<Gray, byte>();
+            var pngImage = GetEntryImage(pngFileName).Convert<Gray, byte>();
 
             for (int y = 0; y < jpgImage.Data.GetLength(0); y++)
             {
@@ -139,6 +167,11 @@ namespace wwhomper.Pak
 
                 return buffer;
             }
+        }
+
+        private PakEntry GetEntry(string fileName)
+        {
+            return _entries.First(x => x.Name == fileName);
         }
     }
 }

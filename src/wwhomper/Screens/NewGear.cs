@@ -4,15 +4,15 @@ namespace wwhomper.Screens
 {
     public class NewGear : ScreenBase
     {
-        private readonly TemplateButton _no;
+        private readonly CoordinateButton _no;
 
         public NewGear()
             : base("NewGear.png")
         {
-            _no = new TemplateButton("NoButton.png");
+            _no = new CoordinateButton(615, 254, 93, 24);
         }
 
-        public TemplateButton No
+        public CoordinateButton No
         {
             get { return _no; }
         }

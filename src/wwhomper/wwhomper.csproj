@@ -86,14 +86,13 @@
     <Compile Include="Screens\Controls\PixelAnchor.cs" />
     <Compile Include="Screens\Controls\TemplateCoordinate.cs" />
     <Compile Include="Screens\InBonusGame.cs" />
-    <Compile Include="Screens\IntroThree.cs" />
-    <Compile Include="Screens\IntroTwo.cs" />
+    <Compile Include="Screens\LocIntroComplete.cs" />
     <Compile Include="Screens\GameSummary.cs" />
     <Compile Include="Screens\InGame.cs" />
-    <Compile Include="Screens\IntroOne.cs" />
+    <Compile Include="Screens\LocIntro.cs" />
     <Compile Include="Screens\NewGear.cs" />
     <Compile Include="Screens\Paused.cs" />
-    <Compile Include="Screens\Welcome.cs" />
+    <Compile Include="Screens\SpeechBubble.cs" />
     <Compile Include="TemplateLoader.cs" />
     <Compile Include="TemplateSearchResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -107,45 +106,16 @@
     <Compile Include="WordWhomper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Templates\MainMenu.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Templates\Farm.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Templates\GopherHole.bmp" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Templates\GameSummary.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Templates\ForwardButton.png" />
-    <EmbeddedResource Include="Templates\IntroOne.png" />
-    <EmbeddedResource Include="Templates\IntroThree.png" />
-    <EmbeddedResource Include="Templates\IntroTwo.png" />
-    <EmbeddedResource Include="Templates\OkButton.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Templates\Welcome.png" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Templates\NewGear.png" />
-    <EmbeddedResource Include="Templates\NoButton.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Templates\InGame.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Templates\BonusAcorns.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Templates\InBonusGame.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Templates\Paused.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Templates\BonusGameComplete.png" />

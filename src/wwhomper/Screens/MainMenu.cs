@@ -1,4 +1,6 @@
-﻿using wwhomper.Screens.Controls;
+﻿using System.Drawing;
+using wwhomper.Pak;
+using wwhomper.Screens.Controls;
 
 namespace wwhomper.Screens
 {
@@ -6,8 +8,8 @@ namespace wwhomper.Screens
     {
         private readonly CoordinateButton _play;
 
-        public MainMenu()
-            : base("MainMenu.bmp")
+        public MainMenu(PakCatalog pakCatalog)
+            : base(pakCatalog, @"Images\EN_US\Menu\MainMenu_Button_PogoLogo.jpg", new Rectangle(0, 0, 72, 40))
         {
             _play = new CoordinateButton(22, 327, 142, 90);
         }

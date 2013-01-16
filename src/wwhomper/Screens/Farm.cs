@@ -1,4 +1,6 @@
-﻿using wwhomper.Screens.Controls;
+﻿using System.Drawing;
+using wwhomper.Pak;
+using wwhomper.Screens.Controls;
 
 namespace wwhomper.Screens
 {
@@ -6,10 +8,13 @@ namespace wwhomper.Screens
     {
         private readonly TemplateButton _gopherHole;
 
-        public Farm()
-            : base("Farm.bmp")
+        public Farm(PakCatalog pakCatalog)
+            : base(pakCatalog, @"Images\ALL\Game\Map\MapScreen_Hole_Idle.jpg", new Rectangle(94, 61, 33, 43))
         {
-            _gopherHole = new TemplateButton("GopherHole.bmp");
+            _gopherHole = new TemplateButton(
+                pakCatalog,
+                @"Images\ALL\Game\Map\MapScreen_Gopher_Idle.jpg",
+                new Rectangle(105, 54, 11, 45));
         }
 
         public TemplateButton GopherHole

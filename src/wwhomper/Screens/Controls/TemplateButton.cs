@@ -2,12 +2,19 @@
 using System.Drawing;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using wwhomper.Pak;
 
 namespace wwhomper.Screens.Controls
 {
     public class TemplateButton : ButtonBase
     {
-        private readonly Image<Gray, byte> _template;
+        private readonly Image<Bgra, byte> _template;
+
+        public TemplateButton(PakCatalog pakCatalog, string fileName, Rectangle rectangle)
+        {
+            _template = pakCatalog.GetCompositeImage(fileName)
+                .GetSubRect(rectangle);
+        }
 
         public TemplateButton(string templateName)
         {

@@ -8,6 +8,6 @@ namespace wwhomper
     {
         public bool Success { get; set; }
         public Point Point { get; set; }
-        public Image<Gray, byte> Template { get; set; }
+        public Image<Bgra, byte> Template { get; set; }
     }
 }

@@ -4,14 +4,14 @@ using wwhomper.Screens.Controls;
 
 namespace wwhomper.Screens
 {
-    public class Paused : ScreenBase
+    public class LocIntroComplete : ScreenBase
     {
         private readonly CoordinateButton _ok;
 
-        public Paused(PakCatalog pakCatalog)
-            : base(pakCatalog, @"Images\ALL\Dialog\Dialog_565x540.jpg", new Rectangle(15, 20, 580, 63))
+        public LocIntroComplete(PakCatalog pakCatalog)
+            : base(pakCatalog, @"Images\ALL\Dialog\Dialog_Loc\Dialog_Loc_BG.jpg", new Rectangle(641, 464, 150, 127))
         {
-            _ok = new CoordinateButton(341, 500, 125, 39);
+            _ok = new CoordinateButton(319, 522, 159, 38);
         }
 
         public CoordinateButton Ok

@@ -1,24 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using Emgu.CV;
 using Emgu.CV.OCR;
 using Emgu.CV.Structure;
+using wwhomper.Pak;
 using wwhomper.Screens.Controls;
 
 namespace wwhomper.Screens
 {
     public abstract class ScreenBase
     {
-        private readonly Image<Gray, byte> _template;
-        private readonly List<PixelAnchor> _anchors;
+        private readonly Image<Bgra, byte> _template;
+        private readonly List<PixelAnchor> _anchors = new List<PixelAnchor>();
+
+        protected ScreenBase(PakCatalog pakCatalog, string fileName, Rectangle rectangle)
+        {
+            _template = pakCatalog.GetCompositeImage(fileName)
+                                  .GetSubRect(rectangle);
+        }
 
         protected ScreenBase(string templateName)
         {
             _template = TemplateLoader.LoadTemplate(templateName);
-            _anchors = new List<PixelAnchor>();
         }
 
         public List<PixelAnchor> Anchors
@@ -26,7 +31,7 @@ namespace wwhomper.Screens
             get { return _anchors; }
         }
 
-        public Image<Gray, byte> Template
+        public Image<Bgra, byte> Template
         {
             get { return _template; }
         }
@@ -36,12 +41,12 @@ namespace wwhomper.Screens
             return AutoIt.WaitForTemplate(WordWhomper.WindowTitle, _template);
         }
 
-        protected Image<Gray, byte> Combine(IEnumerable<Image<Gray, byte>> images)
+        protected Image<Bgra, byte> Combine(IEnumerable<Image<Bgra, byte>> images)
         {
             var list = images.ToList();
 
             // Create a new image to hold all images side by side
-            var result = new Image<Gray, byte>(
+            var result = new Image<Bgra, byte>(
                 list.Sum(i => i.Width),
                 list.Max(i => i.Height));
 
@@ -57,11 +62,13 @@ namespace wwhomper.Screens
             return result;
         }
 
-        protected string GetText(Image<Gray, byte> image)
+        protected string GetText(Image<Bgra, byte> image)
         {
+            var grayscale = image.Convert<Gray, byte>();
+
             var tesseract = new Tesseract("tessdata", "eng", Tesseract.OcrEngineMode.OEM_TESSERACT_ONLY);
             tesseract.SetVariable("tessedit_char_whitelist", "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-            tesseract.Recognize(image);
+            tesseract.Recognize(grayscale);
             var result = tesseract.GetText();
             Console.WriteLine("Tesseract recognized: {0}", result.Trim());
 

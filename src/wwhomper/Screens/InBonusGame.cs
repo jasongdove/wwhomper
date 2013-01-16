@@ -9,8 +9,8 @@ namespace wwhomper.Screens
 {
     public class InBonusGame : ScreenBase
     {
-        private readonly Dictionary<Image<Gray, byte>, List<TemplateCoordinate>> _letterGroups =
-            new Dictionary<Image<Gray, byte>, List<TemplateCoordinate>>();
+        private readonly Dictionary<Image<Bgra, byte>, List<TemplateCoordinate>> _letterGroups =
+            new Dictionary<Image<Bgra, byte>, List<TemplateCoordinate>>();
 
         public InBonusGame()
             : base("InBonusGame.png")

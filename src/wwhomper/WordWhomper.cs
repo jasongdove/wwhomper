@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using Combinatorics.Collections;
-using Emgu.CV.Structure;
 using wwhomper.Pak;
 using wwhomper.Screens;
 
@@ -18,20 +17,19 @@ namespace wwhomper
 
         private readonly WordList _wordList = new WordList();
 
-        private readonly MainMenu _mainMenu = new MainMenu();
-        private readonly IntroOne _introOne = new IntroOne();
-        private readonly IntroTwo _introTwo = new IntroTwo();
-        private readonly IntroThree _introThree = new IntroThree();
-        private readonly Farm _farm = new Farm();
-        private readonly Welcome _welcome = new Welcome();
-        private readonly InGame _inGame = new InGame();
-        private readonly GameSummary _gameSummary = new GameSummary();
+        private readonly MainMenu _mainMenu;
+        private readonly LocIntro _locIntro;
+        private readonly LocIntroComplete _locIntroComplete;
+        private readonly Farm _farm;
+        private readonly InGame _inGame;
+        private readonly GameSummary _gameSummary;
         private readonly NewGear _newGear = new NewGear();
         private readonly BonusAcorns _bonusAcorns = new BonusAcorns();
         private readonly InBonusGame _inBonusGame = new InBonusGame();
-        private readonly Paused _paused = new Paused();
+        private readonly Paused _paused;
         private readonly BonusGameWaiting _bonusGameWaiting = new BonusGameWaiting();
         private readonly BonusGameComplete _bonusGameComplete = new BonusGameComplete();
+        private readonly SpeechBubble _speechBubble;
 
         public WordWhomper(string gameRoot)
         {
@@ -43,13 +41,16 @@ namespace wwhomper
             var pakCatalog = new PakCatalog(Path.Combine(gameRoot, "images.pak"));
             pakCatalog.Load();
 
-            var dictionaryEntry = pakCatalog.Entries.First(x => x.Name == @"Dictionary\us-uk-fr\dictionary.txt");
-            _wordList.LoadFromDictionary(pakCatalog.GetEntryText(dictionaryEntry));
+            _wordList.LoadFromDictionary(pakCatalog.GetEntryText(@"Dictionary\us-uk-fr\dictionary.txt"));
 
-            ////var farmGopherJpg = pakCatalog.Entries.First(x => x.Name == @"Images\ALL\Game\Map\MapScreen_Gopher_Idle.jpg");
-            ////var farmGopherPng = pakCatalog.Entries.First(x => x.Name == @"Images\ALL\Game\Map\MapScreen_Gopher_Idle_.png");
-
-            ////var farmGopher = pakCatalog.GetCompositeImage(farmGopherJpg, farmGopherPng);
+            _mainMenu = new MainMenu(pakCatalog);
+            _locIntro = new LocIntro(pakCatalog);
+            _locIntroComplete = new LocIntroComplete(pakCatalog);
+            _farm = new Farm(pakCatalog);
+            _inGame = new InGame(pakCatalog);
+            _gameSummary = new GameSummary(pakCatalog);
+            _paused = new Paused(pakCatalog);
+            _speechBubble = new SpeechBubble(pakCatalog);
         }
 
         public void Run()
@@ -57,19 +58,16 @@ namespace wwhomper
             var allScreens = new ScreenBase[]
             {
                 _paused,
-                _mainMenu,
-                _introOne,
-                _introTwo,
-                _introThree,
-                _farm,
-                _gameSummary,
+                _speechBubble, // This needs to be before "_inGame"
                 _inGame,
-                _welcome,
-                _newGear,
-                _bonusAcorns,
+                _gameSummary,
+                _farm,
                 _inBonusGame,
                 _bonusGameComplete, // This needs to be before "_bonusGameWaiting"
-                _bonusGameWaiting
+                _bonusGameWaiting,
+                _locIntro,
+                _locIntroComplete,
+                _mainMenu
             };
 
             do
@@ -85,26 +83,18 @@ namespace wwhomper
                     {
                         _mainMenu.Play.Click();
                     }
-                    else if (state.Template == _introOne.Template)
+                    else if (state.Template == _locIntro.Template)
                     {
-                        _introOne.Forward.Click();
+                        _locIntro.Forward.Click();
                         AutoIt.MoveMouseOffscreen();
                     }
-                    else if (state.Template == _introTwo.Template)
+                    else if (state.Template == _locIntroComplete.Template)
                     {
-                        _introTwo.Forward.Click();
-                    }
-                    else if (state.Template == _introThree.Template)
-                    {
-                        _introThree.Ok.Click();
+                        _locIntroComplete.Ok.Click();
                     }
                     else if (state.Template == _farm.Template)
                     {
                         _farm.GopherHole.Click();
-                    }
-                    else if (state.Template == _welcome.Template)
-                    {
-                        _welcome.Ok.Click();
                     }
                     else if (state.Template == _inGame.Template)
                     {
@@ -112,17 +102,9 @@ namespace wwhomper
                     }
                     else if (state.Template == _gameSummary.Template)
                     {
-                        _gameSummary.OkeyDokey.Click();
-                    }
-                    else if (state.Template == _newGear.Template)
-                    {
-                        _newGear.No.Click();
-                    }
-                    else if (state.Template == _bonusAcorns.Template)
-                    {
-                        _bonusAcorns.Ok.Click();
-                        // There is a transition here that takes a while
-                        Thread.Sleep(3000);
+                        AutoIt.Type(WindowTitle, "{ENTER}");
+                        Thread.Sleep(200);
+                        AutoIt.Type(WindowTitle, "{ENTER}");
                     }
                     else if (state.Template == _inBonusGame.Template)
                     {
@@ -136,6 +118,24 @@ namespace wwhomper
                     else if (state.Template == _bonusGameComplete.Template)
                     {
                         _bonusGameComplete.Ok.Click();
+                    }
+                    else if (state.Template == _speechBubble.Template)
+                    {
+                        // Detail check for different types of speech bubbles
+                        state = AutoIt.WaitForScreen(WindowTitle, _newGear, _bonusAcorns);
+                        if (state.Success)
+                        {
+                            if (state.Template == _newGear.Template)
+                            {
+                                _newGear.No.Click();
+                            }
+                            else if (state.Template == _bonusAcorns.Template)
+                            {
+                                _bonusAcorns.Ok.Click();
+                                // There is a transition here that takes a while
+                                Thread.Sleep(3000);
+                            }
+                        }
                     }
                 }
                 else
@@ -153,6 +153,12 @@ namespace wwhomper
 
             // Get available letters
             List<char> letters = _inGame.GetLetters().ToList();
+
+            // If we didn't correctly detect all letters, just give up
+            if (letters.Count != 6)
+            {
+                return;
+            }
 
             // Preload our guesses
             var guesses = new HashSet<string>();
@@ -179,6 +185,9 @@ namespace wwhomper
                 AutoIt.Type(WindowTitle, "{ENTER}" + guess + "{ENTER}");
                 Thread.Sleep(random.Next(20, 100));
             }
+
+            // Give the summary time to appear
+            Thread.Sleep(3000);
         }
 
         private void PlayBonusRound()
@@ -186,7 +195,7 @@ namespace wwhomper
             var random = new Random();
 
             // Clear out any bad data
-            for (int i = 0; i < 22; i++)
+            for (int i = 0; i < 6; i++)
             {
                 AutoIt.Type(WindowTitle, "{BACKSPACE}");
             }
