@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using Combinatorics.Collections;
+using Emgu.CV.Structure;
 using wwhomper.Pak;
 using wwhomper.Screens;
 
@@ -42,8 +43,13 @@ namespace wwhomper
             var pakCatalog = new PakCatalog(Path.Combine(gameRoot, "images.pak"));
             pakCatalog.Load();
 
-            var dictionaryEntry = pakCatalog.Entries.First(x => x.Name.EndsWith("dictionary.txt"));
+            var dictionaryEntry = pakCatalog.Entries.First(x => x.Name == @"Dictionary\us-uk-fr\dictionary.txt");
             _wordList.LoadFromDictionary(pakCatalog.GetEntryText(dictionaryEntry));
+
+            ////var farmGopherJpg = pakCatalog.Entries.First(x => x.Name == @"Images\ALL\Game\Map\MapScreen_Gopher_Idle.jpg");
+            ////var farmGopherPng = pakCatalog.Entries.First(x => x.Name == @"Images\ALL\Game\Map\MapScreen_Gopher_Idle_.png");
+
+            ////var farmGopher = pakCatalog.GetCompositeImage(farmGopherJpg, farmGopherPng);
         }
 
         public void Run()

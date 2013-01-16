@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.IO;
 using System.Text;
+using Emgu.CV;
+using Emgu.CV.Structure;
 
 namespace wwhomper.Pak
 {
@@ -88,19 +91,53 @@ namespace wwhomper.Pak
 
         public string GetEntryText(PakEntry entry)
         {
+            return Encoding.ASCII.GetString(GetEntryBytes(entry));
+        }
+
+        public Image<Bgra, byte> GetEntryImage(PakEntry entry)
+        {
+            using (var stream = new MemoryStream(GetEntryBytes(entry)))
+            {
+                return new Image<Bgra, byte>(new Bitmap(stream));
+            }
+        }
+
+        public Image<Bgra, byte> GetCompositeImage(PakEntry jpg, PakEntry png)
+        {
+            var jpgImage = GetEntryImage(jpg);
+
+            // Convert png to grayscale so we get an intensity value
+            var pngImage = GetEntryImage(png).Convert<Gray, byte>();
+
+            for (int y = 0; y < jpgImage.Data.GetLength(0); y++)
+            {
+                for (int x = 0; x < jpgImage.Data.GetLength(1); x++)
+                {
+                    var existing = jpgImage[y, x];
+                    jpgImage[y, x] = new Bgra(
+                        existing.Blue,
+                        existing.Green,
+                        existing.Red,
+                        pngImage[y, x].Intensity);
+                }
+            }
+
+            return jpgImage;
+        }
+
+        private byte[] GetEntryBytes(PakEntry entry)
+        {
             using (var file = File.OpenRead(_fileName))
             {
-                using (var br = new BinaryReader(file))
+                file.Seek((int)entry.Offset, SeekOrigin.Begin);
+                var buffer = new byte[entry.Length];
+                file.Read(buffer, 0, (int)entry.Length);
+                for (int i = 0; i < buffer.Length; i++)
                 {
-                    file.Seek(entry.Offset, SeekOrigin.Begin);
-                    byte[] contents = br.ReadBytes((int)entry.Length);
-                    for (int i = 0; i < contents.Length; i++)
-                    {
-                        contents[i] ^= PakKey;
-                    }
-
-                    return Encoding.ASCII.GetString(contents);
+                    buffer[i] ^= PakKey;
                 }
+
+                return buffer;
             }
         }
     }
