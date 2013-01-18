@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Linq;
 using System.Threading;
 using Emgu.CV;
 using Emgu.CV.Structure;
@@ -53,25 +52,6 @@ namespace wwhomper
                 g.CopyFromScreen(new Point(rect.Left, rect.Top), Point.Empty, rect.Size);
             }
             return bmp;
-        }
-
-        public static ScreenSearchResult IsTemplateInWindow(
-            string title,
-            string templateName,
-            float tolerance = 0.95f)
-        {
-            var windowContents = GetWindowImage(title);
-            Image<Bgra, byte> template = TemplateLoader.LoadTemplate(templateName);
-            return IsTemplateInWindow(windowContents, template, tolerance);
-        }
-
-        public static ScreenSearchResult IsTemplateInWindow(
-            Image<Bgra, byte> windowContents,
-            string templateName,
-            float tolerance = 0.95f)
-        {
-            Image<Bgra, byte> template = TemplateLoader.LoadTemplate(templateName);
-            return IsTemplateInWindow(windowContents, template, tolerance);
         }
 
         public static ScreenSearchResult IsTemplateInWindow(

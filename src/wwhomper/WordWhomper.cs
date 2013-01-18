@@ -25,9 +25,9 @@ namespace wwhomper
         private readonly GameSummary _gameSummary;
         private readonly NewGear _newGear = new NewGear();
         private readonly BonusAcorns _bonusAcorns = new BonusAcorns();
-        private readonly InBonusGame _inBonusGame = new InBonusGame();
+        private readonly InBonusGame _inBonusGame;
         private readonly Paused _paused;
-        private readonly BonusGameWaiting _bonusGameWaiting = new BonusGameWaiting();
+        private readonly BonusGameWaiting _bonusGameWaiting;
         private readonly BonusGameComplete _bonusGameComplete = new BonusGameComplete();
         private readonly SpeechBubble _speechBubble;
 
@@ -38,7 +38,8 @@ namespace wwhomper
                 throw new InvalidOperationException("Unable to find Word Whomp Underground!");
             }
 
-            ////var fontLoader = new FontLoader(gameRoot);            ////var speechBubbleFont = fontLoader.LoadFont("DomCasualStd105WItaALLCAPS13");
+            ////var fontLoader = new FontLoader(gameRoot);
+            ////var speechBubbleFont = fontLoader.LoadFont("DomCasualStd105WItaALLCAPS13");
 
             var pakCatalog = new PakCatalog(Path.Combine(gameRoot, "images.pak"));
             pakCatalog.Load();
@@ -53,6 +54,8 @@ namespace wwhomper
             _gameSummary = new GameSummary(pakCatalog);
             _paused = new Paused(pakCatalog);
             _speechBubble = new SpeechBubble(pakCatalog);
+            _bonusGameWaiting = new BonusGameWaiting(pakCatalog);
+            _inBonusGame = new InBonusGame(pakCatalog, _bonusGameWaiting);
         }
 
         public void Run()
@@ -65,8 +68,8 @@ namespace wwhomper
                 _gameSummary,
                 _farm,
                 _inBonusGame,
-                _bonusGameComplete, // This needs to be before "_bonusGameWaiting"
                 _bonusGameWaiting,
+                _bonusGameComplete,
                 _locIntro,
                 _locIntroComplete,
                 _mainMenu
@@ -84,6 +87,8 @@ namespace wwhomper
                     else if (state.Screen == _mainMenu)
                     {
                         _mainMenu.Play.Click();
+                        // There is a transition here
+                        Thread.Sleep(3000);
                     }
                     else if (state.Screen == _locIntro)
                     {
@@ -120,6 +125,8 @@ namespace wwhomper
                     else if (state.Screen == _bonusGameComplete)
                     {
                         _bonusGameComplete.Ok.Click();
+                        // There is a transition here that takes a while
+                        Thread.Sleep(3000);
                     }
                     else if (state.Screen == _speechBubble)
                     {

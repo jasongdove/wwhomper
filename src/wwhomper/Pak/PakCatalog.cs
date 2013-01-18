@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -13,7 +12,7 @@ namespace wwhomper.Pak
     public class PakCatalog
     {
         private const byte PakKey = 0xf7;
-        private const byte EndOfTOC = 0x80;
+        private const byte EndOfContents = 0x80;
 
         private readonly string _fileName;
         private readonly List<PakEntry> _entries;
@@ -67,7 +66,7 @@ namespace wwhomper.Pak
                         _entries.Add(entry);
 
                         byte flag = br.ReadByte();
-                        if (flag == EndOfTOC)
+                        if (flag == EndOfContents)
                         {
                             // Entry contents start here
                             offset = ms.Position;

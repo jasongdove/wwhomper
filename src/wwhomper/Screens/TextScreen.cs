@@ -14,6 +14,7 @@ namespace wwhomper.Screens
             : this(new Rectangle(x, y, width, height), text)
         {
             AdditionalCharacters = String.Empty;
+            RequiresZoom = false;
         }
 
         protected TextScreen(Rectangle rectangle, string text)
@@ -23,11 +24,12 @@ namespace wwhomper.Screens
         }
 
         protected string AdditionalCharacters { get; set; }
+        protected bool RequiresZoom { get; set; }
 
         public override ScreenSearchResult IsActive(Image<Bgra, byte> windowContents)
         {
             var image = windowContents.GetSubRect(_rectangle);
-            var text = GetZoomedOutText(image, AdditionalCharacters).Trim();
+            var text = (RequiresZoom ? GetZoomedOutText(image, AdditionalCharacters) : GetText(image, AdditionalCharacters)).Trim();
             
             var result = new ScreenSearchResult { Success = text == _text };
             if (result.Success)

@@ -16,11 +16,6 @@ namespace wwhomper.Screens.Controls
                 .GetSubRect(rectangle);
         }
 
-        public TemplateButton(string templateName)
-        {
-            _template = TemplateLoader.LoadTemplate(templateName);
-        }
-
         public override void Click()
         {
             var searchResult = AutoIt.WaitForTemplate(WordWhomper.WindowTitle, _template);

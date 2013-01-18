@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using wwhomper.Pak;
 using wwhomper.Screens.Controls;
 
 namespace wwhomper.Screens
 {
     public class InBonusGame : TemplateScreen
     {
-        private readonly Dictionary<Image<Bgra, byte>, List<TemplateCoordinate>> _letterGroups =
-            new Dictionary<Image<Bgra, byte>, List<TemplateCoordinate>>();
+        private readonly Dictionary<TemplateSearchArea, List<TemplateCoordinate>> _letterGroups =
+            new Dictionary<TemplateSearchArea, List<TemplateCoordinate>>();
 
-        public InBonusGame()
-            : base("InBonusGame.png")
+        public InBonusGame(PakCatalog pakCatalog, BonusGameWaiting waiting)
+            : base(pakCatalog, @"Images\ALL\Game\bonus_game\BG_Doors_Upper_Idle.jpg", new Rectangle(18, 8, 133, 8))
         {
             var one = new List<TemplateCoordinate>
             {
@@ -57,11 +59,19 @@ namespace wwhomper.Screens
                 new TemplateCoordinate(228, 455, 24, 25)
             };
 
-            var bonusOne = TemplateLoader.LoadTemplate("BonusOne.png");
-            var bonusTwo = TemplateLoader.LoadTemplate("BonusTwo.png");
-            var bonusThree = TemplateLoader.LoadTemplate("BonusThree.png");
-            var bonusFour = TemplateLoader.LoadTemplate("BonusFour.png");
-            var bonusFive = TemplateLoader.LoadTemplate("BonusGameWaiting.png");
+            var rightTemplate = pakCatalog
+                .GetCompositeImage(@"Images\ALL\Game\bonus_game\BG_LetterTile_Angle_Right_Up.jpg")
+                .GetSubRect(new Rectangle(6, 10, 34, 32));
+
+            var leftTemplate = pakCatalog
+                .GetCompositeImage(@"Images\ALL\Game\bonus_game\BG_LetterTile_Angle_Left_Up.jpg")
+                .GetSubRect(new Rectangle(10, 8, 34, 32));
+
+            var bonusOne = new TemplateSearchArea(leftTemplate, new Rectangle(502, 33, 153, 61));
+            var bonusTwo = new TemplateSearchArea(rightTemplate, new Rectangle(314, 169, 190, 69));
+            var bonusThree = new TemplateSearchArea(leftTemplate, new Rectangle(481, 290, 198, 77));
+            var bonusFour = new TemplateSearchArea(rightTemplate, new Rectangle(276, 437, 230, 81));
+            var bonusFive = new TemplateSearchArea(waiting.Template, new Rectangle(25, 403, 240, 49));
 
             _letterGroups.Add(bonusOne, one);
             _letterGroups.Add(bonusTwo, two);
@@ -77,7 +87,7 @@ namespace wwhomper.Screens
             foreach (var group in _letterGroups)
             {
                 // Make sure we haven't already completed this word
-                var search = AutoIt.IsTemplateInWindow(windowContents, group.Key);
+                var search = AutoIt.IsTemplateInWindow(windowContents.GetSubRect(group.Key.SearchArea), group.Key.Template);
                 if (!search.Success)
                 {
                     var letters = group.Value.Select(letter => letter.Grab(windowContents));
@@ -99,6 +109,28 @@ namespace wwhomper.Screens
             }
 
             return String.Empty;
+        }
+
+        private class TemplateSearchArea
+        {
+            private readonly Image<Bgra, byte> _template;
+            private readonly Rectangle _searchArea;
+
+            public TemplateSearchArea(Image<Bgra, byte> template, Rectangle searchArea)
+            {
+                _template = template;
+                _searchArea = searchArea;
+            }
+
+            public Image<Bgra, byte> Template
+            {
+                get { return _template; }
+            }
+
+            public Rectangle SearchArea
+            {
+                get { return _searchArea; }
+            }
         }
     }
 }

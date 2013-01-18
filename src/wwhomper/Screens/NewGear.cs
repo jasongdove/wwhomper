@@ -10,6 +10,7 @@ namespace wwhomper.Screens
             : base(492, 166, 168, 25, "YOU FOUND A NEW GEAR!")
         {
             AdditionalCharacters = "!";
+            RequiresZoom = true;
 
             _no = new CoordinateButton(615, 254, 93, 24);
         }

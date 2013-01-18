@@ -98,7 +98,6 @@
     <Compile Include="Screens\SpeechBubble.cs" />
     <Compile Include="Screens\TemplateScreen.cs" />
     <Compile Include="Screens\TextScreen.cs" />
-    <Compile Include="TemplateLoader.cs" />
     <Compile Include="ScreenSearchResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Screens\Controls\ButtonBase.cs" />
@@ -112,24 +111,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Templates\BonusAcorns.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Templates\InBonusGame.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Templates\BonusGameComplete.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Templates\BonusGameWaiting.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Templates\BonusFour.png" />
-    <EmbeddedResource Include="Templates\BonusOne.png" />
-    <EmbeddedResource Include="Templates\BonusThree.png" />
-    <EmbeddedResource Include="Templates\BonusTwo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,7 +1,6 @@
 ﻿using System.Drawing;
 using Emgu.CV;
 using Emgu.CV.Structure;
-using wwhomper.Font;
 using wwhomper.Pak;
 
 namespace wwhomper.Screens
@@ -10,10 +9,10 @@ namespace wwhomper.Screens
     {
         private readonly Image<Bgra, byte> _template;
 
-        protected TemplateScreen(BitmapFont font, string text)
-        {
-            _template = font.GetImage(text);
-        }
+        ////protected TemplateScreen(BitmapFont font, string text)
+        ////{
+        ////    _template = font.GetImage(text);
+        ////}
 
         protected TemplateScreen(PakCatalog pakCatalog, string fileName, Rectangle rectangle)
         {
@@ -21,9 +20,9 @@ namespace wwhomper.Screens
                                   .GetSubRect(rectangle);
         }
 
-        protected TemplateScreen(string templateName)
+        public Image<Bgra, byte> Template
         {
-            _template = TemplateLoader.LoadTemplate(templateName);
+            get { return _template; }
         }
 
         public override ScreenSearchResult IsActive(Image<Bgra, byte> windowContents)
