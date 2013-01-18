@@ -19,44 +19,44 @@ namespace wwhomper.Screens
         {
             var one = new List<TemplateCoordinate>
             {
-                new TemplateCoordinate(522, 41, 24, 25),
-                new TemplateCoordinate(563, 47, 24, 25),
-                new TemplateCoordinate(604, 53, 24, 25)
+                new TemplateCoordinate(523, 42, 23, 24),
+                new TemplateCoordinate(565, 48, 23, 24),
+                new TemplateCoordinate(605, 54, 23, 24)
             };
 
             var two = new List<TemplateCoordinate>
             {
-                new TemplateCoordinate(327, 195, 24, 25),
-                new TemplateCoordinate(370, 189, 24, 25),
-                new TemplateCoordinate(413, 183, 24, 25),
-                new TemplateCoordinate(456, 177, 24, 25)
+                new TemplateCoordinate(331, 195, 23, 24),
+                new TemplateCoordinate(370, 189, 23, 24),
+                new TemplateCoordinate(417, 183, 23, 24),
+                new TemplateCoordinate(460, 177, 23, 24)
             };
 
             var three = new List<TemplateCoordinate>
             {
-                new TemplateCoordinate(504, 301, 24, 25),
-                new TemplateCoordinate(545, 307, 24, 25),
-                new TemplateCoordinate(586, 312, 24, 25),
-                new TemplateCoordinate(627, 318, 24, 25)
+                new TemplateCoordinate(503, 302, 23, 24),
+                new TemplateCoordinate(546, 308, 23, 24),
+                new TemplateCoordinate(584, 313, 23, 24), // TODO: double check this area
+                new TemplateCoordinate(626, 320, 23, 24)
             };
 
             var four = new List<TemplateCoordinate>
             {
-                new TemplateCoordinate(290, 465, 24, 25),
-                new TemplateCoordinate(331, 460, 24, 25),
-                new TemplateCoordinate(373, 453, 24, 25),
-                new TemplateCoordinate(415, 447, 24, 25),
-                new TemplateCoordinate(457, 441, 24, 25)
+                new TemplateCoordinate(291, 465, 23, 24),
+                new TemplateCoordinate(333, 459, 23, 24),
+                new TemplateCoordinate(375, 453, 23, 24),
+                new TemplateCoordinate(417, 447, 23, 24),
+                new TemplateCoordinate(460, 441, 23, 24),
             };
 
             var five = new List<TemplateCoordinate>
             {
-                new TemplateCoordinate(26, 454, 24, 25),
-                new TemplateCoordinate(66, 455, 24, 25),
-                new TemplateCoordinate(106, 454, 24, 25),
-                new TemplateCoordinate(146, 454, 24, 25),
-                new TemplateCoordinate(186, 455, 24, 25),
-                new TemplateCoordinate(228, 455, 24, 25)
+                new TemplateCoordinate(27, 455, 23, 24),
+                new TemplateCoordinate(68, 455, 23, 24),
+                new TemplateCoordinate(109, 455, 23, 24),
+                new TemplateCoordinate(148, 455, 23, 24),
+                new TemplateCoordinate(190, 455, 23, 24),
+                new TemplateCoordinate(230, 455, 23, 24)
             };
 
             var rightTemplate = pakCatalog
@@ -92,7 +92,7 @@ namespace wwhomper.Screens
                 {
                     var letters = group.Value.Select(letter => letter.Grab(windowContents));
                     var combined = Combine(letters);
-                    var text = GetText(combined).Trim().Replace(" ", String.Empty);
+                    var text = GetZoomedOutText(combined, 2).Trim().Replace(" ", String.Empty);
                     if (text.Length > group.Value.Count)
                     {
                         // TODO: Figure out a better way to match characters

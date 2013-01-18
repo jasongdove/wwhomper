@@ -34,9 +34,9 @@ namespace wwhomper.Screens
             return result;
         }
 
-        protected string GetZoomedOutText(Image<Bgra, byte> image, string additionalLetters = "", bool debug = false)
+        protected string GetZoomedOutText(Image<Bgra, byte> image, double scale, string additionalLetters = "", bool debug = false)
         {
-            var zoomedOut = image.Resize(8, Emgu.CV.CvEnum.INTER.CV_INTER_LANCZOS4);
+            var zoomedOut = image.Resize(scale, Emgu.CV.CvEnum.INTER.CV_INTER_LANCZOS4);
             return GetText(zoomedOut, additionalLetters, debug);
         }
 

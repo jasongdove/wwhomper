@@ -21,7 +21,7 @@ namespace wwhomper.Screens.Controls
             var searchResult = AutoIt.WaitForTemplate(WordWhomper.WindowTitle, _template);
             if (searchResult.Success)
             {
-                Click(new Rectangle(searchResult.Point, _template.Size));
+                AutoIt.Click(new Rectangle(searchResult.Point, _template.Size));
             }
             else
             {

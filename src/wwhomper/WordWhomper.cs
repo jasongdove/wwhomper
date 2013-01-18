@@ -30,6 +30,8 @@ namespace wwhomper
         private readonly BonusGameWaiting _bonusGameWaiting;
         private readonly BonusGameComplete _bonusGameComplete = new BonusGameComplete();
         private readonly SpeechBubble _speechBubble;
+        private readonly InPuzzleGame _inPuzzleGame;
+        private readonly PuzzleGameComplete _puzzleGameComplete;
 
         public WordWhomper(string gameRoot)
         {
@@ -56,6 +58,8 @@ namespace wwhomper
             _speechBubble = new SpeechBubble(pakCatalog);
             _bonusGameWaiting = new BonusGameWaiting(pakCatalog);
             _inBonusGame = new InBonusGame(pakCatalog, _bonusGameWaiting);
+            _inPuzzleGame = new InPuzzleGame(pakCatalog);
+            _puzzleGameComplete = new PuzzleGameComplete(pakCatalog);
         }
 
         public void Run()
@@ -69,10 +73,11 @@ namespace wwhomper
                 _farm,
                 _inBonusGame,
                 _bonusGameWaiting,
-                _bonusGameComplete,
+                _inPuzzleGame,
                 _locIntro,
                 _locIntroComplete,
-                _mainMenu
+                _mainMenu,
+                _bonusGameComplete
             };
 
             do
@@ -87,8 +92,7 @@ namespace wwhomper
                     else if (state.Screen == _mainMenu)
                     {
                         _mainMenu.Play.Click();
-                        // There is a transition here
-                        Thread.Sleep(3000);
+                        WaitForTransition();
                     }
                     else if (state.Screen == _locIntro)
                     {
@@ -105,7 +109,7 @@ namespace wwhomper
                     }
                     else if (state.Screen == _inGame)
                     {
-                        PlayRound();
+                        PlayGame();
                     }
                     else if (state.Screen == _gameSummary)
                     {
@@ -115,7 +119,7 @@ namespace wwhomper
                     }
                     else if (state.Screen == _inBonusGame)
                     {
-                        PlayBonusRound();
+                        PlayBonusGame();
                     }
                     else if (state.Screen == _bonusGameWaiting)
                     {
@@ -125,38 +129,49 @@ namespace wwhomper
                     else if (state.Screen == _bonusGameComplete)
                     {
                         _bonusGameComplete.Ok.Click();
-                        // There is a transition here that takes a while
-                        Thread.Sleep(3000);
+                        WaitForTransition();
                     }
                     else if (state.Screen == _speechBubble)
                     {
                         // Detail check for different types of speech bubbles
-                        state = AutoIt.WaitForScreen(WindowTitle, _newGear, _bonusAcorns);
+                        state = AutoIt.WaitForScreen(WindowTitle, _newGear, _bonusAcorns, _puzzleGameComplete);
                         if (state.Success)
                         {
                             if (state.Screen == _newGear)
                             {
-                                _newGear.No.Click();
+                                _newGear.Yes.Click();
+                                WaitForTransition();
                             }
                             else if (state.Screen == _bonusAcorns)
                             {
                                 _bonusAcorns.Ok.Click();
-                                // There is a transition here that takes a while
-                                Thread.Sleep(3000);
+                                WaitForTransition();
+                            }
+                            else if (state.Screen == _puzzleGameComplete)
+                            {
+                                _puzzleGameComplete.Ok.Click();
+                                WaitForTransition();
                             }
                         }
+                    }
+                    else if (state.Screen == _inPuzzleGame)
+                    {
+                        PlayPuzzleGame();
                     }
                 }
                 else
                 {
-                    Console.WriteLine("No screen detected, sleeping...");
-                    Thread.Sleep(3000);
+                    Console.WriteLine("No screen detected.");
+                    if (!AutoIt.IsWindowActive(WindowTitle))
+                    {
+                        Thread.Sleep(3000);
+                    }
                 }
 
             } while (true);
         }
 
-        private void PlayRound()
+        private void PlayGame()
         {
             var random = new Random();
 
@@ -196,10 +211,10 @@ namespace wwhomper
             }
 
             // Give the summary time to appear
-            Thread.Sleep(3000);
+            Thread.Sleep(1500);
         }
 
-        private void PlayBonusRound()
+        private void PlayBonusGame()
         {
             var random = new Random();
 
@@ -232,6 +247,85 @@ namespace wwhomper
                 AutoIt.Type(WindowTitle, guesses.ToList()[random.Next(guesses.Count)]);
                 Thread.Sleep(random.Next(20, 100));
             }
+        }
+
+        private void PlayPuzzleGame()
+        {
+            _inPuzzleGame.ClearAllGears();
+
+            var windowContents = AutoIt.GetWindowImage(WindowTitle);
+
+            // Determine how many letters we need
+            int requiredLetterCount = _inPuzzleGame.GetRequiredLetterCount(windowContents);
+
+            Console.WriteLine("We need {0} letters", requiredLetterCount);
+
+            // Determine which letters we have
+            string letters = _inPuzzleGame.GetAvailableLetters(windowContents);
+            if (letters == null)
+            {
+                Console.WriteLine("Unable to create a word with these letters, will try again later...");
+                _inPuzzleGame.Back.Click();
+                WaitForTransition();
+                return;
+            }
+
+            Console.WriteLine("Letters we have: {0}", letters);
+
+            string guess = null;
+            if (!letters.Contains('*'))
+            {
+                var variations = new Variations<char>(letters.ToArray(), requiredLetterCount);
+                var words = variations.Select(x => new String(x.ToArray()));
+                guess = words.FirstOrDefault(x => _wordList.ContainsWord(x));
+            }
+            else
+            {
+                const string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                for (int i = 0; i < 26; i++)
+                {
+                    var wildcardLetters = letters.ToArray().ToList();
+                    wildcardLetters.Add(alphabet[i]);
+                    var variations = new Variations<char>(wildcardLetters, requiredLetterCount);
+                    var words = variations.Select(x => new String(x.ToArray()));
+                    var wildcardGuess = words.FirstOrDefault(x => _wordList.ContainsWord(x));
+                    if (wildcardGuess != null)
+                    {
+                        guess = wildcardGuess;
+                        break;
+                    }
+                }
+            }
+
+            if (guess == null)
+            {
+                Console.WriteLine("Unable to create a word with these letters, will try again later...");
+                _inPuzzleGame.Back.Click();
+                WaitForTransition();
+                return;
+            }
+
+            Console.WriteLine("We should guess: {0}", guess);
+
+            // Replace wildcards
+            for (int i=0; i<guess.Length; i++)
+            {
+                if (!letters.Contains(guess[i]))
+                {
+                    guess = guess.Remove(i, 1);
+                    guess = guess.Insert(i, "*");
+                }
+            }
+
+            _inPuzzleGame.SubmitWord(windowContents, guess);
+
+            // Give it a chance to work or not
+            Thread.Sleep(7000);
+        }
+
+        private void WaitForTransition()
+        {
+            Thread.Sleep(5000);
         }
     }
 }

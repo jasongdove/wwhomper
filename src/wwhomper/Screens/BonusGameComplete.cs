@@ -9,7 +9,7 @@ namespace wwhomper.Screens
         public BonusGameComplete()
             : base(255, 223, 288, 37, "BONUS GAME")
         {
-            _ok = new CoordinateButton(336, 390, 150, 39);
+            _ok = new CoordinateButton(329, 382, 154, 43);
         }
 
         public CoordinateButton Ok

@@ -89,12 +89,14 @@
     <Compile Include="Screens\BonusGameWaiting.cs" />
     <Compile Include="Screens\Controls\TemplateCoordinate.cs" />
     <Compile Include="Screens\InBonusGame.cs" />
+    <Compile Include="Screens\InPuzzleGame.cs" />
     <Compile Include="Screens\LocIntroComplete.cs" />
     <Compile Include="Screens\GameSummary.cs" />
     <Compile Include="Screens\InGame.cs" />
     <Compile Include="Screens\LocIntro.cs" />
     <Compile Include="Screens\NewGear.cs" />
     <Compile Include="Screens\Paused.cs" />
+    <Compile Include="Screens\PuzzleGameComplete.cs" />
     <Compile Include="Screens\SpeechBubble.cs" />
     <Compile Include="Screens\TemplateScreen.cs" />
     <Compile Include="Screens\TextScreen.cs" />

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
+using System.Reflection;
 using System.Threading;
 using Emgu.CV;
 using Emgu.CV.Structure;
@@ -36,24 +38,6 @@ namespace wwhomper
             AutoItNative.AU3_WinActivate(title, String.Empty);
         }
 
-        public static Bitmap GetWindowContents(string title)
-        {
-            return GetWindowContents(title, Rectangle.Empty);
-        }
-
-        public static Bitmap GetWindowContents(string title, Rectangle rect)
-        {
-            ActivateWindow(title);
-
-            rect = rect == Rectangle.Empty ? GetWindowRectangle(title) : rect;
-            var bmp = new Bitmap(rect.Width, rect.Height);
-            using (var g = Graphics.FromImage(bmp))
-            {
-                g.CopyFromScreen(new Point(rect.Left, rect.Top), Point.Empty, rect.Size);
-            }
-            return bmp;
-        }
-
         public static ScreenSearchResult IsTemplateInWindow(
             Image<Bgra, byte> windowContents,
             Image<Bgra, byte> template,
@@ -61,9 +45,9 @@ namespace wwhomper
         {
             var match = windowContents.MatchTemplate(template, Emgu.CV.CvEnum.TM_TYPE.CV_TM_CCOEFF_NORMED);
             float[, ,] matches = match.Data;
-            for (int y = 0; y < matches.GetLength(0); y++)
+            for (int y = 0; y < match.Height; y++)
             {
-                for (int x = 0; x < matches.GetLength(1); x++)
+                for (int x = 0; x < match.Width; x++)
                 {
                     double matchScore = matches[y, x, 0];
                     if (matchScore > tolerance)
@@ -158,19 +142,30 @@ namespace wwhomper
 
         public static Image<Bgra, byte> GetWindowImage(string title)
         {
-            using (Bitmap bmp = GetWindowContents(title))
+            ActivateWindow(title);
+
+            var rect = GetWindowRectangle(title);
+            using (var bmp = new Bitmap(rect.Width, rect.Height))
             {
+                using (var g = Graphics.FromImage(bmp))
+                {
+                    g.CopyFromScreen(new Point(rect.Left, rect.Top), Point.Empty, rect.Size);
+                }
+
                 return new Image<Bgra, Byte>(bmp);
             }
         }
 
         public static void MoveMouseOffscreen()
         {
-            int x = Random.Next(0, 500);
-            int y = Random.Next(0, 20);
-            int speed = Random.Next(2, 6);
+            if (AutoItNative.AU3_MouseGetPosY() > 20)
+            {
+                int x = Random.Next(0, 500);
+                int y = Random.Next(0, 20);
+                int speed = Random.Next(2, 6);
 
-            AutoItNative.AU3_MouseMove(x, y, speed);
+                AutoItNative.AU3_MouseMove(x, y, speed);
+            }
         }
 
         public static void Type(string title, string text)
@@ -179,6 +174,33 @@ namespace wwhomper
             {
                 AutoItNative.AU3_Send(text, 0);
             }
+        }
+
+        public static void Click(Rectangle rectangle)
+        {
+#if DEBUG
+            var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "clicks");
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            var fileName = Path.Combine(path, DateTime.Now.Ticks + ".png");
+            var windowContents = GetWindowImage(WordWhomper.WindowTitle);
+            windowContents.Draw(rectangle, new Bgra(255, 255, 255, 255), 1);
+            windowContents.Save(fileName);
+#endif
+
+            var x = Random.Next(rectangle.Left, rectangle.Right);
+            var y = Random.Next(rectangle.Top, rectangle.Bottom);
+            var speed = Random.Next(2, 10);
+
+            Click(WordWhomper.WindowTitle, x, y, speed);
+        }
+
+        public static bool IsWindowActive(string title)
+        {
+            return AutoItNative.AU3_WinActive(title, String.Empty) != 0;
         }
     }
 }

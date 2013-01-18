@@ -18,7 +18,7 @@ namespace wwhomper.Screens.Controls
 
         public override void Click()
         {
-            Click(_rectangle);
+            AutoIt.Click(_rectangle);
         }
     }
 }
