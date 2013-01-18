@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using Combinatorics.Collections;
+using wwhomper.Font;
 using wwhomper.Pak;
 using wwhomper.Screens;
 
@@ -37,6 +38,8 @@ namespace wwhomper
             {
                 throw new InvalidOperationException("Unable to find Word Whomp Underground!");
             }
+
+            ////var fontLoader = new FontLoader(gameRoot);            ////var speechBubbleFont = fontLoader.LoadFont("DomCasualStd105WItaALLCAPS13");
 
             var pakCatalog = new PakCatalog(Path.Combine(gameRoot, "images.pak"));
             pakCatalog.Load();

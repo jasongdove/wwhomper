@@ -5,15 +5,19 @@ using System.Linq;
 using Emgu.CV;
 using Emgu.CV.OCR;
 using Emgu.CV.Structure;
+using wwhomper.Font;
 using wwhomper.Pak;
-using wwhomper.Screens.Controls;
 
 namespace wwhomper.Screens
 {
     public abstract class ScreenBase
     {
         private readonly Image<Bgra, byte> _template;
-        private readonly List<PixelAnchor> _anchors = new List<PixelAnchor>();
+
+        protected ScreenBase(BitmapFont font, string text)
+        {
+            _template = font.GetImage(text);
+        }
 
         protected ScreenBase(PakCatalog pakCatalog, string fileName, Rectangle rectangle)
         {
@@ -24,11 +28,6 @@ namespace wwhomper.Screens
         protected ScreenBase(string templateName)
         {
             _template = TemplateLoader.LoadTemplate(templateName);
-        }
-
-        public List<PixelAnchor> Anchors
-        {
-            get { return _anchors; }
         }
 
         public Image<Bgra, byte> Template

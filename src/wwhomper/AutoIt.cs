@@ -102,20 +102,6 @@ namespace wwhomper
             return IsTemplateInWindow(windowContents, screen.Template, tolerance).Success;
         }
 
-        public static bool IsScreenActiveFast(ScreenBase screen)
-        {
-            foreach (var anchor in screen.Anchors)
-            {
-                var color = AutoItNative.AU3_PixelGetColor(anchor.Point.X, anchor.Point.Y);
-                if (color != anchor.Color)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
         public static void Click(string title, int x, int y, int speed)
         {
             if (AutoItNative.AU3_WinActive(title, String.Empty) != 0)

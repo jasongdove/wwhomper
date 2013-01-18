@@ -78,12 +78,15 @@
   <ItemGroup>
     <Compile Include="AutoIt.cs" />
     <Compile Include="AutoItNative.cs" />
+    <Compile Include="Font\BitmapFont.cs" />
+    <Compile Include="Font\FontCharacter.cs" />
+    <Compile Include="Font\FontLoader.cs" />
+    <Compile Include="Font\KerningPair.cs" />
     <Compile Include="Pak\PakCatalog.cs" />
     <Compile Include="Pak\PakEntry.cs" />
     <Compile Include="Screens\BonusAcorns.cs" />
     <Compile Include="Screens\BonusGameComplete.cs" />
     <Compile Include="Screens\BonusGameWaiting.cs" />
-    <Compile Include="Screens\Controls\PixelAnchor.cs" />
     <Compile Include="Screens\Controls\TemplateCoordinate.cs" />
     <Compile Include="Screens\InBonusGame.cs" />
     <Compile Include="Screens\LocIntroComplete.cs" />
