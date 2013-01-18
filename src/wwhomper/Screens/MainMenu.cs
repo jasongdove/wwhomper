@@ -4,7 +4,7 @@ using wwhomper.Screens.Controls;
 
 namespace wwhomper.Screens
 {
-    public class MainMenu : ScreenBase
+    public class MainMenu : TemplateScreen
     {
         private readonly CoordinateButton _play;
 

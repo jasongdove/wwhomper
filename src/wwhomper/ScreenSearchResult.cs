@@ -1,13 +1,12 @@
 ﻿using System.Drawing;
-using Emgu.CV;
-using Emgu.CV.Structure;
+using wwhomper.Screens;
 
 namespace wwhomper
 {
-    public class TemplateSearchResult
+    public class ScreenSearchResult
     {
         public bool Success { get; set; }
         public Point Point { get; set; }
-        public Image<Bgra, byte> Template { get; set; }
+        public ScreenBase Screen { get; set; }
     }
 }

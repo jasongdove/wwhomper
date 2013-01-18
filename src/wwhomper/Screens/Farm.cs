@@ -4,7 +4,7 @@ using wwhomper.Screens.Controls;
 
 namespace wwhomper.Screens
 {
-    public class Farm : ScreenBase
+    public class Farm : TemplateScreen
     {
         private readonly TemplateButton _gopherHole;
 

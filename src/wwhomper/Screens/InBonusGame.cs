@@ -7,7 +7,7 @@ using wwhomper.Screens.Controls;
 
 namespace wwhomper.Screens
 {
-    public class InBonusGame : ScreenBase
+    public class InBonusGame : TemplateScreen
     {
         private readonly Dictionary<Image<Bgra, byte>, List<TemplateCoordinate>> _letterGroups =
             new Dictionary<Image<Bgra, byte>, List<TemplateCoordinate>>();

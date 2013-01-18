@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using Combinatorics.Collections;
-using wwhomper.Font;
 using wwhomper.Pak;
 using wwhomper.Screens;
 
@@ -75,64 +74,64 @@ namespace wwhomper
 
             do
             {
-                TemplateSearchResult state = AutoIt.WaitForScreen(WindowTitle, allScreens);
+                ScreenSearchResult state = AutoIt.WaitForScreen(WindowTitle, allScreens);
                 if (state.Success)
                 {
-                    if (state.Template == _paused.Template)
+                    if (state.Screen == _paused)
                     {
                         _paused.Ok.Click();
                     }
-                    else if (state.Template == _mainMenu.Template)
+                    else if (state.Screen == _mainMenu)
                     {
                         _mainMenu.Play.Click();
                     }
-                    else if (state.Template == _locIntro.Template)
+                    else if (state.Screen == _locIntro)
                     {
                         _locIntro.Forward.Click();
                         AutoIt.MoveMouseOffscreen();
                     }
-                    else if (state.Template == _locIntroComplete.Template)
+                    else if (state.Screen == _locIntroComplete)
                     {
                         _locIntroComplete.Ok.Click();
                     }
-                    else if (state.Template == _farm.Template)
+                    else if (state.Screen == _farm)
                     {
                         _farm.GopherHole.Click();
                     }
-                    else if (state.Template == _inGame.Template)
+                    else if (state.Screen == _inGame)
                     {
                         PlayRound();
                     }
-                    else if (state.Template == _gameSummary.Template)
+                    else if (state.Screen == _gameSummary)
                     {
                         AutoIt.Type(WindowTitle, "{ENTER}");
                         Thread.Sleep(200);
                         AutoIt.Type(WindowTitle, "{ENTER}");
                     }
-                    else if (state.Template == _inBonusGame.Template)
+                    else if (state.Screen == _inBonusGame)
                     {
                         PlayBonusRound();
                     }
-                    else if (state.Template == _bonusGameWaiting.Template)
+                    else if (state.Screen == _bonusGameWaiting)
                     {
                         // Just wait for the acorns to roll down
                         Thread.Sleep(2000);
                     }
-                    else if (state.Template == _bonusGameComplete.Template)
+                    else if (state.Screen == _bonusGameComplete)
                     {
                         _bonusGameComplete.Ok.Click();
                     }
-                    else if (state.Template == _speechBubble.Template)
+                    else if (state.Screen == _speechBubble)
                     {
                         // Detail check for different types of speech bubbles
                         state = AutoIt.WaitForScreen(WindowTitle, _newGear, _bonusAcorns);
                         if (state.Success)
                         {
-                            if (state.Template == _newGear.Template)
+                            if (state.Screen == _newGear)
                             {
                                 _newGear.No.Click();
                             }
-                            else if (state.Template == _bonusAcorns.Template)
+                            else if (state.Screen == _bonusAcorns)
                             {
                                 _bonusAcorns.Ok.Click();
                                 // There is a transition here that takes a while

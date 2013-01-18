@@ -7,7 +7,7 @@ using wwhomper.Screens.Controls;
 
 namespace wwhomper.Screens
 {
-    public class InGame : ScreenBase
+    public class InGame : TemplateScreen
     {
         private readonly List<TemplateCoordinate> _gamePieces = new List<TemplateCoordinate>();
 
@@ -44,7 +44,7 @@ namespace wwhomper.Screens
             
             if (!String.IsNullOrEmpty(raw))
             {
-                result = raw.Trim();
+                result = raw.Trim().Replace(" ", String.Empty);
                 if (result.Length == 8)
                 {
                     result = result.Replace("IVI", "M");

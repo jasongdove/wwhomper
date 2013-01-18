@@ -96,8 +96,10 @@
     <Compile Include="Screens\NewGear.cs" />
     <Compile Include="Screens\Paused.cs" />
     <Compile Include="Screens\SpeechBubble.cs" />
+    <Compile Include="Screens\TemplateScreen.cs" />
+    <Compile Include="Screens\TextScreen.cs" />
     <Compile Include="TemplateLoader.cs" />
-    <Compile Include="TemplateSearchResult.cs" />
+    <Compile Include="ScreenSearchResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Screens\Controls\ButtonBase.cs" />
     <Compile Include="Screens\Controls\CoordinateButton.cs" />
@@ -110,9 +112,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Templates\NewGear.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Templates\BonusAcorns.png" />

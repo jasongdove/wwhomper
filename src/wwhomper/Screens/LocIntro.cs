@@ -4,7 +4,7 @@ using wwhomper.Screens.Controls;
 
 namespace wwhomper.Screens
 {
-    public class LocIntro : ScreenBase
+    public class LocIntro : TemplateScreen
     {
         private readonly TemplateButton _forward;
 

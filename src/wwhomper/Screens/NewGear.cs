@@ -2,13 +2,15 @@
 
 namespace wwhomper.Screens
 {
-    public class NewGear : ScreenBase
+    public class NewGear : TextScreen
     {
         private readonly CoordinateButton _no;
 
         public NewGear()
-            : base("NewGear.png")
+            : base(492, 166, 168, 25, "YOU FOUND A NEW GEAR!")
         {
+            AdditionalCharacters = "!";
+
             _no = new CoordinateButton(615, 254, 93, 24);
         }
 

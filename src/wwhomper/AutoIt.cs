@@ -55,7 +55,7 @@ namespace wwhomper
             return bmp;
         }
 
-        public static TemplateSearchResult IsTemplateInWindow(
+        public static ScreenSearchResult IsTemplateInWindow(
             string title,
             string templateName,
             float tolerance = 0.95f)
@@ -65,7 +65,7 @@ namespace wwhomper
             return IsTemplateInWindow(windowContents, template, tolerance);
         }
 
-        public static TemplateSearchResult IsTemplateInWindow(
+        public static ScreenSearchResult IsTemplateInWindow(
             Image<Bgra, byte> windowContents,
             string templateName,
             float tolerance = 0.95f)
@@ -74,7 +74,7 @@ namespace wwhomper
             return IsTemplateInWindow(windowContents, template, tolerance);
         }
 
-        public static TemplateSearchResult IsTemplateInWindow(
+        public static ScreenSearchResult IsTemplateInWindow(
             Image<Bgra, byte> windowContents,
             Image<Bgra, byte> template,
             float tolerance = 0.95f)
@@ -88,18 +88,18 @@ namespace wwhomper
                     double matchScore = matches[y, x, 0];
                     if (matchScore > tolerance)
                     {
-                        return new TemplateSearchResult { Success = true, Point = new Point(x, y) };
+                        return new ScreenSearchResult { Success = true, Point = new Point(x, y) };
                     }
                 }
             }
 
-            return new TemplateSearchResult { Success = false };
+            return new ScreenSearchResult { Success = false };
         }
 
         public static bool IsScreenActive(string title, ScreenBase screen, float tolerance = 0.95f)
         {
             var windowContents = GetWindowImage(title);
-            return IsTemplateInWindow(windowContents, screen.Template, tolerance).Success;
+            return screen.IsActive(windowContents).Success;
         }
 
         public static void Click(string title, int x, int y, int speed)
@@ -110,34 +110,19 @@ namespace wwhomper
             }
         }
 
-        public static TemplateSearchResult WaitForScreen(string title, params ScreenBase[] screens)
+        public static ScreenSearchResult WaitForScreen(string title, params ScreenBase[] screens)
         {
             if (AutoItNative.AU3_WinActive(title, String.Empty) == 0)
             {
-                return new TemplateSearchResult();
+                return new ScreenSearchResult();
             }
 
             // Don't want the mouse to be in any of the screenshots we use
             MoveMouseOffscreen();
 
-            var templates = screens.Select(x => x.Template);
-            
-            var result = WaitForTemplate(title, templates.ToArray());
-            if (result.Success)
-            {
-                var screen = screens.Single(x => x.Template == result.Template);
-                var screenName = screen.GetType().Name;
-                Console.WriteLine("Detected screen: {0}", screenName);
-            }
-
-            return result;
-        }
-
-        public static TemplateSearchResult WaitForTemplate(string title, params Image<Bgra, byte>[] templates)
-        {
             var endTime = DateTime.Now.Add(WordWhomper.ControlTimeout);
 
-            var search = new TemplateSearchResult();
+            var search = new ScreenSearchResult();
             do
             {
                 Thread.Sleep(100);
@@ -148,12 +133,13 @@ namespace wwhomper
                 }
 
                 var windowContents = GetWindowImage(title);
-                foreach (var template in templates)
+                foreach (var screen in screens)
                 {
-                    search = IsTemplateInWindow(windowContents, template);
+                    search = screen.IsActive(windowContents);
                     if (search.Success)
                     {
-                        search.Template = template;
+                        search.Screen = screen;
+                        Console.WriteLine("Detected screen: {0}", screen.GetType().Name);
                         break;
                     }
                 }
@@ -161,6 +147,34 @@ namespace wwhomper
 
             return search;
         }
+
+        public static ScreenSearchResult WaitForTemplate(string title, params Image<Bgra, byte>[] templates)
+        {
+            var endTime = DateTime.Now.Add(WordWhomper.ControlTimeout);
+
+                var search = new ScreenSearchResult();
+                do
+                {
+                    Thread.Sleep(100);
+
+                    if (AutoItNative.AU3_WinActive(title, String.Empty) == 0)
+                    {
+                        return search;
+                    }
+
+                    var windowContents = GetWindowImage(title);
+                    foreach (var template in templates)
+                    {
+                        search = IsTemplateInWindow(windowContents, template);
+                        if (search.Success)
+                        {
+                            break;
+                        }
+                    }
+                } while (DateTime.Now < endTime && !search.Success);
+
+                return search;
+            }
 
         public static Image<Bgra, byte> GetWindowImage(string title)
         {

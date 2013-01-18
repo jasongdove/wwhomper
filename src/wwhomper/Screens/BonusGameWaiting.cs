@@ -1,6 +1,6 @@
 ﻿namespace wwhomper.Screens
 {
-    public class BonusGameWaiting : ScreenBase
+    public class BonusGameWaiting : TemplateScreen
     {
         public BonusGameWaiting()
             : base("BonusGameWaiting.png")

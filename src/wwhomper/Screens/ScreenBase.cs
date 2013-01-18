@@ -1,44 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using Emgu.CV;
 using Emgu.CV.OCR;
 using Emgu.CV.Structure;
-using wwhomper.Font;
-using wwhomper.Pak;
 
 namespace wwhomper.Screens
 {
     public abstract class ScreenBase
     {
-        private readonly Image<Bgra, byte> _template;
-
-        protected ScreenBase(BitmapFont font, string text)
-        {
-            _template = font.GetImage(text);
-        }
-
-        protected ScreenBase(PakCatalog pakCatalog, string fileName, Rectangle rectangle)
-        {
-            _template = pakCatalog.GetCompositeImage(fileName)
-                                  .GetSubRect(rectangle);
-        }
-
-        protected ScreenBase(string templateName)
-        {
-            _template = TemplateLoader.LoadTemplate(templateName);
-        }
-
-        public Image<Bgra, byte> Template
-        {
-            get { return _template; }
-        }
-
-        public TemplateSearchResult WaitUntilLoaded()
-        {
-            return AutoIt.WaitForTemplate(WordWhomper.WindowTitle, _template);
-        }
+        public abstract ScreenSearchResult IsActive(Image<Bgra, byte> windowContents);
 
         protected Image<Bgra, byte> Combine(IEnumerable<Image<Bgra, byte>> images)
         {
@@ -61,22 +34,31 @@ namespace wwhomper.Screens
             return result;
         }
 
-        protected string GetText(Image<Bgra, byte> image)
+        protected string GetZoomedOutText(Image<Bgra, byte> image, string additionalLetters = "", bool debug = false)
+        {
+            var zoomedOut = image.Resize(8, Emgu.CV.CvEnum.INTER.CV_INTER_LANCZOS4);
+            return GetText(zoomedOut, additionalLetters, debug);
+        }
+
+        protected string GetText(Image<Bgra, byte> image, string additionalLetters = "", bool debug = false)
         {
             var grayscale = image.Convert<Gray, byte>();
 
             var tesseract = new Tesseract("tessdata", "eng", Tesseract.OcrEngineMode.OEM_TESSERACT_ONLY);
-            tesseract.SetVariable("tessedit_char_whitelist", "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+            tesseract.SetVariable("tessedit_char_whitelist", "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + additionalLetters);
             tesseract.Recognize(grayscale);
             var result = tesseract.GetText();
             Console.WriteLine("Tesseract recognized: {0}", result.Trim());
 
-            ////var ticks = DateTime.Now.Ticks;
-            ////image.Save(String.Format(@"tesseract\{0}.png", ticks));
-            ////using (var file = File.CreateText(String.Format(@"tesseract\{0}.txt", ticks)))
-            ////{
-            ////    file.WriteLine(result);
-            ////}
+            if (debug)
+            {
+                var ticks = DateTime.Now.Ticks;
+                grayscale.Save(String.Format(@"tesseract\{0}.png", ticks));
+                using (var file = File.CreateText(String.Format(@"tesseract\{0}.txt", ticks)))
+                {
+                    file.WriteLine(result);
+                }
+            }
 
             return tesseract.GetText();
         }

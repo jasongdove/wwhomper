@@ -4,7 +4,7 @@ using wwhomper.Screens.Controls;
 
 namespace wwhomper.Screens
 {
-    public class LocIntroComplete : ScreenBase
+    public class LocIntroComplete : TemplateScreen
     {
         private readonly CoordinateButton _ok;
 

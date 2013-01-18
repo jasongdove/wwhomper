@@ -2,7 +2,7 @@
 
 namespace wwhomper.Screens
 {
-    public class BonusAcorns : ScreenBase
+    public class BonusAcorns : TemplateScreen
     {
         private readonly CoordinateButton _ok;
 
