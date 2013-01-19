@@ -10,7 +10,12 @@ namespace wwhomper.Screens
         private readonly Button _ok;
 
         public PuzzleGameComplete(IAutoIt autoIt, IAssetCatalog assetCatalog)
-            : base(autoIt, assetCatalog, @"Images\ALL\Game\puzzle_game\PuzzleGame_Background.jpg", 11, 556, 277, 35)
+            : base(
+                autoIt,
+                assetCatalog,
+                @"Images\ALL\Game\puzzle_game\PuzzleGame_Background.jpg",
+                11, 556, 277, 35,
+                0, 547, 389, 82)
         {
             _ok = CreateCoordinateButton(609, 332, 95, 23);
         }

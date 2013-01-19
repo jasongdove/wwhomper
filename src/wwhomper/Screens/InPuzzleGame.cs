@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using sharperbot;
 using sharperbot.Assets;
 using sharperbot.AutoIt;
 using sharperbot.Screens;
@@ -26,11 +27,16 @@ namespace wwhomper.Screens
         private readonly Button _gearFour;
 
         public InPuzzleGame(IAutoIt autoIt, IAssetCatalog assetCatalog)
-            : base(autoIt, assetCatalog, @"Images\ALL\Game\puzzle_game\PuzzleGame_Background.jpg", 11, 556, 277, 35)
+            : base(
+                autoIt,
+                assetCatalog,
+                @"Images\ALL\Game\puzzle_game\PuzzleGame_Background.jpg",
+                11, 556, 277, 35,
+                0, 547, 389, 82)
         {
             _submit = CreateCoordinateButton(271, 330, 93, 41);
             _back = CreateCoordinateButton(78, 66, 72, 22);
-            
+
             _inactiveGear = assetCatalog
                 .GetCompositeImage(@"Images\ALL\Game\puzzle_game\Gear_NonInteractive.jpg")
                 .GetSubRect(new Rectangle(25, 26, 38, 38));
@@ -127,7 +133,8 @@ namespace wwhomper.Screens
                 return null;
             }
 
-            var combined = Combine(letters);
+            var combined = Combine(letters).Convert<Gray, byte>();
+            combined.Floor(245);
             var text = GetZoomedOutText(combined, 2, "*", true)
                 .Trim()
                 .Replace(" ", String.Empty);

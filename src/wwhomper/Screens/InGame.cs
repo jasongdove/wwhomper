@@ -13,7 +13,12 @@ namespace wwhomper.Screens
         private readonly List<TemplateCoordinate> _gamePieces = new List<TemplateCoordinate>();
 
         public InGame(IAutoIt autoIt, IAssetCatalog assetCatalog)
-            : base(autoIt, assetCatalog, @"Images\EN_US\Game\Buttons\Button_Enter_Idle.jpg", 28, 11, 126, 18)
+            : base(
+                autoIt,
+                assetCatalog,
+                @"Images\ALL\Game\gophers\burrow\Gopher_BUR_IDLE.jpg",
+                15, 40, 12, 24,
+                116, 540, 166, 89)
         {
             _gamePieces.Add(new TemplateCoordinate(184, 425, 58, 34));
             _gamePieces.Add(new TemplateCoordinate(261, 420, 58, 34));
@@ -35,7 +40,7 @@ namespace wwhomper.Screens
             var combined = Combine(gamePieceImages);
 
             // Convert the new image to text to find out which letters are available for play
-            return FixTesseractErrors(GetText(combined));
+            return FixTesseractErrors(GetZoomedOutText(combined, 3));
         }
 
         // TODO: Train tesseract rather than fudging fixes, though it may be hard to train with an all-caps font

@@ -7,7 +7,12 @@ namespace wwhomper.Screens
     public class GameSummary : TemplateScreen
     {
         public GameSummary(IAutoIt autoIt, IAssetCatalog assetCatalog)
-            : base(autoIt, assetCatalog, @"Images\ALL\Game\GameSummary\Dialog_GS_BG.jpg", 179, 360, 372, 71)
+            : base(
+            autoIt,
+            assetCatalog,
+            @"Images\ALL\Game\GameSummary\Dialog_GS_BG.jpg",
+            506, 97, 79, 32,
+            498, 96, 136, 80)
         {
         }
     }

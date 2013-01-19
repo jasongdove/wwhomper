@@ -10,7 +10,12 @@ namespace wwhomper.Screens
         private readonly Button _ok;
 
         public LocIntroComplete(IAutoIt autoIt, IAssetCatalog assetCatalog)
-            : base(autoIt, assetCatalog, @"Images\ALL\Dialog\Dialog_Loc\Dialog_Loc_BG.jpg", 641, 464, 150, 127)
+            : base(
+                autoIt,
+                assetCatalog,
+                @"Images\ALL\Dialog\Dialog_Loc\Dialog_Loc_BG.jpg",
+                641, 464, 150, 127,
+                0, 276, 806, 353)
         {
             _ok = CreateCoordinateButton(319, 522, 159, 38);
         }

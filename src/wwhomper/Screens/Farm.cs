@@ -10,7 +10,12 @@ namespace wwhomper.Screens
         private readonly Button _gopherHole;
 
         public Farm(IAutoIt autoIt, IAssetCatalog assetCatalog)
-            : base(autoIt, assetCatalog, @"Images\ALL\Game\Map\MapScreen_Hole_Idle.jpg", 94, 61, 33, 43)
+            : base(
+            autoIt,
+            assetCatalog,
+            @"Images\ALL\Game\Map\MapScreen_Hole_Idle.jpg",
+            94, 61, 33, 43,
+            0, 0, 800, 600)
         {
             _gopherHole = CreateTemplateButton(
                 @"Images\ALL\Game\Map\MapScreen_Gopher_Idle.jpg",

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -17,14 +18,11 @@ namespace sharperbot.Assets
         private readonly string _fileName;
         private readonly List<PakEntry> _entries;
 
-        public PakCatalog(string fileName)
+        public PakCatalog()
         {
-            _fileName = fileName;
+            _fileName = ConfigurationManager.AppSettings["sharperbot.PakCatalog"];
             _entries = new List<PakEntry>();
-        }
 
-        public void Load()
-        {
             if (!File.Exists(_fileName))
             {
                 throw new FileNotFoundException(_fileName);

@@ -31,6 +31,7 @@ namespace wwhomper
         private readonly SpeechBubble _speechBubble;
         private readonly InPuzzleGame _inPuzzleGame;
         private readonly PuzzleGameComplete _puzzleGameComplete;
+        private readonly BlowTorch _blowTorch;
 
         public WordWhomper(IAutoIt autoIt, IAssetCatalog assetCatalog)
         {
@@ -64,6 +65,7 @@ namespace wwhomper
             _newGear = new NewGear(autoIt, assetCatalog);
             _bonusAcorns = new BonusAcorns(autoIt, assetCatalog);
             _bonusGameComplete = new BonusGameComplete(autoIt, assetCatalog);
+            _blowTorch = new BlowTorch(autoIt, assetCatalog);
         }
 
         public void Run()
@@ -75,8 +77,8 @@ namespace wwhomper
                 _inGame,
                 _gameSummary,
                 _farm,
-                _inBonusGame,
                 _bonusGameWaiting,
+                _inBonusGame,
                 _inPuzzleGame,
                 _locIntro,
                 _locIntroComplete,
@@ -138,7 +140,7 @@ namespace wwhomper
                     else if (state.Screen == _speechBubble)
                     {
                         // Detail check for different types of speech bubbles
-                        state = _autoIt.WaitForScreen(_newGear, _bonusAcorns, _puzzleGameComplete);
+                        state = _autoIt.WaitForScreen(_newGear, _bonusAcorns, _puzzleGameComplete, _blowTorch);
                         if (state.Success)
                         {
                             if (state.Screen == _newGear)
@@ -154,6 +156,11 @@ namespace wwhomper
                             else if (state.Screen == _puzzleGameComplete)
                             {
                                 _puzzleGameComplete.Ok.Click();
+                                WaitForTransition();
+                            }
+                            else if (state.Screen == _blowTorch)
+                            {
+                                _blowTorch.Ok.Click();
                                 WaitForTransition();
                             }
                         }
@@ -215,7 +222,7 @@ namespace wwhomper
             }
 
             // Give the summary time to appear
-            Thread.Sleep(2000);
+            Thread.Sleep(2800);
         }
 
         private void PlayBonusGame()
@@ -232,6 +239,11 @@ namespace wwhomper
             _autoIt.Type("{SPACE}");
 
             string scrambled = _inBonusGame.GetNextScrambledWord();
+            if (String.IsNullOrEmpty(scrambled))
+            {
+                Console.WriteLine("Nothing to do in the bonus game");
+                return;
+            }
 
             var guesses = new HashSet<string>();
             var variations = new Variations<char>(scrambled.ToArray(), scrambled.Length);

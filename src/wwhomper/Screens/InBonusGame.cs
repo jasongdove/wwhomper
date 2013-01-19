@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using sharperbot;
 using sharperbot.Assets;
 using sharperbot.AutoIt;
 using sharperbot.Screens;
@@ -17,7 +18,12 @@ namespace wwhomper.Screens
             new Dictionary<TemplateSearchArea, List<TemplateCoordinate>>();
 
         public InBonusGame(IAutoIt autoIt, IAssetCatalog assetCatalog, BonusGameWaiting waiting)
-            : base(autoIt, assetCatalog, @"Images\ALL\Game\bonus_game\BG_Doors_Upper_Idle.jpg", 18, 8, 133, 8)
+            : base(
+                autoIt,
+                assetCatalog,
+                @"Images\ALL\Game\bonus_game\BG_Background.jpg",
+                266, 372, 74, 38,
+                249, 368, 123, 99)
         {
             var one = new List<TemplateCoordinate>
             {
@@ -94,7 +100,13 @@ namespace wwhomper.Screens
                 {
                     var letters = group.Value.Select(letter => letter.Grab(windowContents));
                     var combined = Combine(letters);
-                    var text = GetZoomedOutText(combined, 2).Trim().Replace(" ", String.Empty);
+
+                    // These letters are fairly bright, so let's raise the floor on intensity.
+                    // Anything under 245 goes down to 0
+                    var gray = combined.Convert<Gray, byte>();
+                    gray.Floor(245);
+
+                    var text = GetZoomedOutText(gray, 2).Trim().Replace(" ", String.Empty);
                     if (text.Length > group.Value.Count)
                     {
                         // TODO: Figure out a better way to match characters

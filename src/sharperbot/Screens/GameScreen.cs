@@ -61,13 +61,13 @@ namespace sharperbot.Screens
             return result;
         }
 
-        protected string GetZoomedOutText(Image<Bgra, byte> image, double scale, string additionalLetters = "", bool debug = false)
+        protected string GetZoomedOutText<T>(Image<T, byte> image, double scale, string additionalLetters = "", bool debug = false) where T : struct, IColor
         {
             var zoomedOut = image.Resize(scale, Emgu.CV.CvEnum.INTER.CV_INTER_LANCZOS4);
             return GetText(zoomedOut, additionalLetters, debug);
         }
 
-        protected string GetText(Image<Bgra, byte> image, string additionalLetters = "", bool debug = false)
+        protected string GetText<T>(Image<T, byte> image, string additionalLetters = "", bool debug = false) where T : struct, IColor
         {
             var grayscale = image.Convert<Gray, byte>();
 
