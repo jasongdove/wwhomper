@@ -5,39 +5,41 @@ using System.Globalization;
 using System.Linq;
 using Emgu.CV;
 using Emgu.CV.Structure;
-using wwhomper.Pak;
-using wwhomper.Screens.Controls;
+using sharperbot.Assets;
+using sharperbot.AutoIt;
+using sharperbot.Screens;
+using sharperbot.Screens.Controls;
 
 namespace wwhomper.Screens
 {
     public class InPuzzleGame : TemplateScreen
     {
-        private readonly CoordinateButton _submit;
-        private readonly CoordinateButton _back;
+        private readonly Button _submit;
+        private readonly Button _back;
         private readonly Image<Bgra, byte> _inactiveGear;
         private readonly Image<Bgra, byte> _largeCopperGear;
         private readonly Image<Bgra, byte> _largeWildcardGear;
         private readonly Dictionary<Rectangle, Rectangle> _letterSearchAreaTesseractArea;
-        private readonly CoordinateButton _gearOne;
-        private readonly CoordinateButton _gearTwo;
-        private readonly CoordinateButton _gearThree;
-        private readonly CoordinateButton _gearFour;
+        private readonly Button _gearOne;
+        private readonly Button _gearTwo;
+        private readonly Button _gearThree;
+        private readonly Button _gearFour;
 
-        public InPuzzleGame(PakCatalog pakCatalog)
-            : base(pakCatalog, @"Images\ALL\Game\puzzle_game\PuzzleGame_Background.jpg", new Rectangle(11, 556, 277, 35))
+        public InPuzzleGame(IAutoIt autoIt, IAssetCatalog assetCatalog)
+            : base(autoIt, assetCatalog, @"Images\ALL\Game\puzzle_game\PuzzleGame_Background.jpg", 11, 556, 277, 35)
         {
-            _submit = new CoordinateButton(271, 330, 93, 41);
-            _back = new CoordinateButton(78, 66, 72, 22);
+            _submit = CreateCoordinateButton(271, 330, 93, 41);
+            _back = CreateCoordinateButton(78, 66, 72, 22);
             
-            _inactiveGear = pakCatalog
+            _inactiveGear = assetCatalog
                 .GetCompositeImage(@"Images\ALL\Game\puzzle_game\Gear_NonInteractive.jpg")
                 .GetSubRect(new Rectangle(25, 26, 38, 38));
 
-            _largeCopperGear = pakCatalog
+            _largeCopperGear = assetCatalog
                 .GetCompositeImage(@"Images\ALL\Game\puzzle_game\Gear_Large_Copper.jpg")
                 .GetSubRect(new Rectangle(25, 67, 39, 3));
 
-            _largeWildcardGear = pakCatalog
+            _largeWildcardGear = assetCatalog
                 .GetCompositeImage(@"Images\ALL\Game\puzzle_game\Gear_Large_Wildcard.jpg")
                 .GetSubRect(new Rectangle(30, 33, 28, 25));
 
@@ -63,18 +65,18 @@ namespace wwhomper.Screens
                 { new Rectangle(579, 487, 73, 75), new Rectangle(603, 511, 25, 27) },
             };
 
-            _gearOne = new CoordinateButton(231, 144, 23, 21);
-            _gearTwo = new CoordinateButton(288, 175, 23, 21);
-            _gearThree = new CoordinateButton(351, 165, 23, 21);
-            _gearFour = new CoordinateButton(407, 192, 23, 21);
+            _gearOne = CreateCoordinateButton(231, 144, 23, 21);
+            _gearTwo = CreateCoordinateButton(288, 175, 23, 21);
+            _gearThree = CreateCoordinateButton(351, 165, 23, 21);
+            _gearFour = CreateCoordinateButton(407, 192, 23, 21);
         }
 
-        public CoordinateButton Submit
+        public Button Submit
         {
             get { return _submit; }
         }
 
-        public CoordinateButton Back
+        public Button Back
         {
             get { return _back; }
         }
@@ -82,16 +84,16 @@ namespace wwhomper.Screens
         public void ClearAllGears()
         {
             _gearOne.Click();
-            AutoIt.Type(WordWhomper.WindowTitle, "{BACKSPACE}");
+            AutoIt.Type("{BACKSPACE}");
 
             _gearTwo.Click();
-            AutoIt.Type(WordWhomper.WindowTitle, "{BACKSPACE}");
+            AutoIt.Type("{BACKSPACE}");
 
             _gearThree.Click();
-            AutoIt.Type(WordWhomper.WindowTitle, "{BACKSPACE}");
+            AutoIt.Type("{BACKSPACE}");
 
             _gearFour.Click();
-            AutoIt.Type(WordWhomper.WindowTitle, "{BACKSPACE}");
+            AutoIt.Type("{BACKSPACE}");
         }
 
         public int GetRequiredLetterCount(Image<Bgra, byte> windowContents)
@@ -148,7 +150,7 @@ namespace wwhomper.Screens
             _submit.Click();
         }
 
-        private void TypeLetter(Image<Bgra, byte> windowContents, char letter, CoordinateButton gear)
+        private void TypeLetter(Image<Bgra, byte> windowContents, char letter, Button gear)
         {
             if (letter == '*')
             {
@@ -164,7 +166,7 @@ namespace wwhomper.Screens
             }
             else
             {
-                AutoIt.Type(WordWhomper.WindowTitle, letter.ToString(CultureInfo.InvariantCulture));
+                AutoIt.Type(letter.ToString(CultureInfo.InvariantCulture));
             }
 
             gear.Click();

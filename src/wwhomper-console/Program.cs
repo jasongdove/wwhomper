@@ -1,6 +1,6 @@
 ﻿using System;
+using Ninject;
 using wwhomper;
-using wwhomper_console.Properties;
 
 namespace wwhomper_console
 {
@@ -8,7 +8,8 @@ namespace wwhomper_console
     {
         public static void Main(string[] args)
         {
-            var whomper = new WordWhomper(Settings.Default.GameRoot);
+            var kernel = new StandardKernel(new sharperbot.Module());
+            var whomper = kernel.Get<WordWhomper>();
             whomper.Run();
 
             Console.WriteLine("done");

@@ -1,20 +1,21 @@
-﻿using System.Drawing;
-using wwhomper.Pak;
-using wwhomper.Screens.Controls;
+﻿using sharperbot.Assets;
+using sharperbot.AutoIt;
+using sharperbot.Screens;
+using sharperbot.Screens.Controls;
 
 namespace wwhomper.Screens
 {
     public class MainMenu : TemplateScreen
     {
-        private readonly CoordinateButton _play;
+        private readonly Button _play;
 
-        public MainMenu(PakCatalog pakCatalog)
-            : base(pakCatalog, @"Images\EN_US\Menu\MainMenu_Button_PogoLogo.jpg", new Rectangle(0, 0, 72, 40))
+        public MainMenu(IAutoIt autoIt, IAssetCatalog assetCatalog)
+            : base(autoIt, assetCatalog, @"Images\EN_US\Menu\MainMenu_Button_PogoLogo.jpg", 0, 0, 72, 40)
         {
-            _play = new CoordinateButton(24, 351, 135, 41);
+            _play = CreateCoordinateButton(24, 351, 135, 41);
         }
 
-        public CoordinateButton Play
+        public Button Play
         {
             get { return _play; }
         }

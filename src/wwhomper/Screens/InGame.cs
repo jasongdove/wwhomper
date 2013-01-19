@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using wwhomper.Pak;
+using sharperbot.Assets;
+using sharperbot.AutoIt;
+using sharperbot.Screens;
 using wwhomper.Screens.Controls;
 
 namespace wwhomper.Screens
@@ -11,8 +12,8 @@ namespace wwhomper.Screens
     {
         private readonly List<TemplateCoordinate> _gamePieces = new List<TemplateCoordinate>();
 
-        public InGame(PakCatalog pakCatalog)
-            : base(pakCatalog, @"Images\EN_US\Game\Buttons\Button_Enter_Idle.jpg", new Rectangle(28, 11, 126, 18))
+        public InGame(IAutoIt autoIt, IAssetCatalog assetCatalog)
+            : base(autoIt, assetCatalog, @"Images\EN_US\Game\Buttons\Button_Enter_Idle.jpg", 28, 11, 126, 18)
         {
             _gamePieces.Add(new TemplateCoordinate(184, 425, 58, 34));
             _gamePieces.Add(new TemplateCoordinate(261, 420, 58, 34));
@@ -25,7 +26,7 @@ namespace wwhomper.Screens
         public string GetLetters()
         {
             // Get the entire window contents
-            var windowContents = AutoIt.GetWindowImage(WordWhomper.WindowTitle);
+            var windowContents = AutoIt.GetWindowImage();
 
             // Get an image of each individual game piece
             var gamePieceImages = _gamePieces.Select(piece => piece.Grab(windowContents));

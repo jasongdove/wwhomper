@@ -66,6 +66,9 @@
     <Reference Include="Emgu.Util">
       <HintPath>..\..\lib\emgucv\Emgu.Util.dll</HintPath>
     </Reference>
+    <Reference Include="Ninject">
+      <HintPath>..\..\sln\wwhomper.sln\packages\Ninject.3.0.1.10\lib\net45-full\Ninject.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -76,14 +79,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AutoIt.cs" />
-    <Compile Include="AutoItNative.cs" />
-    <Compile Include="Font\BitmapFont.cs" />
-    <Compile Include="Font\FontCharacter.cs" />
-    <Compile Include="Font\FontLoader.cs" />
-    <Compile Include="Font\KerningPair.cs" />
-    <Compile Include="Pak\PakCatalog.cs" />
-    <Compile Include="Pak\PakEntry.cs" />
     <Compile Include="Screens\BonusAcorns.cs" />
     <Compile Include="Screens\BonusGameComplete.cs" />
     <Compile Include="Screens\BonusGameWaiting.cs" />
@@ -98,22 +93,22 @@
     <Compile Include="Screens\Paused.cs" />
     <Compile Include="Screens\PuzzleGameComplete.cs" />
     <Compile Include="Screens\SpeechBubble.cs" />
-    <Compile Include="Screens\TemplateScreen.cs" />
-    <Compile Include="Screens\TextScreen.cs" />
-    <Compile Include="ScreenSearchResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Screens\Controls\ButtonBase.cs" />
-    <Compile Include="Screens\Controls\CoordinateButton.cs" />
-    <Compile Include="Screens\Controls\TemplateButton.cs" />
     <Compile Include="Screens\Farm.cs" />
     <Compile Include="Screens\MainMenu.cs" />
-    <Compile Include="Screens\ScreenBase.cs" />
     <Compile Include="WordList.cs" />
     <Compile Include="WordWhomper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\sharperbot\sharperbot.csproj">
+      <Project>{5e817a6c-dcdd-4718-9592-d6d3014c74f1}</Project>
+      <Name>sharperbot</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

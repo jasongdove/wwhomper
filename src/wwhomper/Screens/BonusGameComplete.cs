@@ -1,18 +1,21 @@
-﻿using wwhomper.Screens.Controls;
+﻿using sharperbot.Assets;
+using sharperbot.AutoIt;
+using sharperbot.Screens;
+using sharperbot.Screens.Controls;
 
 namespace wwhomper.Screens
 {
     public class BonusGameComplete : TextScreen
     {
-        private readonly CoordinateButton _ok;
+        private readonly Button _ok;
 
-        public BonusGameComplete()
-            : base(255, 223, 288, 37, "BONUS GAME")
+        public BonusGameComplete(IAutoIt autoIt, IAssetCatalog assetCatalog)
+            : base(autoIt, assetCatalog, 255, 223, 288, 37, "BONUS GAME")
         {
-            _ok = new CoordinateButton(329, 382, 154, 43);
+            _ok = CreateCoordinateButton(329, 382, 154, 43);
         }
 
-        public CoordinateButton Ok
+        public Button Ok
         {
             get { return _ok; }
         }

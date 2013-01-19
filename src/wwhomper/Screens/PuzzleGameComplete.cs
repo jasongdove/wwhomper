@@ -1,20 +1,21 @@
-﻿using System.Drawing;
-using wwhomper.Pak;
-using wwhomper.Screens.Controls;
+﻿using sharperbot.Assets;
+using sharperbot.AutoIt;
+using sharperbot.Screens;
+using sharperbot.Screens.Controls;
 
 namespace wwhomper.Screens
 {
     public class PuzzleGameComplete : TemplateScreen
     {
-        private readonly CoordinateButton _ok;
+        private readonly Button _ok;
 
-        public PuzzleGameComplete(PakCatalog pakCatalog)
-            : base(pakCatalog, @"Images\ALL\Game\puzzle_game\PuzzleGame_Background.jpg", new Rectangle(11, 556, 277, 35))
+        public PuzzleGameComplete(IAutoIt autoIt, IAssetCatalog assetCatalog)
+            : base(autoIt, assetCatalog, @"Images\ALL\Game\puzzle_game\PuzzleGame_Background.jpg", 11, 556, 277, 35)
         {
-            _ok = new CoordinateButton(609, 332, 95, 23);
+            _ok = CreateCoordinateButton(609, 332, 95, 23);
         }
 
-        public CoordinateButton Ok
+        public Button Ok
         {
             get { return _ok; }
         }

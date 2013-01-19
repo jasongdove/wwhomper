@@ -4,7 +4,9 @@ using System.Drawing;
 using System.Linq;
 using Emgu.CV;
 using Emgu.CV.Structure;
-using wwhomper.Pak;
+using sharperbot.Assets;
+using sharperbot.AutoIt;
+using sharperbot.Screens;
 using wwhomper.Screens.Controls;
 
 namespace wwhomper.Screens
@@ -14,8 +16,8 @@ namespace wwhomper.Screens
         private readonly Dictionary<TemplateSearchArea, List<TemplateCoordinate>> _letterGroups =
             new Dictionary<TemplateSearchArea, List<TemplateCoordinate>>();
 
-        public InBonusGame(PakCatalog pakCatalog, BonusGameWaiting waiting)
-            : base(pakCatalog, @"Images\ALL\Game\bonus_game\BG_Doors_Upper_Idle.jpg", new Rectangle(18, 8, 133, 8))
+        public InBonusGame(IAutoIt autoIt, IAssetCatalog assetCatalog, BonusGameWaiting waiting)
+            : base(autoIt, assetCatalog, @"Images\ALL\Game\bonus_game\BG_Doors_Upper_Idle.jpg", 18, 8, 133, 8)
         {
             var one = new List<TemplateCoordinate>
             {
@@ -59,11 +61,11 @@ namespace wwhomper.Screens
                 new TemplateCoordinate(230, 455, 23, 24)
             };
 
-            var rightTemplate = pakCatalog
+            var rightTemplate = assetCatalog
                 .GetCompositeImage(@"Images\ALL\Game\bonus_game\BG_LetterTile_Angle_Right_Up.jpg")
                 .GetSubRect(new Rectangle(6, 10, 34, 32));
 
-            var leftTemplate = pakCatalog
+            var leftTemplate = assetCatalog
                 .GetCompositeImage(@"Images\ALL\Game\bonus_game\BG_LetterTile_Angle_Left_Up.jpg")
                 .GetSubRect(new Rectangle(10, 8, 34, 32));
 
@@ -82,7 +84,7 @@ namespace wwhomper.Screens
 
         public string GetNextScrambledWord()
         {
-            var windowContents = AutoIt.GetWindowImage(WordWhomper.WindowTitle);
+            var windowContents = AutoIt.GetWindowImage();
 
             foreach (var group in _letterGroups)
             {

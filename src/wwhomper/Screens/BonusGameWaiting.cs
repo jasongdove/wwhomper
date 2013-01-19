@@ -1,12 +1,13 @@
-﻿using System.Drawing;
-using wwhomper.Pak;
+﻿using sharperbot.Assets;
+using sharperbot.AutoIt;
+using sharperbot.Screens;
 
 namespace wwhomper.Screens
 {
     public class BonusGameWaiting : TemplateScreen
     {
-        public BonusGameWaiting(PakCatalog pakCatalog)
-            : base(pakCatalog, @"Images\ALL\Game\bonus_game\BG_Background.jpg", new Rectangle(98, 386, 96, 23))
+        public BonusGameWaiting(IAutoIt autoIt, IAssetCatalog assetCatalog)
+            : base(autoIt, assetCatalog, @"Images\ALL\Game\bonus_game\BG_Background.jpg", 98, 386, 96, 23)
         {
         }
     }

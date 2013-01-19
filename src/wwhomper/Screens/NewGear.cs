@@ -1,28 +1,31 @@
-﻿using wwhomper.Screens.Controls;
+﻿using sharperbot.Assets;
+using sharperbot.AutoIt;
+using sharperbot.Screens;
+using sharperbot.Screens.Controls;
 
 namespace wwhomper.Screens
 {
     public class NewGear : TextScreen
     {
-        private readonly CoordinateButton _no;
-        private readonly CoordinateButton _yes;
+        private readonly Button _no;
+        private readonly Button _yes;
 
-        public NewGear()
-            : base(492, 166, 168, 25, "YOU FOUND A NEW GEAR!")
+        public NewGear(IAutoIt autoIt, IAssetCatalog assetCatalog)
+            : base(autoIt, assetCatalog, 492, 166, 168, 25, "YOU FOUND A NEW GEAR!")
         {
             AdditionalCharacters = "!";
             RequiresZoom = true;
 
-            _no = new CoordinateButton(615, 254, 93, 24);
-            _yes = new CoordinateButton(492, 250, 96, 22);
+            _no = CreateCoordinateButton(615, 254, 93, 24);
+            _yes = CreateCoordinateButton(492, 250, 96, 22);
         }
 
-        public CoordinateButton No
+        public Button No
         {
             get { return _no; }
         }
 
-        public CoordinateButton Yes
+        public Button Yes
         {
             get { return _yes; }
         }

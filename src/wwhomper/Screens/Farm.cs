@@ -1,23 +1,23 @@
-﻿using System.Drawing;
-using wwhomper.Pak;
-using wwhomper.Screens.Controls;
+﻿using sharperbot.Assets;
+using sharperbot.AutoIt;
+using sharperbot.Screens;
+using sharperbot.Screens.Controls;
 
 namespace wwhomper.Screens
 {
     public class Farm : TemplateScreen
     {
-        private readonly TemplateButton _gopherHole;
+        private readonly Button _gopherHole;
 
-        public Farm(PakCatalog pakCatalog)
-            : base(pakCatalog, @"Images\ALL\Game\Map\MapScreen_Hole_Idle.jpg", new Rectangle(94, 61, 33, 43))
+        public Farm(IAutoIt autoIt, IAssetCatalog assetCatalog)
+            : base(autoIt, assetCatalog, @"Images\ALL\Game\Map\MapScreen_Hole_Idle.jpg", 94, 61, 33, 43)
         {
-            _gopherHole = new TemplateButton(
-                pakCatalog,
+            _gopherHole = CreateTemplateButton(
                 @"Images\ALL\Game\Map\MapScreen_Gopher_Idle.jpg",
-                new Rectangle(105, 54, 11, 45));
+                105, 54, 11, 45);
         }
 
-        public TemplateButton GopherHole
+        public Button GopherHole
         {
             get { return _gopherHole; }
         }

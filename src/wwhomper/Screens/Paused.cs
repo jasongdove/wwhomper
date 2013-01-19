@@ -1,20 +1,21 @@
-﻿using System.Drawing;
-using wwhomper.Pak;
-using wwhomper.Screens.Controls;
+﻿using sharperbot.Assets;
+using sharperbot.AutoIt;
+using sharperbot.Screens;
+using sharperbot.Screens.Controls;
 
 namespace wwhomper.Screens
 {
     public class Paused : TemplateScreen
     {
-        private readonly CoordinateButton _ok;
+        private readonly Button _ok;
 
-        public Paused(PakCatalog pakCatalog)
-            : base(pakCatalog, @"Images\ALL\Dialog\Dialog_565x540.jpg", new Rectangle(15, 20, 580, 63))
+        public Paused(IAutoIt autoIt, IAssetCatalog assetCatalog)
+            : base(autoIt, assetCatalog, @"Images\ALL\Dialog\Dialog_565x540.jpg", 15, 20, 580, 63)
         {
-            _ok = new CoordinateButton(333, 494, 128, 38);
+            _ok = CreateCoordinateButton(333, 494, 128, 38);
         }
 
-        public CoordinateButton Ok
+        public Button Ok
         {
             get { return _ok; }
         }

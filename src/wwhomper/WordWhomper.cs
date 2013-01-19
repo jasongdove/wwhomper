@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using Combinatorics.Collections;
-using wwhomper.Pak;
+using sharperbot.Assets;
+using sharperbot.AutoIt;
+using sharperbot.Screens;
 using wwhomper.Screens;
 
 namespace wwhomper
 {
     public class WordWhomper
     {
-        public const string WindowTitle = "[REGEXPTITLE:^Word Whomp Underground -]";
-        
-        public static readonly TimeSpan ControlTimeout = TimeSpan.FromSeconds(15);
+        private readonly IAutoIt _autoIt;
 
         private readonly WordList _wordList = new WordList();
 
@@ -23,19 +22,21 @@ namespace wwhomper
         private readonly Farm _farm;
         private readonly InGame _inGame;
         private readonly GameSummary _gameSummary;
-        private readonly NewGear _newGear = new NewGear();
-        private readonly BonusAcorns _bonusAcorns = new BonusAcorns();
+        private readonly NewGear _newGear;
+        private readonly BonusAcorns _bonusAcorns;
         private readonly InBonusGame _inBonusGame;
         private readonly Paused _paused;
         private readonly BonusGameWaiting _bonusGameWaiting;
-        private readonly BonusGameComplete _bonusGameComplete = new BonusGameComplete();
+        private readonly BonusGameComplete _bonusGameComplete;
         private readonly SpeechBubble _speechBubble;
         private readonly InPuzzleGame _inPuzzleGame;
         private readonly PuzzleGameComplete _puzzleGameComplete;
 
-        public WordWhomper(string gameRoot)
+        public WordWhomper(IAutoIt autoIt, IAssetCatalog assetCatalog)
         {
-            if (!AutoIt.WindowExists(WindowTitle))
+            _autoIt = autoIt;
+
+            if (!autoIt.WindowExists())
             {
                 throw new InvalidOperationException("Unable to find Word Whomp Underground!");
             }
@@ -43,28 +44,31 @@ namespace wwhomper
             ////var fontLoader = new FontLoader(gameRoot);
             ////var speechBubbleFont = fontLoader.LoadFont("DomCasualStd105WItaALLCAPS13");
 
-            var pakCatalog = new PakCatalog(Path.Combine(gameRoot, "images.pak"));
-            pakCatalog.Load();
+            ////var pakCatalog = new PakCatalog(Path.Combine(gameRoot, "images.pak"));
+            ////pakCatalog.Load();
 
-            _wordList.LoadFromDictionary(pakCatalog.GetEntryText(@"Dictionary\us-uk-fr\dictionary.txt"));
+            _wordList.LoadFromDictionary(assetCatalog.GetEntryText(@"Dictionary\us-uk-fr\dictionary.txt"));
 
-            _mainMenu = new MainMenu(pakCatalog);
-            _locIntro = new LocIntro(pakCatalog);
-            _locIntroComplete = new LocIntroComplete(pakCatalog);
-            _farm = new Farm(pakCatalog);
-            _inGame = new InGame(pakCatalog);
-            _gameSummary = new GameSummary(pakCatalog);
-            _paused = new Paused(pakCatalog);
-            _speechBubble = new SpeechBubble(pakCatalog);
-            _bonusGameWaiting = new BonusGameWaiting(pakCatalog);
-            _inBonusGame = new InBonusGame(pakCatalog, _bonusGameWaiting);
-            _inPuzzleGame = new InPuzzleGame(pakCatalog);
-            _puzzleGameComplete = new PuzzleGameComplete(pakCatalog);
+            _mainMenu = new MainMenu(autoIt, assetCatalog);
+            _locIntro = new LocIntro(autoIt, assetCatalog);
+            _locIntroComplete = new LocIntroComplete(autoIt, assetCatalog);
+            _farm = new Farm(autoIt, assetCatalog);
+            _inGame = new InGame(autoIt, assetCatalog);
+            _gameSummary = new GameSummary(autoIt, assetCatalog);
+            _paused = new Paused(autoIt, assetCatalog);
+            _speechBubble = new SpeechBubble(autoIt, assetCatalog);
+            _bonusGameWaiting = new BonusGameWaiting(autoIt, assetCatalog);
+            _inBonusGame = new InBonusGame(autoIt, assetCatalog, _bonusGameWaiting);
+            _inPuzzleGame = new InPuzzleGame(autoIt, assetCatalog);
+            _puzzleGameComplete = new PuzzleGameComplete(autoIt, assetCatalog);
+            _newGear = new NewGear(autoIt, assetCatalog);
+            _bonusAcorns = new BonusAcorns(autoIt, assetCatalog);
+            _bonusGameComplete = new BonusGameComplete(autoIt, assetCatalog);
         }
 
         public void Run()
         {
-            var allScreens = new ScreenBase[]
+            var allScreens = new GameScreen[]
             {
                 _paused,
                 _speechBubble, // This needs to be before "_inGame"
@@ -82,7 +86,7 @@ namespace wwhomper
 
             do
             {
-                ScreenSearchResult state = AutoIt.WaitForScreen(WindowTitle, allScreens);
+                ScreenSearchResult state = _autoIt.WaitForScreen(allScreens);
                 if (state.Success)
                 {
                     if (state.Screen == _paused)
@@ -97,7 +101,7 @@ namespace wwhomper
                     else if (state.Screen == _locIntro)
                     {
                         _locIntro.Forward.Click();
-                        AutoIt.MoveMouseOffscreen();
+                        _autoIt.MoveMouseOffscreen();
                     }
                     else if (state.Screen == _locIntroComplete)
                     {
@@ -113,9 +117,9 @@ namespace wwhomper
                     }
                     else if (state.Screen == _gameSummary)
                     {
-                        AutoIt.Type(WindowTitle, "{ENTER}");
+                        _autoIt.Type("{ENTER}");
                         Thread.Sleep(200);
-                        AutoIt.Type(WindowTitle, "{ENTER}");
+                        _autoIt.Type("{ENTER}");
                     }
                     else if (state.Screen == _inBonusGame)
                     {
@@ -134,7 +138,7 @@ namespace wwhomper
                     else if (state.Screen == _speechBubble)
                     {
                         // Detail check for different types of speech bubbles
-                        state = AutoIt.WaitForScreen(WindowTitle, _newGear, _bonusAcorns, _puzzleGameComplete);
+                        state = _autoIt.WaitForScreen(_newGear, _bonusAcorns, _puzzleGameComplete);
                         if (state.Success)
                         {
                             if (state.Screen == _newGear)
@@ -162,7 +166,7 @@ namespace wwhomper
                 else
                 {
                     Console.WriteLine("No screen detected.");
-                    if (!AutoIt.IsWindowActive(WindowTitle))
+                    if (!_autoIt.IsWindowActive())
                     {
                         Thread.Sleep(3000);
                     }
@@ -206,12 +210,12 @@ namespace wwhomper
             foreach (var guess in sorted)
             {
                 // Initial enter to dismiss any tip dialog that may be up
-                AutoIt.Type(WindowTitle, "{ENTER}" + guess + "{ENTER}");
+                _autoIt.Type("{ENTER}" + guess + "{ENTER}");
                 Thread.Sleep(random.Next(20, 100));
             }
 
             // Give the summary time to appear
-            Thread.Sleep(1500);
+            Thread.Sleep(2000);
         }
 
         private void PlayBonusGame()
@@ -221,11 +225,11 @@ namespace wwhomper
             // Clear out any bad data
             for (int i = 0; i < 6; i++)
             {
-                AutoIt.Type(WindowTitle, "{BACKSPACE}");
+                _autoIt.Type("{BACKSPACE}");
             }
 
             // Mix up the current word to give tesseract some variety
-            AutoIt.Type(WindowTitle, "{SPACE}");
+            _autoIt.Type("{SPACE}");
 
             string scrambled = _inBonusGame.GetNextScrambledWord();
 
@@ -244,7 +248,7 @@ namespace wwhomper
             if (guesses.Any())
             {
                 // Type a random guess from the list
-                AutoIt.Type(WindowTitle, guesses.ToList()[random.Next(guesses.Count)]);
+                _autoIt.Type(guesses.ToList()[random.Next(guesses.Count)]);
                 Thread.Sleep(random.Next(20, 100));
             }
         }
@@ -253,7 +257,7 @@ namespace wwhomper
         {
             _inPuzzleGame.ClearAllGears();
 
-            var windowContents = AutoIt.GetWindowImage(WindowTitle);
+            var windowContents = _autoIt.GetWindowImage();
 
             // Determine how many letters we need
             int requiredLetterCount = _inPuzzleGame.GetRequiredLetterCount(windowContents);

@@ -1,12 +1,13 @@
-﻿using System.Drawing;
-using wwhomper.Pak;
+﻿using sharperbot.Assets;
+using sharperbot.AutoIt;
+using sharperbot.Screens;
 
 namespace wwhomper.Screens
 {
     public class SpeechBubble : TemplateScreen
     {
-        public SpeechBubble(PakCatalog pakCatalog)
-            : base(pakCatalog, @"Images\ALL\Game\Common\Dialog_SpeechBubble_GS_Sm.jpg", new Rectangle(18, 13, 242, 20))
+        public SpeechBubble(IAutoIt autoIt, IAssetCatalog assetCatalog)
+            : base(autoIt, assetCatalog, @"Images\ALL\Game\Common\Dialog_SpeechBubble_GS_Sm.jpg", 18, 13, 242, 20)
         {
         }
     }
