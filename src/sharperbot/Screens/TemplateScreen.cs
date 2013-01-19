@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using Ninject.Extensions.Logging;
 using sharperbot.Assets;
 using sharperbot.AutoIt;
 
@@ -24,10 +25,11 @@ namespace sharperbot.Screens
         protected TemplateScreen(
             IAutoIt autoIt,
             IAssetCatalog assetCatalog,
+            ILogger logger,
             string fileName,
             int x, int y, int width, int height,
             int activeX, int activeY, int activeWidth, int activeHeight)
-            : base(autoIt, assetCatalog)
+            : base(autoIt, assetCatalog, logger)
         {
             _autoIt = autoIt;
             _fileName = fileName;

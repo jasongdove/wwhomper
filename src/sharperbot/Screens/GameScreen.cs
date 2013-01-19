@@ -6,21 +6,24 @@ using System.Linq;
 using Emgu.CV;
 using Emgu.CV.OCR;
 using Emgu.CV.Structure;
+using Ninject.Extensions.Logging;
 using sharperbot.Assets;
 using sharperbot.AutoIt;
 using sharperbot.Screens.Controls;
 
 namespace sharperbot.Screens
 {
-    public abstract class GameScreen
+    public abstract class GameScreen : IGameScreen
     {
         private readonly IAutoIt _autoIt;
         private readonly IAssetCatalog _assetCatalog;
+        private readonly ILogger _logger;
 
-        protected GameScreen(IAutoIt autoIt, IAssetCatalog assetCatalog)
+        protected GameScreen(IAutoIt autoIt, IAssetCatalog assetCatalog, ILogger logger)
         {
             _autoIt = autoIt;
             _assetCatalog = assetCatalog;
+            _logger = logger;
         }
 
         protected IAutoIt AutoIt
@@ -80,7 +83,11 @@ namespace sharperbot.Screens
             tesseract.SetVariable("tessedit_char_whitelist", "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + additionalLetters);
             tesseract.Recognize(grayscale);
             var result = tesseract.GetText();
-            Console.WriteLine("Tesseract recognized: {0}", result.Trim());
+
+            if (!String.IsNullOrWhiteSpace(result))
+            {
+                _logger.Debug("Tesseract recognized: {0}", result.Trim());
+            }
 
             if (debug)
             {
@@ -92,7 +99,7 @@ namespace sharperbot.Screens
                 }
             }
 
-            return tesseract.GetText();
+            return result;
         }
     }
 }

@@ -1,17 +1,23 @@
-﻿using sharperbot.Assets;
+﻿using Ninject.Extensions.Logging;
+using sharperbot.Assets;
 using sharperbot.AutoIt;
 using sharperbot.Screens;
 using sharperbot.Screens.Controls;
 
 namespace wwhomper.Screens
 {
-    public class NewGear : TextScreen
+    public class NewGear : TextScreen, IDialogScreen
     {
         private readonly Button _no;
         private readonly Button _yes;
 
-        public NewGear(IAutoIt autoIt, IAssetCatalog assetCatalog)
-            : base(autoIt, assetCatalog, 492, 166, 168, 25, "YOU FOUND A NEW GEAR!")
+        public NewGear(IAutoIt autoIt, IAssetCatalog assetCatalog, ILogger logger)
+            : base(
+                autoIt,
+                assetCatalog,
+                logger,
+                492, 166, 168, 25,
+                "YOU FOUND A NEW GEAR!")
         {
             AdditionalCharacters = "!";
             RequiresZoom = true;
@@ -25,7 +31,7 @@ namespace wwhomper.Screens
             get { return _no; }
         }
 
-        public Button Yes
+        public Button Accept
         {
             get { return _yes; }
         }

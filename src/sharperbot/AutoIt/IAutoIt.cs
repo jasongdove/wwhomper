@@ -11,9 +11,9 @@ namespace sharperbot.AutoIt
         Rectangle GetWindowRectangle();
         void ActivateWindow();
         ScreenSearchResult IsTemplateInWindow(Image<Bgra, byte> windowContents, Image<Bgra, byte> template, float tolerance = 0.95f);
-        bool IsScreenActive(GameScreen screen, float tolerance = 0.95f);
+        bool IsScreenActive(IGameScreen screen, float tolerance = 0.95f);
         void Click(int x, int y, int speed);
-        ScreenSearchResult WaitForScreen(params GameScreen[] screens);
+        ScreenSearchResult WaitForScreen(params IGameScreen[] screens);
         ScreenSearchResult WaitForTemplate(params Image<Bgra, byte>[] templates);
         Image<Bgra, byte> GetWindowImage();
         void MoveMouseOffscreen();

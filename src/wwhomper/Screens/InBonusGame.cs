@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using Ninject.Extensions.Logging;
 using sharperbot;
 using sharperbot.Assets;
 using sharperbot.AutoIt;
@@ -17,10 +18,11 @@ namespace wwhomper.Screens
         private readonly Dictionary<TemplateSearchArea, List<TemplateCoordinate>> _letterGroups =
             new Dictionary<TemplateSearchArea, List<TemplateCoordinate>>();
 
-        public InBonusGame(IAutoIt autoIt, IAssetCatalog assetCatalog, BonusGameWaiting waiting)
+        public InBonusGame(IAutoIt autoIt, IAssetCatalog assetCatalog, ILogger logger)
             : base(
                 autoIt,
                 assetCatalog,
+                logger,
                 @"Images\ALL\Game\bonus_game\BG_Background.jpg",
                 266, 372, 74, 38,
                 259, 390, 94, 54)
@@ -75,11 +77,15 @@ namespace wwhomper.Screens
                 .GetCompositeImage(@"Images\ALL\Game\bonus_game\BG_LetterTile_Angle_Left_Up.jpg")
                 .Copy(new Rectangle(10, 8, 34, 32));
 
+            var straightTemplate = assetCatalog
+                .GetCompositeImage(@"Images\ALL\Game\bonus_game\BG_LetterTile_Angle_Straight_Up.jpg")
+                .Copy(new Rectangle(7, 8, 34, 34));
+
             var bonusOne = new TemplateSearchArea(leftTemplate, new Rectangle(502, 33, 153, 61));
             var bonusTwo = new TemplateSearchArea(rightTemplate, new Rectangle(314, 169, 190, 69));
             var bonusThree = new TemplateSearchArea(leftTemplate, new Rectangle(481, 290, 198, 77));
             var bonusFour = new TemplateSearchArea(rightTemplate, new Rectangle(276, 437, 230, 81));
-            var bonusFive = new TemplateSearchArea(waiting.Template, new Rectangle(25, 403, 240, 49));
+            var bonusFive = new TemplateSearchArea(straightTemplate, new Rectangle(13, 444, 252, 45));
 
             _letterGroups.Add(bonusOne, one);
             _letterGroups.Add(bonusTwo, two);

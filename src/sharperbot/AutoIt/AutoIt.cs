@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Configuration;
 using System.Drawing;
-using System.IO;
-using System.Reflection;
 using System.Threading;
 using Emgu.CV;
 using Emgu.CV.Structure;
@@ -68,7 +66,7 @@ namespace sharperbot.AutoIt
             return new ScreenSearchResult { Success = false };
         }
 
-        public bool IsScreenActive(GameScreen screen, float tolerance = 0.95f)
+        public bool IsScreenActive(IGameScreen screen, float tolerance = 0.95f)
         {
             var windowContents = GetWindowImage();
             return screen.IsActive(windowContents).Success;
@@ -82,7 +80,7 @@ namespace sharperbot.AutoIt
             }
         }
 
-        public ScreenSearchResult WaitForScreen(params GameScreen[] screens)
+        public ScreenSearchResult WaitForScreen(params IGameScreen[] screens)
         {
             if (AutoItNative.AU3_WinActive(_windowTitle, String.Empty) == 0)
             {
@@ -111,7 +109,6 @@ namespace sharperbot.AutoIt
                     if (search.Success)
                     {
                         search.Screen = screen;
-                        Console.WriteLine("Detected screen: {0}", screen.GetType().Name);
                         break;
                     }
                 }

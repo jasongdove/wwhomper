@@ -66,6 +66,9 @@
     <Reference Include="Ninject">
       <HintPath>..\..\sln\wwhomper.sln\packages\Ninject.3.0.1.10\lib\net45-full\Ninject.dll</HintPath>
     </Reference>
+    <Reference Include="Ninject.Extensions.Logging">
+      <HintPath>..\..\sln\wwhomper.sln\packages\Ninject.Extensions.Logging.3.0.1.0\lib\net45-full\Ninject.Extensions.Logging.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -83,6 +86,7 @@
     <Compile Include="Assets\IAssetCatalog.cs" />
     <Compile Include="Assets\PakCatalog.cs" />
     <Compile Include="Assets\PakEntry.cs" />
+    <Compile Include="Bot.cs" />
     <Compile Include="Font\BitmapFont.cs" />
     <Compile Include="Font\FontCharacter.cs" />
     <Compile Include="Font\FontLoader.cs" />
@@ -94,14 +98,22 @@
     <Compile Include="Screens\Controls\Button.cs" />
     <Compile Include="Screens\Controls\CoordinateButton.cs" />
     <Compile Include="Screens\Controls\TemplateButton.cs" />
+    <Compile Include="Screens\DialogScreen.cs" />
     <Compile Include="Screens\GameScreen.cs" />
+    <Compile Include="Screens\IGameScreen.cs" />
+    <Compile Include="Screens\IScreenStrategy.cs" />
+    <Compile Include="Screens\IScreenStrategy{T1}.cs" />
     <Compile Include="Screens\ScreenSearchResult.cs" />
     <Compile Include="Screens\TemplateScreen.cs" />
     <Compile Include="Screens\TextScreen.cs" />
+    <Compile Include="Strategies\AcceptDialogWithoutWaitingStrategy.cs" />
+    <Compile Include="Strategies\ScreenSearchStrategy.cs" />
+    <Compile Include="Strategies\ScreenStrategy.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

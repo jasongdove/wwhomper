@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using Ninject.Extensions.Logging;
 using sharperbot;
 using sharperbot.Assets;
 using sharperbot.AutoIt;
@@ -34,10 +35,11 @@ namespace wwhomper.Screens
         private readonly Rectangle _gearSpotThree;
         private readonly Rectangle _gearSpotFour;
 
-        public InPuzzleGame(IAutoIt autoIt, IAssetCatalog assetCatalog)
+        public InPuzzleGame(IAutoIt autoIt, IAssetCatalog assetCatalog, ILogger logger)
             : base(
                 autoIt,
                 assetCatalog,
+                logger,
                 @"Images\ALL\Game\puzzle_game\PuzzleGame_Background.jpg",
                 11, 556, 277, 35,
                 0, 569, 304, 60)

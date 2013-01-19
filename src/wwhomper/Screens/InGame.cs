@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Emgu.CV.Structure;
+using Ninject.Extensions.Logging;
 using sharperbot.Assets;
 using sharperbot.AutoIt;
 using sharperbot.Screens;
@@ -13,10 +14,11 @@ namespace wwhomper.Screens
     {
         private readonly List<TemplateCoordinate> _gamePieces = new List<TemplateCoordinate>();
 
-        public InGame(IAutoIt autoIt, IAssetCatalog assetCatalog)
+        public InGame(IAutoIt autoIt, IAssetCatalog assetCatalog, ILogger logger)
             : base(
                 autoIt,
                 assetCatalog,
+                logger,
                 @"Images\ALL\Game\gophers\burrow\Gopher_BUR_IDLE.jpg",
                 15, 40, 12, 24,
                 140, 581, 31, 40)

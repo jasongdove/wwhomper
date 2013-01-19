@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace wwhomper
+namespace wwhomper.Dictionary
 {
-    public class WordList
+    public class WordList : IWordList
     {
         private readonly HashSet<string> _words;
 
@@ -30,7 +30,7 @@ namespace wwhomper
             }
         }
 
-        public void LoadFromDictionary(string dictionary)
+        protected void LoadFromDictionary(string dictionary)
         {
             using (var reader = new StringReader(dictionary))
             {

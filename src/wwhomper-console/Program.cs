@@ -8,11 +8,10 @@ namespace wwhomper_console
     {
         public static void Main(string[] args)
         {
-            var kernel = new StandardKernel(new sharperbot.Module());
+            var kernel = new StandardKernel(new sharperbot.Module(), new wwhomper.Module());
             var whomper = kernel.Get<WordWhomper>();
             whomper.Run();
 
-            Console.WriteLine("done");
             Console.ReadKey();
         }
     }

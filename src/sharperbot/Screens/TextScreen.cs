@@ -2,6 +2,7 @@
 using System.Drawing;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using Ninject.Extensions.Logging;
 using sharperbot.Assets;
 using sharperbot.AutoIt;
 
@@ -12,8 +13,8 @@ namespace sharperbot.Screens
         private readonly Rectangle _rectangle;
         private readonly string _text;
 
-        protected TextScreen(IAutoIt autoIt, IAssetCatalog assetCatalog, int x, int y, int width, int height, string text)
-            : base(autoIt, assetCatalog)
+        protected TextScreen(IAutoIt autoIt, IAssetCatalog assetCatalog, ILogger logger, int x, int y, int width, int height, string text)
+            : base(autoIt, assetCatalog, logger)
         {
             AdditionalCharacters = String.Empty;
             RequiresZoom = false;

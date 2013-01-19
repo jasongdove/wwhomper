@@ -6,6 +6,6 @@ namespace sharperbot.Screens
     {
         public bool Success { get; set; }
         public Point Point { get; set; }
-        public GameScreen Screen { get; set; }
+        public IGameScreen Screen { get; set; }
     }
 }
