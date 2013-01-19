@@ -28,6 +28,11 @@ namespace sharperbot.Screens
             get { return _autoIt; }
         }
 
+        protected IAssetCatalog AssetCatalog
+        {
+            get { return _assetCatalog; }
+        }
+
         public abstract ScreenSearchResult IsActive(Image<Bgra, byte> windowContents);
 
         protected Button CreateCoordinateButton(int x, int y, int width, int height)

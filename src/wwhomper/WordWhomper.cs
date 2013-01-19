@@ -45,9 +45,6 @@ namespace wwhomper
             ////var fontLoader = new FontLoader(gameRoot);
             ////var speechBubbleFont = fontLoader.LoadFont("DomCasualStd105WItaALLCAPS13");
 
-            ////var pakCatalog = new PakCatalog(Path.Combine(gameRoot, "images.pak"));
-            ////pakCatalog.Load();
-
             _wordList.LoadFromDictionary(assetCatalog.GetEntryText(@"Dictionary\us-uk-fr\dictionary.txt"));
 
             _mainMenu = new MainMenu(autoIt, assetCatalog);
@@ -317,7 +314,6 @@ namespace wwhomper
             {
                 Console.WriteLine("Unable to create a word with these letters, will try again later...");
                 _inPuzzleGame.Back.Click();
-                WaitForTransition();
                 return;
             }
 

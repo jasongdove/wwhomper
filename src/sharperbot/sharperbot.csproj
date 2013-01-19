@@ -89,6 +89,7 @@
     <Compile Include="Font\KerningPair.cs" />
     <Compile Include="ImageExtensions.cs" />
     <Compile Include="Module.cs" />
+    <Compile Include="Msvcrt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Screens\Controls\Button.cs" />
     <Compile Include="Screens\Controls\CoordinateButton.cs" />
