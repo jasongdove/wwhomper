@@ -20,7 +20,7 @@ namespace wwhomper.Screens.Controls
 
         public Image<Bgra, byte> Grab(Image<Bgra, byte> windowContents)
         {
-            return windowContents.GetSubRect(_rectangle);
+            return windowContents.Copy(_rectangle);
         }
     }
 }

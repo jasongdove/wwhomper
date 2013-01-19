@@ -17,7 +17,7 @@ namespace wwhomper.Screens
                 11, 556, 277, 35,
                 0, 547, 389, 82)
         {
-            _ok = CreateCoordinateButton(609, 332, 95, 23);
+            _ok = CreateCoordinateButton(603, 326, 97, 24);
         }
 
         public Button Ok

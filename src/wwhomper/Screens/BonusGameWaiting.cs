@@ -12,7 +12,7 @@ namespace wwhomper.Screens
                 assetCatalog,
                 @"Images\ALL\Game\bonus_game\BG_Background.jpg",
                 98, 386, 96, 23,
-                27, 349, 230, 106)
+                93, 407, 111, 32)
         {
         }
     }

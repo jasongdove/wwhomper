@@ -12,7 +12,7 @@ namespace wwhomper.Screens
             assetCatalog,
             @"Images\ALL\Game\GameSummary\Dialog_GS_BG.jpg",
             506, 97, 79, 32,
-            498, 96, 136, 80)
+            527, 116, 93, 45)
         {
         }
     }

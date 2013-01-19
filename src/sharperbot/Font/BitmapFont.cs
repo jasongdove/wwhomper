@@ -43,7 +43,7 @@ namespace sharperbot.Font
                     character.Rectangle.Width,
                     character.Rectangle.Height);
 
-                var mask = Bitmap.GetSubRect(character.Rectangle).Convert<Gray, byte>();
+                var mask = Bitmap.Copy(character.Rectangle).Convert<Gray, byte>();
                 var characterImage = new Image<Bgra, byte>(mask.Width, mask.Height);
                 for (int cy = 0; cy < characterImage.Height; cy++)
                 {

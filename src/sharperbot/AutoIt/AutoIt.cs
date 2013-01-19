@@ -153,15 +153,14 @@ namespace sharperbot.AutoIt
             ActivateWindow();
 
             var rect = GetWindowRectangle();
-            using (var bmp = new Bitmap(rect.Width, rect.Height))
-            {
-                using (var g = Graphics.FromImage(bmp))
-                {
-                    g.CopyFromScreen(new Point(rect.Left, rect.Top), Point.Empty, rect.Size);
-                }
 
-                return new Image<Bgra, Byte>(bmp);
+            var bmp = new Bitmap(rect.Width, rect.Height);
+            using (var g = Graphics.FromImage(bmp))
+            {
+                g.CopyFromScreen(new Point(rect.Left, rect.Top), Point.Empty, rect.Size);
             }
+
+            return new Image<Bgra, Byte>(bmp);
         }
 
         public void MoveMouseOffscreen()
@@ -187,16 +186,16 @@ namespace sharperbot.AutoIt
         public void Click(Rectangle rectangle)
         {
 #if DEBUG
-            var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "clicks");
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
+            ////var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "clicks");
+            ////if (!Directory.Exists(path))
+            ////{
+            ////    Directory.CreateDirectory(path);
+            ////}
 
-            var fileName = Path.Combine(path, DateTime.Now.Ticks + ".png");
-            var windowContents = GetWindowImage();
-            windowContents.Draw(rectangle, new Bgra(255, 255, 255, 255), 1);
-            windowContents.Save(fileName);
+            ////var fileName = Path.Combine(path, DateTime.Now.Ticks + ".png");
+            ////var windowContents = GetWindowImage();
+            ////windowContents.Draw(rectangle, new Bgra(255, 255, 255, 255), 1);
+            ////windowContents.Save(fileName);
 #endif
 
             var x = _random.Next(rectangle.Left, rectangle.Right);

@@ -27,7 +27,7 @@ namespace sharperbot.Screens
 
         public override ScreenSearchResult IsActive(Image<Bgra, byte> windowContents)
         {
-            var image = windowContents.GetSubRect(_rectangle);
+            var image = windowContents.Copy(_rectangle);
             var text = (RequiresZoom ? GetZoomedOutText(image, 8, AdditionalCharacters) : GetText(image, AdditionalCharacters)).Trim();
             
             var result = new ScreenSearchResult { Success = text == _text };

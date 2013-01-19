@@ -34,7 +34,7 @@ namespace sharperbot.Screens
             _templateRectangle = new Rectangle(x, y, width, height);
             _activeRectangle = new Rectangle(activeX, activeY, activeWidth, activeHeight);
 
-            _template = AssetCatalog.GetCompositeImage(_fileName).GetSubRect(_templateRectangle);
+            _template = AssetCatalog.GetCompositeImage(_fileName).Copy(_templateRectangle);
 
             _md5 = new MD5CryptoServiceProvider();
             _originalHash = _md5.ComputeHash(_template.Bytes);
@@ -47,7 +47,7 @@ namespace sharperbot.Screens
                 byte[] currentHash = _md5.ComputeHash(_template.Bytes);
                 if (!Msvcrt.ByteArrayCompare(_originalHash, currentHash))
                 {
-                    _template = AssetCatalog.GetCompositeImage(_fileName).GetSubRect(_templateRectangle);
+                    _template = AssetCatalog.GetCompositeImage(_fileName).Copy(_templateRectangle);
                 }
 
                 return _template;
@@ -58,7 +58,7 @@ namespace sharperbot.Screens
         {
             var template = Template;
 
-            var activeContents = windowContents.GetSubRect(_activeRectangle);
+            var activeContents = windowContents.Copy(_activeRectangle);
             var searchResult = _autoIt.IsTemplateInWindow(activeContents, template);
 
 #if DEBUG

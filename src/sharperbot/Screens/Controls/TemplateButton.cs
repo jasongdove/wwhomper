@@ -15,8 +15,7 @@ namespace sharperbot.Screens.Controls
         public TemplateButton(IAutoIt autoIt, IAssetCatalog assetCatalog, string fileName, Rectangle rectangle)
         {
             _autoIt = autoIt;
-            _template = assetCatalog.GetCompositeImage(fileName)
-                .GetSubRect(rectangle);
+            _template = assetCatalog.GetCompositeImage(fileName).Copy(rectangle);
         }
 
         public override void Click()

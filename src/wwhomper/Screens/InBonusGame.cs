@@ -23,7 +23,7 @@ namespace wwhomper.Screens
                 assetCatalog,
                 @"Images\ALL\Game\bonus_game\BG_Background.jpg",
                 266, 372, 74, 38,
-                249, 368, 123, 99)
+                259, 390, 94, 54)
         {
             var one = new List<TemplateCoordinate>
             {
@@ -69,11 +69,11 @@ namespace wwhomper.Screens
 
             var rightTemplate = assetCatalog
                 .GetCompositeImage(@"Images\ALL\Game\bonus_game\BG_LetterTile_Angle_Right_Up.jpg")
-                .GetSubRect(new Rectangle(6, 10, 34, 32));
+                .Copy(new Rectangle(6, 10, 34, 32));
 
             var leftTemplate = assetCatalog
                 .GetCompositeImage(@"Images\ALL\Game\bonus_game\BG_LetterTile_Angle_Left_Up.jpg")
-                .GetSubRect(new Rectangle(10, 8, 34, 32));
+                .Copy(new Rectangle(10, 8, 34, 32));
 
             var bonusOne = new TemplateSearchArea(leftTemplate, new Rectangle(502, 33, 153, 61));
             var bonusTwo = new TemplateSearchArea(rightTemplate, new Rectangle(314, 169, 190, 69));
@@ -95,7 +95,7 @@ namespace wwhomper.Screens
             foreach (var group in _letterGroups)
             {
                 // Make sure we haven't already completed this word
-                var search = AutoIt.IsTemplateInWindow(windowContents.GetSubRect(group.Key.SearchArea), group.Key.Template);
+                var search = AutoIt.IsTemplateInWindow(windowContents.Copy(group.Key.SearchArea), group.Key.Template);
                 if (!search.Success)
                 {
                     var letters = group.Value.Select(letter => letter.Grab(windowContents));

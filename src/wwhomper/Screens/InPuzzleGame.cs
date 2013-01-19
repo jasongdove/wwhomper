@@ -10,6 +10,7 @@ using sharperbot.Assets;
 using sharperbot.AutoIt;
 using sharperbot.Screens;
 using sharperbot.Screens.Controls;
+using wwhomper.Data;
 
 namespace wwhomper.Screens
 {
@@ -20,11 +21,18 @@ namespace wwhomper.Screens
         private readonly Image<Bgra, byte> _inactiveGear;
         private readonly Image<Bgra, byte> _largeCopperGear;
         private readonly Image<Bgra, byte> _largeWildcardGear;
+        private readonly Image<Bgra, byte> _largeCopperGearSpot;
+        private readonly Image<Bgra, byte> _smallCopperGear;
+        private readonly Image<Bgra, byte> _smallWildcardGear;
         private readonly Dictionary<Rectangle, Rectangle> _letterSearchAreaTesseractArea;
         private readonly Button _gearOne;
         private readonly Button _gearTwo;
         private readonly Button _gearThree;
         private readonly Button _gearFour;
+        private readonly Rectangle _gearSpotOne;
+        private readonly Rectangle _gearSpotTwo;
+        private readonly Rectangle _gearSpotThree;
+        private readonly Rectangle _gearSpotFour;
 
         public InPuzzleGame(IAutoIt autoIt, IAssetCatalog assetCatalog)
             : base(
@@ -32,22 +40,34 @@ namespace wwhomper.Screens
                 assetCatalog,
                 @"Images\ALL\Game\puzzle_game\PuzzleGame_Background.jpg",
                 11, 556, 277, 35,
-                0, 547, 389, 82)
+                0, 569, 304, 60)
         {
             _submit = CreateCoordinateButton(271, 330, 93, 41);
             _back = CreateCoordinateButton(78, 66, 72, 22);
 
             _inactiveGear = assetCatalog
                 .GetCompositeImage(@"Images\ALL\Game\puzzle_game\Gear_NonInteractive.jpg")
-                .GetSubRect(new Rectangle(25, 26, 38, 38));
+                .Copy(new Rectangle(25, 26, 38, 38));
 
             _largeCopperGear = assetCatalog
                 .GetCompositeImage(@"Images\ALL\Game\puzzle_game\Gear_Large_Copper.jpg")
-                .GetSubRect(new Rectangle(25, 67, 39, 3));
+                .Copy(new Rectangle(25, 67, 39, 3));
 
             _largeWildcardGear = assetCatalog
                 .GetCompositeImage(@"Images\ALL\Game\puzzle_game\Gear_Large_Wildcard.jpg")
-                .GetSubRect(new Rectangle(30, 33, 28, 25));
+                .Copy(new Rectangle(30, 33, 28, 25));
+
+            _largeCopperGearSpot = assetCatalog
+                .GetCompositeImage(@"Images\ALL\Game\puzzle_game\GearSpot_Large_Copper.jpg")
+                .Copy(new Rectangle(30, 32, 29, 29));
+
+            _smallCopperGear = assetCatalog
+                .GetCompositeImage(@"Images\ALL\Game\puzzle_game\Gear_Small_Copper.jpg")
+                .Copy(new Rectangle(27, 57, 34, 8));
+
+            _smallWildcardGear = assetCatalog
+                .GetCompositeImage(@"Images\ALL\Game\puzzle_game\Gear_Small_Wildcard.jpg")
+                .Copy(new Rectangle(28, 29, 32, 32));
 
             _letterSearchAreaTesseractArea = new Dictionary<Rectangle, Rectangle>
             {
@@ -75,6 +95,11 @@ namespace wwhomper.Screens
             _gearTwo = CreateCoordinateButton(288, 175, 23, 21);
             _gearThree = CreateCoordinateButton(351, 165, 23, 21);
             _gearFour = CreateCoordinateButton(407, 192, 23, 21);
+
+            _gearSpotOne = new Rectangle(206, 119, 71, 73);
+            _gearSpotTwo = new Rectangle(265, 150, 69, 69);
+            _gearSpotThree = new Rectangle(327, 138, 71, 73);
+            _gearSpotFour = new Rectangle(380, 164, 74, 74);
         }
 
         public Button Submit
@@ -102,69 +127,146 @@ namespace wwhomper.Screens
             AutoIt.Type("{BACKSPACE}");
         }
 
-        public int GetRequiredLetterCount(Image<Bgra, byte> windowContents)
+        public List<PuzzleGearSize> GetRequiredGears(Image<Bgra, byte> windowContents)
         {
-            // look for the inactive gear in position 5
-            var searchArea = windowContents.GetSubRect(new Rectangle(444, 152, 74, 84));
-            return AutoIt.IsTemplateInWindow(searchArea, _inactiveGear).Success ? 4 : 5;
+            var result = new List<PuzzleGearSize>();
+
+            var spotOne = windowContents.Copy(_gearSpotOne);
+            if (AutoIt.IsTemplateInWindow(spotOne, _largeCopperGearSpot).Success)
+            {
+                result.Add(PuzzleGearSize.Large);
+            }
+            else
+            {
+                result.Add(PuzzleGearSize.Small);
+            }
+
+            var spotTwo = windowContents.Copy(_gearSpotTwo);
+            if (AutoIt.IsTemplateInWindow(spotTwo, _largeCopperGearSpot).Success)
+            {
+                result.Add(PuzzleGearSize.Large);
+            }
+            else
+            {
+                result.Add(PuzzleGearSize.Small);
+            }
+
+            var spotThree = windowContents.Copy(_gearSpotThree);
+            if (AutoIt.IsTemplateInWindow(spotThree, _largeCopperGearSpot).Success)
+            {
+                result.Add(PuzzleGearSize.Large);
+            }
+            else
+            {
+                result.Add(PuzzleGearSize.Small);
+            }
+
+            var spotFour = windowContents.Copy(_gearSpotFour);
+            if (AutoIt.IsTemplateInWindow(spotFour, _largeCopperGearSpot).Success)
+            {
+                result.Add(PuzzleGearSize.Large);
+            }
+            else
+            {
+                result.Add(PuzzleGearSize.Small);
+            }
+
+            // TODO: Support 5 gears
+            
+            return result;
         }
 
-        public string GetAvailableLetters(Image<Bgra, byte> windowContents)
+        public List<PuzzleLetter> GetAvailableLetters(Image<Bgra, byte> windowContents)
         {
-            var letters = new List<Image<Bgra, byte>>();
-            var wildcards = new List<string>();
+            var result = new List<PuzzleLetter>();
+            var letters = new List<Image<Gray, byte>>();
 
             foreach (var entry in _letterSearchAreaTesseractArea)
             {
-                var searchArea = windowContents.GetSubRect(entry.Key);
+                PuzzleLetter letter = null;
+
+                var searchArea = windowContents.Copy(entry.Key);
                 if (AutoIt.IsTemplateInWindow(searchArea, _largeWildcardGear).Success)
                 {
-                    wildcards.Add("*");
+                    letter = new PuzzleLetter("*", PuzzleGearSize.Large);
+                }
+                else if (AutoIt.IsTemplateInWindow(searchArea, _smallWildcardGear).Success)
+                {
+                    letter = new PuzzleLetter("*", PuzzleGearSize.Small);
                 }
                 else if (AutoIt.IsTemplateInWindow(searchArea, _largeCopperGear).Success)
                 {
-                    var letterImage = windowContents.GetSubRect(entry.Value);
+                    var letterImage = windowContents.Copy(entry.Value).Convert<Gray, byte>();
+                    letterImage.Floor(245);
                     letters.Add(letterImage);
+
+                    var text = GetZoomedOutText(letterImage, 2).Trim();
+                    letter = new PuzzleLetter(text, PuzzleGearSize.Large);
+                }
+                else if (AutoIt.IsTemplateInWindow(searchArea, _smallCopperGear).Success)
+                {
+                    var letterImage = windowContents.Copy(entry.Value).Convert<Gray, byte>();
+                    letterImage.Floor(245);
+                    letters.Add(letterImage);
+
+                    var text = GetZoomedOutText(letterImage, 2).Trim();
+                    letter = new PuzzleLetter(text, PuzzleGearSize.Small);
+                }
+
+                if (letter != null)
+                {
+                    result.Add(letter);
                 }
             }
 
-            if (!letters.Any())
+            if (result.Any())
             {
-                return null;
+                var combined = Combine(letters);
+                var allText = GetZoomedOutText(combined, 2, "*").Trim().Replace(" ", String.Empty);
+                var withoutWildcards = result.Where(x => x.Letter != "*").ToList();
+                if (allText.Length == withoutWildcards.Count)
+                {
+                    foreach (var r in withoutWildcards.Where(x => String.IsNullOrEmpty(x.Letter)).ToList())
+                    {
+                        r.Letter = allText[withoutWildcards.IndexOf(r)].ToString(CultureInfo.InvariantCulture);
+                    }
+                }
             }
 
-            var combined = Combine(letters).Convert<Gray, byte>();
-            combined.Floor(245);
-            var text = GetZoomedOutText(combined, 2, "*", true)
-                .Trim()
-                .Replace(" ", String.Empty);
-
-            return text + String.Join(String.Empty, wildcards);
+            return result;
         }
 
-        public void SubmitWord(Image<Bgra, byte> windowContents, string guess)
+        public void SubmitWord(List<PuzzleLetter> guess)
         {
-            if (guess.Length != 4)
+            if (guess.Count != 4)
             {
                 return;
             }
 
-            TypeLetter(windowContents, guess[0], _gearOne);
-            TypeLetter(windowContents, guess[1], _gearTwo);
-            TypeLetter(windowContents, guess[2], _gearThree);
-            TypeLetter(windowContents, guess[3], _gearFour);
+            TypeLetter(guess[0], _gearOne);
+            TypeLetter(guess[1], _gearTwo);
+            TypeLetter(guess[2], _gearThree);
+            TypeLetter(guess[3], _gearFour);
 
             _submit.Click();
         }
 
-        private void TypeLetter(Image<Bgra, byte> windowContents, char letter, Button gear)
+        private void TypeLetter(PuzzleLetter letter, Button gear)
         {
-            if (letter == '*')
+            if (letter.Letter == "*")
             {
+                var windowContents = AutoIt.GetWindowImage();
                 foreach (var entry in _letterSearchAreaTesseractArea)
                 {
-                    var searchArea = windowContents.GetSubRect(entry.Key);
+                    var searchArea = windowContents.Copy(entry.Key);
+
                     if (AutoIt.IsTemplateInWindow(searchArea, _largeWildcardGear).Success)
+                    {
+                        AutoIt.Click(entry.Key);
+                        break;
+                    }
+
+                    if (AutoIt.IsTemplateInWindow(searchArea, _smallWildcardGear).Success)
                     {
                         AutoIt.Click(entry.Key);
                         break;
@@ -173,7 +275,7 @@ namespace wwhomper.Screens
             }
             else
             {
-                AutoIt.Type(letter.ToString(CultureInfo.InvariantCulture));
+                AutoIt.Type(letter.Letter);
             }
 
             gear.Click();

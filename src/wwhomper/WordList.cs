@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace wwhomper
 {
@@ -53,6 +54,11 @@ namespace wwhomper
         public bool ContainsWord(string word)
         {
             return _words.Contains(word);
+        }
+
+        public List<string> OfLength(int length)
+        {
+            return _words.Where(x => x.Length == length).ToList();
         }
     }
 }

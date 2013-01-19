@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using Combinatorics.Collections;
 using sharperbot.Assets;
 using sharperbot.AutoIt;
 using sharperbot.Screens;
+using wwhomper.Data;
 using wwhomper.Screens;
 
 namespace wwhomper
@@ -32,6 +34,7 @@ namespace wwhomper
         private readonly InPuzzleGame _inPuzzleGame;
         private readonly PuzzleGameComplete _puzzleGameComplete;
         private readonly BlowTorch _blowTorch;
+        private readonly PaintBrush _paintBrush;
 
         public WordWhomper(IAutoIt autoIt, IAssetCatalog assetCatalog)
         {
@@ -63,6 +66,7 @@ namespace wwhomper
             _bonusAcorns = new BonusAcorns(autoIt, assetCatalog);
             _bonusGameComplete = new BonusGameComplete(autoIt, assetCatalog);
             _blowTorch = new BlowTorch(autoIt, assetCatalog);
+            _paintBrush = new PaintBrush(autoIt, assetCatalog);
         }
 
         public void Run()
@@ -137,7 +141,7 @@ namespace wwhomper
                     else if (state.Screen == _speechBubble)
                     {
                         // Detail check for different types of speech bubbles
-                        state = _autoIt.WaitForScreen(_newGear, _bonusAcorns, _puzzleGameComplete, _blowTorch);
+                        state = _autoIt.WaitForScreen(_newGear, _bonusAcorns, _puzzleGameComplete, _blowTorch, _paintBrush);
                         if (state.Success)
                         {
                             if (state.Screen == _newGear)
@@ -158,6 +162,11 @@ namespace wwhomper
                             else if (state.Screen == _blowTorch)
                             {
                                 _blowTorch.Ok.Click();
+                                WaitForTransition();
+                            }
+                            else if (state.Screen == _paintBrush)
+                            {
+                                _paintBrush.Ok.Click();
                                 WaitForTransition();
                             }
                         }
@@ -266,70 +275,74 @@ namespace wwhomper
         {
             _inPuzzleGame.ClearAllGears();
 
+            _autoIt.MoveMouseOffscreen();
             var windowContents = _autoIt.GetWindowImage();
 
             // Determine how many letters we need
-            int requiredLetterCount = _inPuzzleGame.GetRequiredLetterCount(windowContents);
+            var gearSpaces = _inPuzzleGame.GetRequiredGears(windowContents);
 
-            Console.WriteLine("We need {0} letters", requiredLetterCount);
+            Console.WriteLine("We need {0} letters", gearSpaces.Count);
 
             // Determine which letters we have
-            string letters = _inPuzzleGame.GetAvailableLetters(windowContents);
-            if (letters == null)
+            var letters = _inPuzzleGame.GetAvailableLetters(windowContents);
+            if (letters.Count < gearSpaces.Count)
             {
-                Console.WriteLine("Unable to create a word with these letters, will try again later...");
+                Console.WriteLine("Insufficient letters, will try again later...");
                 _inPuzzleGame.Back.Click();
-                WaitForTransition();
                 return;
             }
 
-            Console.WriteLine("Letters we have: {0}", letters);
+            Console.WriteLine("Letters we have: {0}", String.Join(String.Empty, letters.Select(x => x.Letter).ToArray()));
 
-            string guess = null;
-            if (!letters.Contains('*'))
+            var words = _wordList.OfLength(gearSpaces.Count);
+            var guess = new List<PuzzleLetter>();
+            foreach (var word in words)
             {
-                var variations = new Variations<char>(letters.ToArray(), requiredLetterCount);
-                var words = variations.Select(x => new String(x.ToArray()));
-                guess = words.FirstOrDefault(x => _wordList.ContainsWord(x));
-            }
-            else
-            {
-                const string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-                for (int i = 0; i < 26; i++)
+                guess.Clear();
+
+                var guessLetters = new List<PuzzleLetter>(letters);
+                var wildcards = letters.Where(x => x.Letter == "*").ToList();
+
+                for (int i = 0; i < gearSpaces.Count; i++)
                 {
-                    var wildcardLetters = letters.ToArray().ToList();
-                    wildcardLetters.Add(alphabet[i]);
-                    var variations = new Variations<char>(wildcardLetters, requiredLetterCount);
-                    var words = variations.Select(x => new String(x.ToArray()));
-                    var wildcardGuess = words.FirstOrDefault(x => _wordList.ContainsWord(x));
-                    if (wildcardGuess != null)
+                    var guessLetter = guessLetters.FirstOrDefault(x => x.Letter == word[i].ToString(CultureInfo.InvariantCulture) && x.Size == gearSpaces[i]);
+                    if (guessLetter != null)
                     {
-                        guess = wildcardGuess;
-                        break;
+                        guessLetters.Remove(guessLetter);
+                        guess.Add(guessLetter);
+                    }
+                    else
+                    {
+                        if (wildcards.Any())
+                        {
+                            guess.Add(wildcards[0]);
+                            wildcards.RemoveAt(0);
+                        }
+                        else
+                        {
+                            guess.Clear();
+                            break;
+                        }
                     }
                 }
+
+                if (String.Join(String.Empty, guess.Select(x => x.Letter)) == word)
+                {
+                    Console.WriteLine("Trying {0}", word);
+                    break;
+                }
             }
 
-            if (guess == null)
+            if (!guess.Any())
             {
                 Console.WriteLine("Unable to create a word with these letters, will try again later...");
                 _inPuzzleGame.Back.Click();
                 return;
             }
 
-            Console.WriteLine("We should guess: {0}", guess);
+            Console.WriteLine("We should guess: {0}", String.Join(String.Empty, guess.Select(x => x.Letter)));
 
-            // Replace wildcards
-            for (int i=0; i<guess.Length; i++)
-            {
-                if (!letters.Contains(guess[i]))
-                {
-                    guess = guess.Remove(i, 1);
-                    guess = guess.Insert(i, "*");
-                }
-            }
-
-            _inPuzzleGame.SubmitWord(windowContents, guess);
+            _inPuzzleGame.SubmitWord(guess);
 
             // Give it a chance to work or not
             Thread.Sleep(7000);

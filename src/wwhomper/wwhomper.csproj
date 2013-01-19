@@ -79,11 +79,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\PuzzleLetter.cs" />
+    <Compile Include="Data\PuzzleGearSize.cs" />
     <Compile Include="Screens\BlowTorch.cs" />
     <Compile Include="Screens\BonusAcorns.cs" />
     <Compile Include="Screens\BonusGameComplete.cs" />
     <Compile Include="Screens\BonusGameWaiting.cs" />
     <Compile Include="Screens\Controls\TemplateCoordinate.cs" />
+    <Compile Include="Screens\PaintBrush.cs" />
     <Compile Include="Screens\InBonusGame.cs" />
     <Compile Include="Screens\InPuzzleGame.cs" />
     <Compile Include="Screens\LocIntroComplete.cs" />

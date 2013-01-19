@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Emgu.CV.Structure;
 using sharperbot.Assets;
 using sharperbot.AutoIt;
 using sharperbot.Screens;
@@ -18,7 +19,7 @@ namespace wwhomper.Screens
                 assetCatalog,
                 @"Images\ALL\Game\gophers\burrow\Gopher_BUR_IDLE.jpg",
                 15, 40, 12, 24,
-                116, 540, 166, 89)
+                140, 581, 31, 40)
         {
             _gamePieces.Add(new TemplateCoordinate(184, 425, 58, 34));
             _gamePieces.Add(new TemplateCoordinate(261, 420, 58, 34));
@@ -37,7 +38,7 @@ namespace wwhomper.Screens
             var gamePieceImages = _gamePieces.Select(piece => piece.Grab(windowContents));
 
             // Combine all of the game pieces into a single image
-            var combined = Combine(gamePieceImages);
+            var combined = Combine(gamePieceImages).Convert<Gray, byte>().ThresholdBinary(new Gray(60), new Gray(255));
 
             // Convert the new image to text to find out which letters are available for play
             return FixTesseractErrors(GetZoomedOutText(combined, 3));

@@ -113,10 +113,8 @@ namespace sharperbot.Assets
         public Image<Bgra, byte> GetEntryImage(string fileName)
         {
             var entry = GetEntry(fileName);
-            using (var stream = new MemoryStream(GetEntryBytes(entry)))
-            {
-                return new Image<Bgra, byte>(new Bitmap(stream));
-            }
+            var stream = new MemoryStream(GetEntryBytes(entry));
+            return new Image<Bgra, byte>(new Bitmap(stream));
         }
 
         public Image<Bgra, byte> GetCompositeImage(string fileName)

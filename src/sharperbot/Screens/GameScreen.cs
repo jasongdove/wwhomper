@@ -45,12 +45,12 @@ namespace sharperbot.Screens
             return new TemplateButton(_autoIt, _assetCatalog, assetFileName, new Rectangle(x, y, width, height));
         }
 
-        protected Image<Bgra, byte> Combine(IEnumerable<Image<Bgra, byte>> images)
+        protected Image<T, byte> Combine<T>(IEnumerable<Image<T, byte>> images) where T : struct, IColor
         {
             var list = images.ToList();
 
             // Create a new image to hold all images side by side
-            var result = new Image<Bgra, byte>(
+            var result = new Image<T, byte>(
                 list.Sum(i => i.Width),
                 list.Max(i => i.Height));
 
