@@ -19,7 +19,7 @@ namespace wwhomper
                 throw new InvalidOperationException("Unable to find Word Whomp Underground!");
             }
 
-            RegisterScreen<MainMenu, MainMenuStrategy>();
+            RegisterScreen<MainMenu, AcceptDialogWithTransitionStrategy>();
             RegisterScreen<Intro, AcceptDialogWithoutWaitingStrategy>();
             RegisterScreen<IntroComplete, AcceptDialogWithoutWaitingStrategy>();
             RegisterScreen<Map, AcceptDialogWithoutWaitingStrategy>();

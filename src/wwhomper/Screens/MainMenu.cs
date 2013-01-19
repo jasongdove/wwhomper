@@ -6,7 +6,7 @@ using sharperbot.Screens.Controls;
 
 namespace wwhomper.Screens
 {
-    public class MainMenu : TemplateScreen
+    public class MainMenu : TemplateScreen, IDialogScreen
     {
         private readonly Button _play;
 
@@ -22,7 +22,7 @@ namespace wwhomper.Screens
             _play = CreateCoordinateButton(24, 351, 135, 41);
         }
 
-        public Button Play
+        public Button Accept
         {
             get { return _play; }
         }

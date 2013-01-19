@@ -16,6 +16,7 @@ namespace wwhomper.Strategies
         private readonly IAutoIt _autoIt;
         private readonly IPakDictionary _pakDictionary;
         private readonly ILogger _logger;
+        private Guess _lastGuess;
 
         private readonly Random _random;
 
@@ -30,6 +31,12 @@ namespace wwhomper.Strategies
 
         public void ExecuteStrategy(InBonusGame screen)
         {
+            // Clear out our last guess if it was a while ago
+            if (_lastGuess != null && (DateTime.Now - _lastGuess.Time) > TimeSpan.FromSeconds(10))
+            {
+                _lastGuess = null;
+            }
+
             // Clear out any bad data
             for (int i = 0; i < 6; i++)
             {
@@ -44,6 +51,20 @@ namespace wwhomper.Strategies
             {
                 _logger.Debug("Nothing to do in the bonus game");
                 return;
+            }
+
+            // If our last guess had an R (but didn't work) let's try A instead
+            var currentLetters = scrambled.ToArray().OrderBy(x => x);
+            if (_lastGuess != null &&
+                currentLetters.Contains('R') &&
+                _lastGuess.Letters.SequenceEqual(currentLetters))
+            {
+                scrambled = scrambled.Remove(scrambled.IndexOf('R'));
+                scrambled += 'A';
+            }
+            else
+            {
+                _lastGuess = new Guess { Time = DateTime.Now, Letters = scrambled.ToArray().OrderBy(x => x) };
             }
 
             var guesses = new HashSet<string>();
@@ -64,6 +85,12 @@ namespace wwhomper.Strategies
                 _autoIt.Type(guesses.ToList()[_random.Next(guesses.Count)]);
                 Wait(TimeSpan.FromMilliseconds(_random.Next(20, 100)));
             }
+        }
+
+        private class Guess
+        {
+            public DateTime Time { get; set; }
+            public IOrderedEnumerable<char> Letters { get; set; }
         }
     }
 }

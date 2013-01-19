@@ -111,7 +111,6 @@
     <Compile Include="Strategies\BonusGameWaitingStrategy.cs" />
     <Compile Include="Strategies\GameSummaryStrategy.cs" />
     <Compile Include="Strategies\GamePakDictionaryStrategy.cs" />
-    <Compile Include="Strategies\MainMenuStrategy.cs" />
     <Compile Include="Dictionary\IWordList.cs" />
     <Compile Include="Dictionary\WordList.cs" />
     <Compile Include="Strategies\PuzzleGameStrategy.cs" />
