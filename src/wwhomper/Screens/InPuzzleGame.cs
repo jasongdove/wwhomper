@@ -455,7 +455,7 @@ namespace wwhomper.Screens
             if (letters.Any())
             {
                 var combined = Combine(letters);
-                var allText = GetZoomedOutTextThreshold(combined, 2, 60, 255, "", true).Trim().Replace(" ", String.Empty);
+                var allText = GetZoomedOutTextThreshold(combined, 2, 60, 255).Trim().Replace(" ", String.Empty);
                 var withoutWildcards = gears.Where(x => !x.IsWildcard).ToList();
                 if (allText.Length == withoutWildcards.Count)
                 {

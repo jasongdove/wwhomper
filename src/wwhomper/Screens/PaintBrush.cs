@@ -20,7 +20,7 @@ namespace wwhomper.Screens
         {
             RequiresZoom = true;
 
-            _ok = CreateCoordinateButton(550, 249, 99, 23);
+            _ok = CreateCoordinateButton(547, 247, 40, 23);
         }
 
         public Button Accept

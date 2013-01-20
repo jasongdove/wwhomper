@@ -419,8 +419,6 @@ namespace wwhomper.Strategies
                 }
             }
 
-            // TODO: Loosen size requirements on paint
-
             return optimizations;
         }
     }
