@@ -108,5 +108,11 @@ namespace wwhomper.Dictionary
             var sortedLetters = _totalFrequency.OrderBy(x => x.Value).Select(x => x.Key);
             return sortedLetters.First(letters.Contains);
         }
+
+        public int GetLetterRankingForIndex(char letter, int index)
+        {
+            var sortedLetters = _indexedFrequency[index].OrderByDescending(x => x.Value).Select(x => x.Key).ToList();
+            return sortedLetters.IndexOf(letter);
+        }
     }
 }

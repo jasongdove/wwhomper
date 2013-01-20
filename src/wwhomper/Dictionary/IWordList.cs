@@ -8,5 +8,6 @@ namespace wwhomper.Dictionary
         List<string> OfLength(int length);
         char BestLetterForIndex(char[] letters, int index);
         char WorstLetterOverall(char[] letters);
+        int GetLetterRankingForIndex(char letter, int index);
     }
 }

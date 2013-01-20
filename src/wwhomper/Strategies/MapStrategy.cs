@@ -47,23 +47,31 @@ namespace wwhomper.Strategies
                 {
                     _logger.Debug("We're in the wrong zone; searching for the right one");
 
-                    var targetZone = screen.Zones[gearWeNeed.Index];
-                    var searchArea = windowContents.Copy(targetZone);
-                    var openHoleSearchResult = _autoIt.IsTemplateInWindow(searchArea, screen.OpenHole);
-                    if (openHoleSearchResult.Success)
+                    // Start by moving somewhere in the first zone. This avoids
+                    // issues caused by holes that are too close in later zones
+                    foreach (int index in new[] { 0, gearWeNeed.Index })
                     {
-                        // Convert to coordinates back to screen coordinates
-                        var target = new Rectangle(
-                            targetZone.X + openHoleSearchResult.Point.X,
-                            targetZone.Y + openHoleSearchResult.Point.Y,
-                            screen.OpenHole.Width,
-                            screen.OpenHole.Height);
+                        var targetZone = screen.Zones[index];
+                        var searchArea = windowContents.Copy(targetZone);
+                        var openHoleSearchResult = _autoIt.IsTemplateInWindow(searchArea, screen.OpenHole);
+                        if (openHoleSearchResult.Success)
+                        {
+                            // Convert to coordinates back to screen coordinates
+                            var target = new Rectangle(
+                                targetZone.X + openHoleSearchResult.Point.X,
+                                targetZone.Y + openHoleSearchResult.Point.Y,
+                                screen.OpenHole.Width,
+                                screen.OpenHole.Height);
 
-                        // Click the open hole
-                        _autoIt.Click(target);
+                            // Click the open hole
+                            _autoIt.Click(target);
 
-                        Wait(TimeSpan.FromSeconds(1));
+                            Wait(TimeSpan.FromSeconds(1));
+                        }
                     }
+
+                    // We can cycle back to determine if we're in the correct zone
+                    return;
                 }
             }
 

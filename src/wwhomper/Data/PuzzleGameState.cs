@@ -1,16 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Ninject.Extensions.Logging;
+using wwhomper.Dictionary;
 
 namespace wwhomper.Data
 {
     public class PuzzleGameState
     {
+        private readonly IPakDictionary _pakDictionary;
+        private readonly ILogger _logger;
         private readonly List<PuzzleGearSpot> _gearSpots;
         private readonly List<PuzzleGear> _gears;
 
-        public PuzzleGameState()
+        public PuzzleGameState(IPakDictionary pakDictionary, ILogger logger)
         {
+            _pakDictionary = pakDictionary;
+            _logger = logger;
             _gearSpots = new List<PuzzleGearSpot>();
             _gears = new List<PuzzleGear>();
         }
@@ -36,8 +42,8 @@ namespace wwhomper.Data
                 {
                     if (spot.Count() > Gears.Count(x => x.Color.HasFlag(spot.Key.Color) && x.Size.HasFlag(spot.Key.Size)))
                     {
-                        Console.WriteLine(
-                            "We need a gear of size {0} with color {1}",
+                        _logger.Debug(
+                            "We need a gear {0}/{1}",
                             spot.Key.Size,
                             spot.Key.Color);
 
@@ -54,8 +60,50 @@ namespace wwhomper.Data
                 {
                     if (Gears.Where(x => x.Color.HasFlag(spot.Key.Color) && x.Size.HasFlag(spot.Key.Size)).All(x => !vowels.Contains(x.Letter)))
                     {
-                        Console.WriteLine(
-                            "We need a vowel gear of size {0} with color {1}",
+                        _logger.Debug(
+                            "We need a vowel gear {0}/{1}",
+                            spot.Key.Size,
+                            spot.Key.Color);
+
+                        return new PuzzleGearSpot(
+                            spot.Key.Size,
+                            spot.Key.Color,
+                            GetZoneIndex(spot.Key.Color, spot.Key.Size));
+                    }
+                }
+
+                // look for a gear spot where we don't have a top 5 letter
+                foreach (var spot in gearType)
+                {
+                    var gears = Gears.Where(x => x.Color.HasFlag(spot.Key.Color) && x.Size.HasFlag(spot.Key.Size)).ToList();
+                    foreach (var s in spot)
+                    {
+                        var gearChoice = gears.FirstOrDefault(x => _pakDictionary.GetLetterRankingForIndex(x.Letter[0], s.Index) < 5);
+                        if (gearChoice == null)
+                        {
+                            _logger.Debug(
+                                "We need a top 5 gear {0}/{1}",
+                                spot.Key.Size,
+                                spot.Key.Color);
+
+                            return new PuzzleGearSpot(
+                                s.Size,
+                                s.Color,
+                                GetZoneIndex(s.Color, s.Size));
+                        }
+
+                        gears.Remove(gearChoice);
+                    }
+                }
+
+                // we don't want only vowels either
+                foreach (var spot in gearType)
+                {
+                    var gears = Gears.Where(x => x.Color.HasFlag(spot.Key.Color) && x.Size.HasFlag(spot.Key.Size)).ToList();
+                    if (gears.All(x => vowels.Contains(x.Letter[0])))
+                    {
+                        _logger.Debug(
+                            "We need a consonant gear {0}/{1}",
                             spot.Key.Size,
                             spot.Key.Color);
 

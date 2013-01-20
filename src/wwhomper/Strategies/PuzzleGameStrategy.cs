@@ -18,13 +18,20 @@ namespace wwhomper.Strategies
         private readonly ILogger _logger;
         private readonly IPakDictionary _pakDictionary;
         private readonly PuzzleGameState _puzzleGameState;
+        private readonly TrashGearStrategy _trashGearStrategy;
 
-        public PuzzleGameStrategy(IAutoIt autoIt, ILogger logger, IPakDictionary pakDictionary, PuzzleGameState puzzleGameState)
+        public PuzzleGameStrategy(
+            IAutoIt autoIt,
+            ILogger logger,
+            IPakDictionary pakDictionary,
+            PuzzleGameState puzzleGameState,
+            TrashGearStrategy trashGearStrategy)
         {
             _autoIt = autoIt;
             _logger = logger;
             _pakDictionary = pakDictionary;
             _puzzleGameState = puzzleGameState;
+            _trashGearStrategy = trashGearStrategy;
         }
 
         public void ExecuteStrategy(InPuzzleGame screen)
@@ -156,6 +163,10 @@ namespace wwhomper.Strategies
                     _logger.Debug("Using gear {0}/{1}/{2}{3}", gear.Size, gear.Color, gear.Letter, step.Tool != null ? "/tool" : String.Empty);
                 }
 
+                // No idea what we need until we get the next puzzle
+                _puzzleGameState.GearSpots.Clear();
+                _puzzleGameState.Gears.Clear();
+
                 Wait(TimeSpan.FromSeconds(7));
             }
             else
@@ -177,21 +188,9 @@ namespace wwhomper.Strategies
                 bool trashedGear = false;
                 if (!performedOptimizations && gears.Count == 15)
                 {
-                    // TODO: Maybe base this on color/size rather than a simple overall frequency
                     trashedGear = true;
 
-                    var availableGears = gears.AsEnumerable();
-
-                    // Make sure we don't throw away a gear we need
-                    var gearWeNeed = _puzzleGameState.GearWeNeed;
-                    if (gearWeNeed != null)
-                    {
-                        availableGears = availableGears.Where(x => !x.Color.HasFlag(gearWeNeed.Color) && !x.Size.HasFlag(gearWeNeed.Size));
-                    }
-
-                    var letters = availableGears.Select(x => x.Letter[0]).ToArray();
-                    var targetLetter = _pakDictionary.WorstLetterOverall(letters);
-                    var gear = gears.First(x => x.Letter[0] == targetLetter);
+                    var gear = _trashGearStrategy.FindGearToTrash(gearSpots, gears);
                     screen.Trash(gear);
                 }
 
@@ -316,32 +315,35 @@ namespace wwhomper.Strategies
             {
                 _logger.Debug("Attempting to optimize copper paint usage");
 
-                if (gearSpots.Count(x => x.Color.HasFlag(PuzzleGearColor.Copper)) >
-                    availableGears.Count(x => x.Color.HasFlag(PuzzleGearColor.Copper)))
+                foreach (var size in new[] { PuzzleGearSize.Large, PuzzleGearSize.Small })
                 {
-                    ////_logger.Debug("We have copper gear spots, but no copper gears");
-
-                    var targetSpot = gearSpots.First(x => x.Color.HasFlag(PuzzleGearColor.Copper));
-                    var targetGears = availableGears.Where(x => !x.Color.HasFlag(PuzzleGearColor.Copper) && x.Size.HasFlag(targetSpot.Size)).ToList();
-                    
-                    // If we don't have any the size we want, let's paint one anyway
-                    if (!targetGears.Any())
+                    if (gearSpots.Count(x => x.Color.HasFlag(PuzzleGearColor.Copper) && x.Size.HasFlag(size)) >
+                        availableGears.Count(x => x.Color.HasFlag(PuzzleGearColor.Copper) && x.Size.HasFlag(size)))
                     {
-                        targetGears = availableGears.Where(x => !x.Color.HasFlag(PuzzleGearColor.Copper)).ToList();
-                    }
-                    
-                    if (targetGears.Any())
-                    {
-                        ////_logger.Debug("We have gears with the correct size");
+                        ////_logger.Debug("We have copper gear spots, but no copper gears");
 
-                        var targetGearLetter = _pakDictionary.BestLetterForIndex(targetGears.Select(x => x.Letter[0]).ToArray(), targetSpot.Index);
-                        var targetGear = targetGears.First(x => x.Letter[0] == targetGearLetter);
-                        if (targetGear != null)
+                        var targetSpot = gearSpots.First(x => x.Color.HasFlag(PuzzleGearColor.Copper) && x.Size.HasFlag(size));
+                        var targetGears = availableGears.Where(x => !x.Color.HasFlag(PuzzleGearColor.Copper) && x.Size.HasFlag(targetSpot.Size)).ToList();
+
+                        // If we don't have any the size we want, let's paint one anyway
+                        if (!targetGears.Any())
                         {
-                            _logger.Debug("Changing color of gear with letter {0} and size {1}", targetGear.Letter, targetGear.Size);
+                            targetGears = availableGears.Where(x => !x.Color.HasFlag(PuzzleGearColor.Copper)).ToList();
+                        }
 
-                            availableGears.Remove(targetGear);
-                            optimizations.Add(new PuzzleStep(targetGear, copperPaint));
+                        if (targetGears.Any())
+                        {
+                            ////_logger.Debug("We have gears with the correct size");
+
+                            var targetGearLetter = _pakDictionary.BestLetterForIndex(targetGears.Select(x => x.Letter[0]).ToArray(), targetSpot.Index);
+                            var targetGear = targetGears.First(x => x.Letter[0] == targetGearLetter);
+                            if (targetGear != null)
+                            {
+                                _logger.Debug("Changing color of gear with letter {0} and size {1}", targetGear.Letter, targetGear.Size);
+
+                                availableGears.Remove(targetGear);
+                                optimizations.Add(new PuzzleStep(targetGear, copperPaint));
+                            }
                         }
                     }
                 }
@@ -352,32 +354,35 @@ namespace wwhomper.Strategies
             {
                 _logger.Debug("Attempting to optimize silver paint usage");
 
-                if (gearSpots.Count(x => x.Color.HasFlag(PuzzleGearColor.Silver)) >
-                    availableGears.Count(x => x.Color.HasFlag(PuzzleGearColor.Silver)))
+                foreach (var size in new[] { PuzzleGearSize.Large, PuzzleGearSize.Small })
                 {
-                    ////_logger.Debug("We have silver gear spots, but no silver gears");
-
-                    var targetSpot = gearSpots.First(x => x.Color.HasFlag(PuzzleGearColor.Silver));
-                    var targetGears = availableGears.Where(x => !x.Color.HasFlag(PuzzleGearColor.Silver) && x.Size.HasFlag(targetSpot.Size)).ToList();
-
-                    // If we don't have any the size we want, let's paint one anyway
-                    if (!targetGears.Any())
+                    if (gearSpots.Count(x => x.Color.HasFlag(PuzzleGearColor.Silver) && x.Size.HasFlag(size)) >
+                        availableGears.Count(x => x.Color.HasFlag(PuzzleGearColor.Silver) && x.Size.HasFlag(size)))
                     {
-                        targetGears = availableGears.Where(x => !x.Color.HasFlag(PuzzleGearColor.Silver)).ToList();
-                    }
+                        ////_logger.Debug("We have silver gear spots, but no silver gears");
 
-                    if (targetGears.Any())
-                    {
-                        ////_logger.Debug("We have gears with the correct size");
+                        var targetSpot = gearSpots.First(x => x.Color.HasFlag(PuzzleGearColor.Silver) && x.Size.HasFlag(size));
+                        var targetGears = availableGears.Where(x => !x.Color.HasFlag(PuzzleGearColor.Silver) && x.Size.HasFlag(targetSpot.Size)).ToList();
 
-                        var targetGearLetter = _pakDictionary.BestLetterForIndex(targetGears.Select(x => x.Letter[0]).ToArray(), targetSpot.Index);
-                        var targetGear = targetGears.First(x => x.Letter[0] == targetGearLetter);
-                        if (targetGear != null)
+                        // If we don't have any the size we want, let's paint one anyway
+                        if (!targetGears.Any())
                         {
-                            _logger.Debug("Changing color of gear with letter {0} and size {1}", targetGear.Letter, targetGear.Size);
+                            targetGears = availableGears.Where(x => !x.Color.HasFlag(PuzzleGearColor.Silver)).ToList();
+                        }
 
-                            availableGears.Remove(targetGear);
-                            optimizations.Add(new PuzzleStep(targetGear, silverPaint));
+                        if (targetGears.Any())
+                        {
+                            ////_logger.Debug("We have gears with the correct size");
+
+                            var targetGearLetter = _pakDictionary.BestLetterForIndex(targetGears.Select(x => x.Letter[0]).ToArray(), targetSpot.Index);
+                            var targetGear = targetGears.First(x => x.Letter[0] == targetGearLetter);
+                            if (targetGear != null)
+                            {
+                                _logger.Debug("Changing color of gear with letter {0} and size {1}", targetGear.Letter, targetGear.Size);
+
+                                availableGears.Remove(targetGear);
+                                optimizations.Add(new PuzzleStep(targetGear, silverPaint));
+                            }
                         }
                     }
                 }
@@ -388,32 +393,35 @@ namespace wwhomper.Strategies
             {
                 _logger.Debug("Attempting to optimize gold paint usage");
 
-                if (gearSpots.Count(x => x.Color.HasFlag(PuzzleGearColor.Gold)) >
-                    availableGears.Count(x => x.Color.HasFlag(PuzzleGearColor.Gold)))
+                foreach (var size in new[] { PuzzleGearSize.Large, PuzzleGearSize.Small })
                 {
-                    ////_logger.Debug("We have gold gear spots, but no gold gears");
-
-                    var targetSpot = gearSpots.First(x => x.Color.HasFlag(PuzzleGearColor.Gold));
-                    var targetGears = availableGears.Where(x => !x.Color.HasFlag(PuzzleGearColor.Gold) && x.Size.HasFlag(targetSpot.Size)).ToList();
-
-                    // If we don't have any the size we want, let's paint one anyway
-                    if (!targetGears.Any())
+                    if (gearSpots.Count(x => x.Color.HasFlag(PuzzleGearColor.Gold) && x.Size.HasFlag(size)) >
+                        availableGears.Count(x => x.Color.HasFlag(PuzzleGearColor.Gold) && x.Size.HasFlag(size)))
                     {
-                        targetGears = availableGears.Where(x => !x.Color.HasFlag(PuzzleGearColor.Gold)).ToList();
-                    }
+                        ////_logger.Debug("We have gold gear spots, but no gold gears");
 
-                    if (targetGears.Any())
-                    {
-                        ////_logger.Debug("We have gears with the correct size");
+                        var targetSpot = gearSpots.First(x => x.Color.HasFlag(PuzzleGearColor.Gold) && x.Size.HasFlag(size));
+                        var targetGears = availableGears.Where(x => !x.Color.HasFlag(PuzzleGearColor.Gold) && x.Size.HasFlag(targetSpot.Size)).ToList();
 
-                        var targetGearLetter = _pakDictionary.BestLetterForIndex(targetGears.Select(x => x.Letter[0]).ToArray(), targetSpot.Index);
-                        var targetGear = targetGears.First(x => x.Letter[0] == targetGearLetter);
-                        if (targetGear != null)
+                        // If we don't have any the size we want, let's paint one anyway
+                        if (!targetGears.Any())
                         {
-                            _logger.Debug("Changing color of gear with letter {0} and size {1}", targetGear.Letter, targetGear.Size);
+                            targetGears = availableGears.Where(x => !x.Color.HasFlag(PuzzleGearColor.Gold)).ToList();
+                        }
 
-                            availableGears.Remove(targetGear);
-                            optimizations.Add(new PuzzleStep(targetGear, goldPaint));
+                        if (targetGears.Any())
+                        {
+                            ////_logger.Debug("We have gears with the correct size");
+
+                            var targetGearLetter = _pakDictionary.BestLetterForIndex(targetGears.Select(x => x.Letter[0]).ToArray(), targetSpot.Index);
+                            var targetGear = targetGears.First(x => x.Letter[0] == targetGearLetter);
+                            if (targetGear != null)
+                            {
+                                _logger.Debug("Changing color of gear with letter {0} and size {1}", targetGear.Letter, targetGear.Size);
+
+                                availableGears.Remove(targetGear);
+                                optimizations.Add(new PuzzleStep(targetGear, goldPaint));
+                            }
                         }
                     }
                 }
@@ -421,5 +429,6 @@ namespace wwhomper.Strategies
 
             return optimizations;
         }
+
     }
 }

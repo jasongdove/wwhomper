@@ -31,6 +31,9 @@ namespace wwhomper
             RegisterScreen<InBonusGame, BonusGameStrategy>();
             RegisterScreen<InPuzzleGame, PuzzleGameStrategy>();
             RegisterScreen<BonusGameComplete, AcceptDialogWithTransitionStrategy>();
+            RegisterScreen<FinaleOne, AcceptDialogWithoutWaitingStrategy>();
+            RegisterScreen<FinaleTwo, AcceptDialogWithoutWaitingStrategy>();
+            RegisterScreen<FinaleThree, ShutdownStrategy>();
         }
     }
 }

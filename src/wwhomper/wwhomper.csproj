@@ -99,6 +99,9 @@
     <Compile Include="Screens\BonusGameComplete.cs" />
     <Compile Include="Screens\BonusGameWaiting.cs" />
     <Compile Include="Screens\Controls\TemplateCoordinate.cs" />
+    <Compile Include="Screens\FinaleOne.cs" />
+    <Compile Include="Screens\FinaleThree.cs" />
+    <Compile Include="Screens\FinaleTwo.cs" />
     <Compile Include="Screens\NewGearFull.cs" />
     <Compile Include="Screens\PaintBrush.cs" />
     <Compile Include="Screens\InBonusGame.cs" />
@@ -124,6 +127,7 @@
     <Compile Include="Strategies\MapStrategy.cs" />
     <Compile Include="Strategies\PuzzleGameStrategy.cs" />
     <Compile Include="Strategies\SpeechBubbleStrategy.cs" />
+    <Compile Include="Strategies\TrashGearStrategy.cs" />
     <Compile Include="WordWhomper.cs" />
   </ItemGroup>
   <ItemGroup>

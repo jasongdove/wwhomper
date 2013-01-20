@@ -5,6 +5,7 @@ using Ninject;
 using Ninject.Extensions.Logging;
 using sharperbot.AutoIt;
 using sharperbot.Screens;
+
 namespace sharperbot
 {
     public abstract class Bot

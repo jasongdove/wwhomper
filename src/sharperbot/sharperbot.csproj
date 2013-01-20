@@ -109,6 +109,7 @@
     <Compile Include="Strategies\AcceptDialogWithoutWaitingStrategy.cs" />
     <Compile Include="Strategies\ScreenSearchStrategy.cs" />
     <Compile Include="Strategies\ScreenStrategy.cs" />
+    <Compile Include="Strategies\ShutdownStrategy.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

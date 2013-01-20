@@ -34,7 +34,12 @@ namespace wwhomper.Strategies
             // Clear out our last guess if it was a while ago
             if (_lastGuess != null && (DateTime.Now - _lastGuess.Time) > TimeSpan.FromSeconds(10))
             {
+                _logger.Debug("Clearing out last guess");
                 _lastGuess = null;
+            }
+            else if (_lastGuess != null)
+            {
+                _logger.Debug("Last guess: " + String.Join(String.Empty, _lastGuess.Letters));
             }
 
             // Clear out any bad data
