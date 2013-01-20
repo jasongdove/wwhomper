@@ -82,8 +82,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\PuzzleLetter.cs" />
+    <Compile Include="Data\PuzzleGear.cs" />
+    <Compile Include="Data\PuzzleGearColor.cs" />
+    <Compile Include="Data\PuzzleGearSpot.cs" />
     <Compile Include="Data\PuzzleGearSize.cs" />
+    <Compile Include="Data\PuzzlePaint.cs" />
+    <Compile Include="Data\PuzzleStep.cs" />
+    <Compile Include="Data\PuzzleTool.cs" />
+    <Compile Include="Data\PuzzleTorch.cs" />
     <Compile Include="Dictionary\IPakDictionary.cs" />
     <Compile Include="Dictionary\PakDictionary.cs" />
     <Compile Include="Module.cs" />

@@ -15,14 +15,14 @@ namespace wwhomper.Strategies
     public class PuzzleGameStrategy : ScreenStrategy, IScreenStrategy<InPuzzleGame>
     {
         private readonly IAutoIt _autoIt;
-        private readonly IPakDictionary _pakDictionary;
         private readonly ILogger _logger;
+        private readonly IPakDictionary _pakDictionary;
 
-        public PuzzleGameStrategy(IAutoIt autoIt, IPakDictionary pakDictionary, ILogger logger)
+        public PuzzleGameStrategy(IAutoIt autoIt, ILogger logger, IPakDictionary pakDictionary)
         {
             _autoIt = autoIt;
-            _pakDictionary = pakDictionary;
             _logger = logger;
+            _pakDictionary = pakDictionary;
         }
 
         public void ExecuteStrategy(InPuzzleGame screen)
@@ -30,76 +30,132 @@ namespace wwhomper.Strategies
             screen.ClearAllGears();
 
             _autoIt.MoveMouseOffscreen();
-            var windowContents = _autoIt.GetWindowImage();
 
-            // Determine how many letters we need
-            var gearSpaces = screen.GetRequiredGears(windowContents);
+            // Identify all gear spots (size, color, index)
+            var gearSpots = screen.GetGearSpots().OrderBy(x => x.Index);
 
-            _logger.Debug("We need {0} letters", gearSpaces.Count);
-
-            // Determine which letters we have
-            var letters = screen.GetAvailableLetters(windowContents);
-            if (letters.Count < gearSpaces.Count)
+            // Identify all tools (torch, paint)
+            var tools = screen.GetTools();
+            foreach (var tool in tools)
             {
-                _logger.Debug("Insufficient letters, will try again later...");
+                if (tool is PuzzleTorch)
+                {
+                    _logger.Debug("Found torch");
+                }
+                else
+                {
+                    var paint = tool as PuzzlePaint;
+                    if (paint != null)
+                    {
+                        _logger.Debug("Found paint: {0}", paint.Color);
+                    }
+                }
+            }
+
+            // Identify all gears (letter, size, color, clickable area)
+            var gears = screen.GetGears();
+            foreach (var gear in gears)
+            {
+                _logger.Debug("Found gear {0}/{1}/{2}", gear.Size, gear.Color, gear.Letter);
+            }
+
+            if (gears.Count < gearSpots.Count())
+            {
+                _logger.Debug("Not enough gears to solve the puzzle yet");
                 screen.Back.Click();
                 return;
             }
 
-            _logger.Debug("Letters we have: {0}", String.Join(String.Empty, letters.Select(x => x.Letter).ToArray()));
-
-            var words = _pakDictionary.OfLength(gearSpaces.Count);
-            var guess = new List<PuzzleLetter>();
-            foreach (var word in words)
+            var potentialAnswers = _pakDictionary.OfLength(gearSpots.Count());
+            var answerSteps = new List<PuzzleStep>(5);
+            foreach (var answer in potentialAnswers)
             {
-                guess.Clear();
-
-                var guessLetters = new List<PuzzleLetter>(letters);
-                var wildcards = letters.Where(x => x.Letter == "*").ToList();
-
-                for (int i = 0; i < gearSpaces.Count; i++)
+                // Reset available gears and tools
+                var availableGears = new List<PuzzleGear>(gears);
+                var availableTools = new List<PuzzleTool>(tools);
+                
+                foreach (var gearSpot in gearSpots)
                 {
-                    var guessLetter = guessLetters.FirstOrDefault(x => x.Letter == word[i].ToString(CultureInfo.InvariantCulture) && x.Size == gearSpaces[i]);
-                    if (guessLetter != null)
+                    PuzzleStep answerStep = null;
+
+                    var letter = answer[gearSpot.Index].ToString(CultureInfo.InvariantCulture);
+                    
+                    // Prefer actual letters over wildcards
+                    var availableGear = availableGears.FirstOrDefault(x => x.Letter == letter && x.Size.HasFlag(gearSpot.Size) && x.Color.HasFlag(gearSpot.Color))
+                        ?? availableGears.FirstOrDefault(x => x.IsWildcard);
+                    if (availableGear != null)
                     {
-                        guessLetters.Remove(guessLetter);
-                        guess.Add(guessLetter);
+                        availableGears.Remove(availableGear);
+                        answerStep = new PuzzleStep(availableGear);
+                    }
+
+                    // Try to use the torch (changes gear size)
+                    if (answerStep == null)
+                    {
+                        var torch = availableTools.FirstOrDefault(x => x is PuzzleTorch);
+                        if (torch != null)
+                        {
+                            var wrongSizedGear = availableGears.FirstOrDefault(x => x.Letter == letter && !x.Size.HasFlag(gearSpot.Size) && x.Color.HasFlag(gearSpot.Color));
+                            if (wrongSizedGear != null)
+                            {
+                                availableGears.Remove(wrongSizedGear);
+                                availableTools.Remove(torch);
+                                answerStep = new PuzzleStep(wrongSizedGear, torch);
+                            }
+                        }
+                    }
+
+                    // Try to use paint (changes gear color)
+                    if (answerStep == null)
+                    {
+                        var paint = availableTools.FirstOrDefault(x => x is PuzzlePaint && ((PuzzlePaint)x).Color.HasFlag(gearSpot.Color));
+                        if (paint != null)
+                        {
+                            var wrongColorGear = availableGears.FirstOrDefault(x => x.Letter == letter && x.Size.HasFlag(gearSpot.Size) && !x.Color.HasFlag(gearSpot.Color));
+                            if (wrongColorGear != null)
+                            {
+                                availableGears.Remove(wrongColorGear);
+                                availableTools.Remove(paint);
+                                answerStep = new PuzzleStep(wrongColorGear, paint);
+                            }
+                        }
+                    }
+
+                    if (answerStep != null)
+                    {
+                        answerSteps.Add(answerStep);
                     }
                     else
                     {
-                        if (wildcards.Any())
-                        {
-                            guess.Add(wildcards[0]);
-                            wildcards.RemoveAt(0);
-                        }
-                        else
-                        {
-                            guess.Clear();
-                            break;
-                        }
+                        break;
                     }
                 }
 
-                if (String.Join(String.Empty, guess.Select(x => x.Letter)) == word)
+                if (answerSteps.Count == answer.Length)
                 {
-                    _logger.Debug("Trying {0}", word);
+                    _logger.Debug("Found answer: {0}", answer);
                     break;
                 }
+
+                answerSteps.Clear();
             }
 
-            if (!guess.Any())
+            if (answerSteps.Any())
             {
-                _logger.Debug("Unable to create a word with these letters, will try again later...");
-                screen.Back.Click();
-                return;
+                screen.SubmitAnswer(answerSteps);
+                foreach (var step in answerSteps)
+                {
+                    var gear = step.Gear;
+                    _logger.Debug("Using gear {0}/{1}/{2}{3}", gear.Size, gear.Color, gear.Letter, step.Tool != null ? "/tool" : String.Empty);
+                }
+
+                Wait(TimeSpan.FromSeconds(7));
             }
-
-            _logger.Debug("We should guess: {0}", String.Join(String.Empty, guess.Select(x => x.Letter)));
-
-            screen.SubmitWord(guess);
-
-            // Give it a chance to work or not
-            Wait(TimeSpan.FromSeconds(7));
+            else
+            {
+                _logger.Debug("Unable to create word with available gears");
+                screen.Back.Click();
+            }
         }
     }
 }

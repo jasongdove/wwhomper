@@ -206,5 +206,10 @@ namespace sharperbot.AutoIt
         {
             return AutoItNative.AU3_WinActive(_windowTitle, String.Empty) != 0;
         }
+
+        public void WaitAfterInput()
+        {
+            Thread.Sleep(_random.Next(20, 100));
+        }
     }
 }

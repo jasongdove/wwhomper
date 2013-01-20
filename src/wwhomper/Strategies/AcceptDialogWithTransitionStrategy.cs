@@ -9,7 +9,7 @@ namespace wwhomper.Strategies
         public void ExecuteStrategy(IDialogScreen screen)
         {
             screen.Accept.Click();
-            Wait(TimeSpan.FromSeconds(5));
+            Wait(TimeSpan.FromSeconds(4));
         }
     }
 }

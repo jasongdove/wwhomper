@@ -19,21 +19,45 @@ namespace wwhomper.Screens
     {
         private readonly Button _submit;
         private readonly Button _back;
-        private readonly Image<Bgra, byte> _inactiveGear;
-        private readonly Image<Bgra, byte> _largeCopperGear;
-        private readonly Image<Bgra, byte> _largeWildcardGear;
+
+        private readonly Image<Bgra, byte> _inactiveGearSpot;
         private readonly Image<Bgra, byte> _largeCopperGearSpot;
-        private readonly Image<Bgra, byte> _smallCopperGear;
+        private readonly Image<Bgra, byte> _smallCopperGearSpot;
+        private readonly Image<Bgra, byte> _largeSilverGearSpot;
+        private readonly Image<Bgra, byte> _smallSilverGearSpot;
+        private readonly Image<Bgra, byte> _largeGoldGearSpot;
+        private readonly Image<Bgra, byte> _smallGoldGearSpot;
+
+        private readonly Image<Bgra, byte> _largeWildcardGear;
         private readonly Image<Bgra, byte> _smallWildcardGear;
+        private readonly Image<Bgra, byte> _largeCopperGear;
+        private readonly Image<Bgra, byte> _smallCopperGear;
+        private readonly Image<Bgra, byte> _largeSilverGear;
+        private readonly Image<Bgra, byte> _smallSilverGear;
+        private readonly Image<Bgra, byte> _largeGoldGear;
+        private readonly Image<Bgra, byte> _smallGoldGear;
+
+        private readonly Image<Bgra, byte> _torch;
+        private readonly Image<Bgra, byte> _copperPaint;
+        private readonly Image<Bgra, byte> _silverPaint;
+        private readonly Image<Bgra, byte> _goldPaint;
+        
         private readonly Dictionary<Rectangle, Rectangle> _letterSearchAreaTesseractArea;
+
         private readonly Button _gearOne;
         private readonly Button _gearTwo;
         private readonly Button _gearThree;
         private readonly Button _gearFour;
+        private readonly Button _gearFive;
+        
         private readonly Rectangle _gearSpotOne;
         private readonly Rectangle _gearSpotTwo;
         private readonly Rectangle _gearSpotThree;
         private readonly Rectangle _gearSpotFour;
+        private readonly Rectangle _gearSpotFive;
+
+        private readonly Rectangle _torchSpot;
+        private readonly Rectangle _paintSpot;
 
         public InPuzzleGame(IAutoIt autoIt, IAssetCatalog assetCatalog, ILogger logger)
             : base(
@@ -47,29 +71,84 @@ namespace wwhomper.Screens
             _submit = CreateCoordinateButton(271, 330, 93, 41);
             _back = CreateCoordinateButton(78, 66, 72, 22);
 
-            _inactiveGear = assetCatalog
+            // Gear spots
+            _inactiveGearSpot = assetCatalog
                 .GetCompositeImage(@"Images\ALL\Game\puzzle_game\Gear_NonInteractive.jpg")
                 .Copy(new Rectangle(25, 26, 38, 38));
-
-            _largeCopperGear = assetCatalog
-                .GetCompositeImage(@"Images\ALL\Game\puzzle_game\Gear_Large_Copper.jpg")
-                .Copy(new Rectangle(25, 67, 39, 3));
-
-            _largeWildcardGear = assetCatalog
-                .GetCompositeImage(@"Images\ALL\Game\puzzle_game\Gear_Large_Wildcard.jpg")
-                .Copy(new Rectangle(30, 33, 28, 25));
 
             _largeCopperGearSpot = assetCatalog
                 .GetCompositeImage(@"Images\ALL\Game\puzzle_game\GearSpot_Large_Copper.jpg")
                 .Copy(new Rectangle(30, 32, 29, 29));
 
-            _smallCopperGear = assetCatalog
-                .GetCompositeImage(@"Images\ALL\Game\puzzle_game\Gear_Small_Copper.jpg")
-                .Copy(new Rectangle(27, 57, 34, 8));
+            _smallCopperGearSpot = assetCatalog
+                .GetCompositeImage(@"Images\ALL\Game\puzzle_game\GearSpot_Small_Copper.jpg")
+                .Copy(new Rectangle(34, 37, 20, 19));
+
+            _largeSilverGearSpot = assetCatalog
+                .GetCompositeImage(@"Images\ALL\Game\puzzle_game\GearSpot_Large_Silver.jpg")
+                .Copy(new Rectangle(33, 34, 24, 25));
+
+            _smallSilverGearSpot = assetCatalog
+                .GetCompositeImage(@"Images\ALL\Game\puzzle_game\GearSpot_Small_Silver.jpg")
+                .Copy(new Rectangle(35, 37, 18, 18));
+
+            _largeGoldGearSpot = assetCatalog
+                .GetCompositeImage(@"Images\ALL\Game\puzzle_game\GearSpot_Large_Gold.jpg")
+                .Copy(new Rectangle(34, 37, 23, 22));
+
+            _smallGoldGearSpot = assetCatalog
+                .GetCompositeImage(@"Images\ALL\Game\puzzle_game\GearSpot_Small_Gold.jpg")
+                .Copy(new Rectangle(36, 38, 17, 17));
+
+            // Gears
+            _largeWildcardGear = assetCatalog
+                .GetCompositeImage(@"Images\ALL\Game\puzzle_game\Gear_Large_Wildcard.jpg")
+                .Copy(new Rectangle(30, 33, 28, 25));
 
             _smallWildcardGear = assetCatalog
                 .GetCompositeImage(@"Images\ALL\Game\puzzle_game\Gear_Small_Wildcard.jpg")
                 .Copy(new Rectangle(28, 29, 32, 32));
+
+            _largeCopperGear = assetCatalog
+                .GetCompositeImage(@"Images\ALL\Game\puzzle_game\Gear_Large_Copper.jpg")
+                .Copy(new Rectangle(25, 65, 38, 3));
+
+            _smallCopperGear = assetCatalog
+                .GetCompositeImage(@"Images\ALL\Game\puzzle_game\Gear_Small_Copper.jpg")
+                .Copy(new Rectangle(27, 32, 5, 32));
+
+            _largeSilverGear = assetCatalog
+                .GetCompositeImage(@"Images\ALL\Game\puzzle_game\Gear_Large_Silver.jpg")
+                .Copy(new Rectangle(25, 65, 38, 3));
+
+            _smallSilverGear = assetCatalog
+                .GetCompositeImage(@"Images\ALL\Game\puzzle_game\Gear_Small_Silver.jpg")
+                .Copy(new Rectangle(27, 32, 5, 32));
+
+            _largeGoldGear = assetCatalog
+                .GetCompositeImage(@"Images\ALL\Game\puzzle_game\Gear_Large_Gold.jpg")
+                .Copy(new Rectangle(25, 65, 38, 3));
+
+            _smallGoldGear = assetCatalog
+                .GetCompositeImage(@"Images\ALL\Game\puzzle_game\Gear_Small_Gold.jpg")
+                .Copy(new Rectangle(27, 32, 5, 32));
+
+            // Tools
+            _torch = assetCatalog
+                .GetCompositeImage(@"Images\ALL\Game\puzzle_game\PowerUp_Torch_Idle.jpg")
+                .Copy(new Rectangle(14, 59, 24, 31));
+
+            _copperPaint = assetCatalog
+                .GetCompositeImage(@"Images\ALL\Game\puzzle_game\PowerUp_Brush_Copper_Idle.jpg")
+                .Copy(new Rectangle(13, 51, 19, 32));
+
+            _silverPaint = assetCatalog
+                .GetCompositeImage(@"Images\ALL\Game\puzzle_game\PowerUp_Brush_Silver_Idle.jpg")
+                .Copy(new Rectangle(9, 59, 22, 32));
+
+            _goldPaint = assetCatalog
+                .GetCompositeImage(@"Images\ALL\Game\puzzle_game\PowerUp_Brush_Gold_Idle.jpg")
+                .Copy(new Rectangle(6, 48, 28, 25));
 
             _letterSearchAreaTesseractArea = new Dictionary<Rectangle, Rectangle>
             {
@@ -97,11 +176,16 @@ namespace wwhomper.Screens
             _gearTwo = CreateCoordinateButton(288, 175, 23, 21);
             _gearThree = CreateCoordinateButton(351, 165, 23, 21);
             _gearFour = CreateCoordinateButton(407, 192, 23, 21);
+            _gearFive = CreateCoordinateButton(474, 187, 16, 14);
 
             _gearSpotOne = new Rectangle(206, 119, 71, 73);
             _gearSpotTwo = new Rectangle(265, 150, 69, 69);
             _gearSpotThree = new Rectangle(327, 138, 71, 73);
             _gearSpotFour = new Rectangle(380, 164, 74, 74);
+            _gearSpotFive = new Rectangle(448, 156, 70, 75);
+
+            _torchSpot = new Rectangle(188, 288, 65, 98);
+            _paintSpot = new Rectangle(10, 282, 192, 113);
         }
 
         public Button Submit
@@ -118,114 +202,254 @@ namespace wwhomper.Screens
         {
             _gearOne.Click();
             AutoIt.Type("{BACKSPACE}");
+            AutoIt.WaitAfterInput();
 
             _gearTwo.Click();
             AutoIt.Type("{BACKSPACE}");
+            AutoIt.WaitAfterInput();
 
             _gearThree.Click();
             AutoIt.Type("{BACKSPACE}");
+            AutoIt.WaitAfterInput();
 
             _gearFour.Click();
             AutoIt.Type("{BACKSPACE}");
+            AutoIt.WaitAfterInput();
+
+            _gearFive.Click();
+            AutoIt.Type("{BACKSPACE}");
+            AutoIt.WaitAfterInput();
         }
 
-        public List<PuzzleGearSize> GetRequiredGears(Image<Bgra, byte> windowContents)
+        public List<PuzzleGearSpot> GetGearSpots()
         {
-            var result = new List<PuzzleGearSize>();
+            var gearSpots = new List<PuzzleGearSpot>();
 
-            var spotOne = windowContents.Copy(_gearSpotOne);
-            if (AutoIt.IsTemplateInWindow(spotOne, _largeCopperGearSpot).Success)
+            do
             {
-                result.Add(PuzzleGearSize.Large);
-            }
-            else
-            {
-                result.Add(PuzzleGearSize.Small);
-            }
+                var windowContents = AutoIt.GetWindowImage();
+                gearSpots.Clear();
 
-            var spotTwo = windowContents.Copy(_gearSpotTwo);
-            if (AutoIt.IsTemplateInWindow(spotTwo, _largeCopperGearSpot).Success)
-            {
-                result.Add(PuzzleGearSize.Large);
-            }
-            else
-            {
-                result.Add(PuzzleGearSize.Small);
-            }
+                var allGearSpots = new List<Rectangle> { _gearSpotOne, _gearSpotTwo, _gearSpotThree, _gearSpotFour, _gearSpotFive };
+                for (int i = 0; i < allGearSpots.Count; i++)
+                {
+                    var gearSpotSearchArea = windowContents.Copy(allGearSpots[i]);
+                    if (AutoIt.IsTemplateInWindow(gearSpotSearchArea, _inactiveGearSpot).Success)
+                    {
+                        ////Logger.Debug("Found inactive gear in spot {0}", i);
+                    }
+                    else if (AutoIt.IsTemplateInWindow(gearSpotSearchArea, _largeCopperGearSpot).Success)
+                    {
+                        ////Logger.Debug("Found large copper gear in spot {0}", i);
+                        gearSpots.Add(new PuzzleGearSpot(PuzzleGearSize.Large, PuzzleGearColor.Copper, i));
+                    }
+                    else if (AutoIt.IsTemplateInWindow(gearSpotSearchArea, _smallCopperGearSpot).Success)
+                    {
+                        ////Logger.Debug("Found small copper gear in spot {0}", i);
+                        gearSpots.Add(new PuzzleGearSpot(PuzzleGearSize.Small, PuzzleGearColor.Copper, i));
+                    }
+                    else if (AutoIt.IsTemplateInWindow(gearSpotSearchArea, _largeSilverGearSpot).Success)
+                    {
+                        ////Logger.Debug("Found large silver gear in spot {0}", i);
+                        gearSpots.Add(new PuzzleGearSpot(PuzzleGearSize.Large, PuzzleGearColor.Silver, i));
+                    }
+                    else if (AutoIt.IsTemplateInWindow(gearSpotSearchArea, _smallSilverGearSpot).Success)
+                    {
+                        ////Logger.Debug("Found small silver gear in spot {0}", i);
+                        gearSpots.Add(new PuzzleGearSpot(PuzzleGearSize.Small, PuzzleGearColor.Silver, i));
+                    }
+                    else if (AutoIt.IsTemplateInWindow(gearSpotSearchArea, _largeGoldGearSpot).Success)
+                    {
+                        ////Logger.Debug("Found large gold gear in spot {0}", i);
+                        gearSpots.Add(new PuzzleGearSpot(PuzzleGearSize.Large, PuzzleGearColor.Gold, i));
+                    }
+                    else if (AutoIt.IsTemplateInWindow(gearSpotSearchArea, _smallGoldGearSpot).Success)
+                    {
+                        ////Logger.Debug("Found small gold gear in spot {0}", i);
+                        gearSpots.Add(new PuzzleGearSpot(PuzzleGearSize.Small, PuzzleGearColor.Gold, i));
+                    }
+                    else
+                    {
+                        Logger.Warn("Unable to detect gear for spot {0}", i);
+                        SaveDebugImage(gearSpotSearchArea, "problemGearArea", String.Format("{0}.png", i));
+                    }
+                }
+            } while (gearSpots.Count < 4); // this helps us retry if the "hint" highlight interferes
 
-            var spotThree = windowContents.Copy(_gearSpotThree);
-            if (AutoIt.IsTemplateInWindow(spotThree, _largeCopperGearSpot).Success)
-            {
-                result.Add(PuzzleGearSize.Large);
-            }
-            else
-            {
-                result.Add(PuzzleGearSize.Small);
-            }
-
-            var spotFour = windowContents.Copy(_gearSpotFour);
-            if (AutoIt.IsTemplateInWindow(spotFour, _largeCopperGearSpot).Success)
-            {
-                result.Add(PuzzleGearSize.Large);
-            }
-            else
-            {
-                result.Add(PuzzleGearSize.Small);
-            }
-
-            // TODO: Support 5 gears
-            
-            return result;
+            return gearSpots;
         }
 
-        public List<PuzzleLetter> GetAvailableLetters(Image<Bgra, byte> windowContents)
+        public List<PuzzleTool> GetTools()
         {
-            var result = new List<PuzzleLetter>();
+            var windowContents = AutoIt.GetWindowImage();
+
+            var tools = new List<PuzzleTool>();
+
+            var torchSearchArea = windowContents.Copy(_torchSpot);
+            var torchSearch = AutoIt.IsTemplateInWindow(torchSearchArea, _torch);
+            if (torchSearch.Success)
+            {
+                var pickupArea = new Rectangle(
+                    _torchSpot.X + torchSearch.Point.X,
+                    _torchSpot.Y + torchSearch.Point.Y,
+                    _torch.Size.Width,
+                    _torch.Size.Height);
+
+                tools.Add(new PuzzleTorch(pickupArea));
+            }
+
+            var paintSearchArea = windowContents.Copy(_paintSpot);
+            var copperPaintSearch = AutoIt.IsTemplateInWindow(paintSearchArea, _copperPaint);
+            if (copperPaintSearch.Success)
+            {
+                var pickupArea = new Rectangle(
+                    _paintSpot.X + copperPaintSearch.Point.X,
+                    _paintSpot.Y + copperPaintSearch.Point.Y,
+                    _copperPaint.Size.Width,
+                    _copperPaint.Size.Height);
+
+                tools.Add(new PuzzlePaint(PuzzleGearColor.Copper, pickupArea));
+            }
+
+            var silverPaintSearch = AutoIt.IsTemplateInWindow(paintSearchArea, _silverPaint);
+            if (silverPaintSearch.Success)
+            {
+                var pickupArea = new Rectangle(
+                    _paintSpot.X + silverPaintSearch.Point.X,
+                    _paintSpot.Y + silverPaintSearch.Point.Y,
+                    _silverPaint.Size.Width,
+                    _silverPaint.Size.Height);
+
+                tools.Add(new PuzzlePaint(PuzzleGearColor.Silver, pickupArea));
+            }
+
+            var goldPaintSearch = AutoIt.IsTemplateInWindow(paintSearchArea, _goldPaint);
+            if (goldPaintSearch.Success)
+            {
+                var pickupArea = new Rectangle(
+                    _paintSpot.X + goldPaintSearch.Point.X,
+                    _paintSpot.Y + goldPaintSearch.Point.Y,
+                    _goldPaint.Size.Width,
+                    _goldPaint.Size.Height);
+
+                tools.Add(new PuzzlePaint(PuzzleGearColor.Gold, pickupArea));
+            }
+
+            return tools;
+        }
+
+        public List<PuzzleGear> GetGears()
+        {
+            var gears = new List<PuzzleGear>();
+
+            var windowContents = AutoIt.GetWindowImage();
             var letters = new List<Image<Gray, byte>>();
 
             foreach (var entry in _letterSearchAreaTesseractArea)
             {
-                PuzzleLetter letter = null;
+                PuzzleGear gear = null;
 
                 var searchArea = windowContents.Copy(entry.Key);
                 if (AutoIt.IsTemplateInWindow(searchArea, _largeWildcardGear).Success)
                 {
-                    letter = new PuzzleLetter("*", PuzzleGearSize.Large);
+                    gear = new PuzzleGear(
+                        "*",
+                        PuzzleGearSize.Large | PuzzleGearSize.Small,
+                        PuzzleGearColor.Copper | PuzzleGearColor.Silver | PuzzleGearColor.Gold,
+                        entry.Value);
                 }
                 else if (AutoIt.IsTemplateInWindow(searchArea, _smallWildcardGear).Success)
                 {
-                    letter = new PuzzleLetter("*", PuzzleGearSize.Small);
+                    gear = new PuzzleGear(
+                        "*",
+                        PuzzleGearSize.Large | PuzzleGearSize.Small,
+                        PuzzleGearColor.Copper | PuzzleGearColor.Silver | PuzzleGearColor.Gold,
+                        entry.Value);
                 }
                 else if (AutoIt.IsTemplateInWindow(searchArea, _largeCopperGear).Success)
                 {
+                    gear = new PuzzleGear(
+                        String.Empty,
+                        PuzzleGearSize.Large,
+                        PuzzleGearColor.Copper,
+                        entry.Value);
+                    
                     var letterImage = windowContents.Copy(entry.Value).Convert<Gray, byte>();
                     letterImage.Floor(245);
                     letters.Add(letterImage);
-
-                    var text = GetZoomedOutText(letterImage, 2).Trim();
-                    letter = new PuzzleLetter(text, PuzzleGearSize.Large);
                 }
                 else if (AutoIt.IsTemplateInWindow(searchArea, _smallCopperGear).Success)
                 {
+                    gear = new PuzzleGear(
+                        String.Empty,
+                        PuzzleGearSize.Small,
+                        PuzzleGearColor.Copper,
+                        entry.Value);
+
                     var letterImage = windowContents.Copy(entry.Value).Convert<Gray, byte>();
                     letterImage.Floor(245);
                     letters.Add(letterImage);
+                }
+                else if (AutoIt.IsTemplateInWindow(searchArea, _largeSilverGear).Success)
+                {
+                    gear = new PuzzleGear(
+                        String.Empty,
+                        PuzzleGearSize.Large,
+                        PuzzleGearColor.Silver,
+                        entry.Value);
 
-                    var text = GetZoomedOutText(letterImage, 2).Trim();
-                    letter = new PuzzleLetter(text, PuzzleGearSize.Small);
+                    var letterImage = windowContents.Copy(entry.Value).Convert<Gray, byte>();
+                    letterImage.Floor(245);
+                    letters.Add(letterImage);
+                }
+                else if (AutoIt.IsTemplateInWindow(searchArea, _smallSilverGear).Success)
+                {
+                    gear = new PuzzleGear(
+                        String.Empty,
+                        PuzzleGearSize.Small,
+                        PuzzleGearColor.Silver,
+                        entry.Value);
+
+                    var letterImage = windowContents.Copy(entry.Value).Convert<Gray, byte>();
+                    letterImage.Floor(245);
+                    letters.Add(letterImage);
+                }
+                else if (AutoIt.IsTemplateInWindow(searchArea, _largeGoldGear).Success)
+                {
+                    gear = new PuzzleGear(
+                        String.Empty,
+                        PuzzleGearSize.Large,
+                        PuzzleGearColor.Gold,
+                        entry.Value);
+
+                    var letterImage = windowContents.Copy(entry.Value).Convert<Gray, byte>();
+                    letterImage.Floor(245);
+                    letters.Add(letterImage);
+                }
+                else if (AutoIt.IsTemplateInWindow(searchArea, _smallGoldGear).Success)
+                {
+                    gear = new PuzzleGear(
+                        String.Empty,
+                        PuzzleGearSize.Small,
+                        PuzzleGearColor.Gold,
+                        entry.Value);
+
+                    var letterImage = windowContents.Copy(entry.Value).Convert<Gray, byte>();
+                    letterImage.Floor(245);
+                    letters.Add(letterImage);
                 }
 
-                if (letter != null)
+                if (gear != null)
                 {
-                    result.Add(letter);
+                    gears.Add(gear);
                 }
             }
 
-            if (result.Any())
+            if (letters.Any())
             {
                 var combined = Combine(letters);
-                var allText = GetZoomedOutText(combined, 2, "*").Trim().Replace(" ", String.Empty);
-                var withoutWildcards = result.Where(x => x.Letter != "*").ToList();
+                var allText = GetZoomedOutTextThreshold(combined, 2, 60, 255, "", true).Trim().Replace(" ", String.Empty);
+                var withoutWildcards = gears.Where(x => !x.IsWildcard).ToList();
                 if (allText.Length == withoutWildcards.Count)
                 {
                     foreach (var r in withoutWildcards.Where(x => String.IsNullOrEmpty(x.Letter)).ToList())
@@ -233,54 +457,35 @@ namespace wwhomper.Screens
                         r.Letter = allText[withoutWildcards.IndexOf(r)].ToString(CultureInfo.InvariantCulture);
                     }
                 }
+
+                ////SaveDebugImage(windowContents, "badGearTesseract", "window.png");
+                ////SaveDebugImage(combined, "badGearTesseract", DateTime.Now.Ticks + ".png");
             }
 
-            return result;
+            return gears;
         }
 
-        public void SubmitWord(List<PuzzleLetter> guess)
+        public void SubmitAnswer(List<PuzzleStep> steps)
         {
-            if (guess.Count != 4)
+            var allGearButtons = new[] { _gearOne, _gearTwo, _gearThree, _gearFour, _gearFive };
+            for (int i = 0; i < steps.Count; i++)
             {
-                return;
-            }
+                var step = steps[i];
+                if (step.Tool != null)
+                {
+                    AutoIt.Click(step.Tool.PickupArea);
+                    AutoIt.Click(step.Gear.PickupArea);
 
-            TypeLetter(guess[0], _gearOne);
-            TypeLetter(guess[1], _gearTwo);
-            TypeLetter(guess[2], _gearThree);
-            TypeLetter(guess[3], _gearFour);
+                    System.Threading.Thread.Sleep(2500); // TODO: Validate this delay
+                }
+
+                AutoIt.Click(step.Gear.PickupArea);
+                allGearButtons[i].Click();
+
+                AutoIt.WaitAfterInput();
+            }
 
             _submit.Click();
-        }
-
-        private void TypeLetter(PuzzleLetter letter, Button gear)
-        {
-            if (letter.Letter == "*")
-            {
-                var windowContents = AutoIt.GetWindowImage();
-                foreach (var entry in _letterSearchAreaTesseractArea)
-                {
-                    var searchArea = windowContents.Copy(entry.Key);
-
-                    if (AutoIt.IsTemplateInWindow(searchArea, _largeWildcardGear).Success)
-                    {
-                        AutoIt.Click(entry.Key);
-                        break;
-                    }
-
-                    if (AutoIt.IsTemplateInWindow(searchArea, _smallWildcardGear).Success)
-                    {
-                        AutoIt.Click(entry.Key);
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                AutoIt.Type(letter.Letter);
-            }
-
-            gear.Click();
         }
     }
 }

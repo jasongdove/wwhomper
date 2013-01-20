@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Emgu.CV;
 using Emgu.CV.OCR;
 using Emgu.CV.Structure;
@@ -36,7 +37,28 @@ namespace sharperbot.Screens
             get { return _assetCatalog; }
         }
 
+        protected ILogger Logger
+        {
+            get { return _logger; }
+        }
+
         public abstract ScreenSearchResult IsActive(Image<Bgra, byte> windowContents);
+
+        protected void SaveDebugImage<T>(Image<T, byte> image, string folder, string fileName) where T : struct, IColor
+        {
+            var root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            if (root != null)
+            {
+                var absoluteFolder = Path.Combine(root, folder);
+                if (!Directory.Exists(absoluteFolder))
+                {
+                    Directory.CreateDirectory(absoluteFolder);
+                }
+
+                var absoluteFileName = Path.Combine(absoluteFolder, fileName);
+                image.Save(absoluteFileName);
+            }
+        }
 
         protected Button CreateCoordinateButton(int x, int y, int width, int height)
         {
@@ -67,6 +89,13 @@ namespace sharperbot.Screens
             }
 
             return result;
+        }
+
+        protected string GetZoomedOutTextThreshold(Image<Gray, byte> image, double scale, int threshold, int max, string additionalLetters = "", bool debug = false)
+        {
+            var zoomedOut = image.Resize(scale, Emgu.CV.CvEnum.INTER.CV_INTER_LANCZOS4);
+            var blackWhite = zoomedOut.ThresholdBinary(new Gray(threshold), new Gray(max));
+            return GetText(blackWhite, additionalLetters, debug);
         }
 
         protected string GetZoomedOutText<T>(Image<T, byte> image, double scale, string additionalLetters = "", bool debug = false) where T : struct, IColor

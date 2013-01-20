@@ -20,5 +20,6 @@ namespace sharperbot.AutoIt
         void Type(string text);
         void Click(Rectangle rectangle);
         bool IsWindowActive();
+        void WaitAfterInput();
     }
 }
