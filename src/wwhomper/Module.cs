@@ -1,4 +1,5 @@
 ﻿using Ninject.Modules;
+using wwhomper.Data;
 using wwhomper.Dictionary;
 
 namespace wwhomper
@@ -8,6 +9,7 @@ namespace wwhomper
         public override void Load()
         {
             Bind<IPakDictionary>().To<PakDictionary>().InSingletonScope();
+            Bind<PuzzleGameState>().ToSelf().InSingletonScope();
         }
     }
 }

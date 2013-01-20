@@ -82,6 +82,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\PuzzleGameState.cs" />
     <Compile Include="Data\PuzzleGear.cs" />
     <Compile Include="Data\PuzzleGearColor.cs" />
     <Compile Include="Data\PuzzleGearSpot.cs" />

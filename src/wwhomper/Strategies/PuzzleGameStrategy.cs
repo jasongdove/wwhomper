@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Threading;
 using Ninject.Extensions.Logging;
 using sharperbot.AutoIt;
 using sharperbot.Screens;
@@ -18,12 +17,14 @@ namespace wwhomper.Strategies
         private readonly IAutoIt _autoIt;
         private readonly ILogger _logger;
         private readonly IPakDictionary _pakDictionary;
+        private readonly PuzzleGameState _puzzleGameState;
 
-        public PuzzleGameStrategy(IAutoIt autoIt, ILogger logger, IPakDictionary pakDictionary)
+        public PuzzleGameStrategy(IAutoIt autoIt, ILogger logger, IPakDictionary pakDictionary, PuzzleGameState puzzleGameState)
         {
             _autoIt = autoIt;
             _logger = logger;
             _pakDictionary = pakDictionary;
+            _puzzleGameState = puzzleGameState;
         }
 
         public void ExecuteStrategy(InPuzzleGame screen)
@@ -141,6 +142,11 @@ namespace wwhomper.Strategies
                 answerSteps.Clear();
             }
 
+            _puzzleGameState.Gears.Clear();
+            _puzzleGameState.Gears.AddRange(gears);
+            _puzzleGameState.GearSpots.Clear();
+            _puzzleGameState.GearSpots.AddRange(gearSpots);
+
             if (answerSteps.Any())
             {
                 screen.SubmitAnswer(answerSteps);
@@ -168,13 +174,33 @@ namespace wwhomper.Strategies
                 }
 
                 // If we haven't changed anything, and our gear collection is full, delete one
+                bool trashedGear = false;
                 if (!performedOptimizations && gears.Count == 15)
                 {
                     // TODO: Maybe base this on color/size rather than a simple overall frequency
-                    var letters = gears.Select(x => x.Letter[0]).ToArray();
+                    trashedGear = true;
+
+                    var availableGears = gears.AsEnumerable();
+
+                    // Make sure we don't throw away a gear we need
+                    var gearWeNeed = _puzzleGameState.GearWeNeed;
+                    if (gearWeNeed != null)
+                    {
+                        availableGears = availableGears.Where(x => !x.Color.HasFlag(gearWeNeed.Color) && !x.Size.HasFlag(gearWeNeed.Size));
+                    }
+
+                    var letters = availableGears.Select(x => x.Letter[0]).ToArray();
                     var targetLetter = _pakDictionary.WorstLetterOverall(letters);
                     var gear = gears.First(x => x.Letter[0] == targetLetter);
                     screen.Trash(gear);
+                }
+
+                // Refresh the gears if we changed anything
+                if (performedOptimizations || trashedGear)
+                {
+                    gears = screen.GetGears();
+                    _puzzleGameState.Gears.Clear();
+                    _puzzleGameState.Gears.AddRange(gears);
                 }
 
                 screen.Back.Click();

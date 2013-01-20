@@ -6,6 +6,7 @@ using Ninject.Extensions.Logging;
 using sharperbot.Assets;
 using sharperbot.AutoIt;
 using sharperbot.Screens;
+using sharperbot.Screens.Controls;
 using wwhomper.Screens.Controls;
 
 namespace wwhomper.Screens
@@ -13,6 +14,10 @@ namespace wwhomper.Screens
     public class InGame : TemplateScreen
     {
         private readonly List<TemplateCoordinate> _gamePieces = new List<TemplateCoordinate>();
+
+        private readonly Button _menuButton;
+        private readonly Button _mapButton;
+        private readonly Button _exitConfirmButton;
 
         public InGame(IAutoIt autoIt, IAssetCatalog assetCatalog, ILogger logger)
             : base(
@@ -29,6 +34,25 @@ namespace wwhomper.Screens
             _gamePieces.Add(new TemplateCoordinate(415, 420, 58, 34));
             _gamePieces.Add(new TemplateCoordinate(492, 425, 58, 34));
             _gamePieces.Add(new TemplateCoordinate(569, 420, 58, 34));
+
+            _menuButton = CreateCoordinateButton(15, 564, 73, 16);
+            _mapButton = CreateCoordinateButton(15, 497, 73, 14);
+            _exitConfirmButton = CreateCoordinateButton(211, 368, 149, 34);
+        }
+
+        public Button Menu
+        {
+            get { return _menuButton; }
+        }
+
+        public Button Map
+        {
+            get { return _mapButton; }
+        }
+
+        public Button ExitConfirm
+        {
+            get { return _exitConfirmButton; }
         }
 
         public string GetLetters()

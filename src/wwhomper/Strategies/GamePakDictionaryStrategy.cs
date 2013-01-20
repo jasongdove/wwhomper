@@ -5,6 +5,7 @@ using Combinatorics.Collections;
 using sharperbot.AutoIt;
 using sharperbot.Screens;
 using sharperbot.Strategies;
+using wwhomper.Data;
 using wwhomper.Dictionary;
 using wwhomper.Screens;
 
@@ -14,19 +15,33 @@ namespace wwhomper.Strategies
     {
         private readonly IAutoIt _autoIt;
         private readonly IPakDictionary _pakDictionary;
+        private readonly PuzzleGameState _puzzleGameState;
 
         private readonly Random _random;
 
-        public GamePakDictionaryStrategy(IAutoIt autoIt, IPakDictionary pakDictionary)
+        public GamePakDictionaryStrategy(IAutoIt autoIt, IPakDictionary pakDictionary, PuzzleGameState puzzleGameState)
         {
             _autoIt = autoIt;
             _pakDictionary = pakDictionary;
+            _puzzleGameState = puzzleGameState;
 
             _random = new Random();
         }
 
         public void ExecuteStrategy(InGame screen)
         {
+            if (_puzzleGameState.GearWeNeed != null)
+            {
+                screen.Menu.Click();
+                Wait(TimeSpan.FromSeconds(1));
+
+                screen.Map.Click();
+                _autoIt.WaitAfterInput();
+
+                screen.ExitConfirm.Click();
+                return;
+            }
+
             // Get available letters
             List<char> letters = screen.GetLetters().ToList();
 
