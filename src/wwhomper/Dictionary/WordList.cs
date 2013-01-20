@@ -8,10 +8,22 @@ namespace wwhomper.Dictionary
     public class WordList : IWordList
     {
         private readonly HashSet<string> _words;
+        private readonly Dictionary<char, int> _totalFrequency;
+        private readonly Dictionary<int, Dictionary<char, int>> _indexedFrequency;
 
         public WordList()
         {
             _words = new HashSet<string>();
+            _totalFrequency = new Dictionary<char, int>();
+            _indexedFrequency = new Dictionary<int, Dictionary<char, int>>
+            {
+                { 0, new Dictionary<char, int>() },
+                { 1, new Dictionary<char, int>() },
+                { 2, new Dictionary<char, int>() },
+                { 3, new Dictionary<char, int>() },
+                { 4, new Dictionary<char, int>() },
+                { 5, new Dictionary<char, int>() },
+            };
         }
 
         public void Load(string fileName)
@@ -24,7 +36,7 @@ namespace wwhomper.Dictionary
                     line = line.Trim().ToUpperInvariant();
                     if (line.Length >= 3 && line.Length <= 6)
                     {
-                        _words.Add(line);
+                        AddWord(line);
                     }
                 }
             }
@@ -45,10 +57,34 @@ namespace wwhomper.Dictionary
                     line = line.Trim().ToUpperInvariant();
                     if (line.Length >= 3 && line.Length <= 6)
                     {
-                        _words.Add(line);
+                        AddWord(line);
                     }
                 }
             }
+        }
+
+        private void AddWord(string word)
+        {
+            for (int i = 0; i < word.Length; i++)
+            {
+                char c = word[i];
+
+                if (!_totalFrequency.ContainsKey(c))
+                {
+                    _totalFrequency.Add(c, 0);
+                }
+
+                _totalFrequency[c]++;
+
+                if (!_indexedFrequency[i].ContainsKey(c))
+                {
+                    _indexedFrequency[i].Add(c, 0);
+                }
+
+                _indexedFrequency[i][c]++;
+            }
+
+            _words.Add(word);
         }
 
         public bool ContainsWord(string word)
@@ -59,6 +95,18 @@ namespace wwhomper.Dictionary
         public List<string> OfLength(int length)
         {
             return _words.Where(x => x.Length == length).ToList();
+        }
+
+        public char BestLetterForIndex(char[] letters, int index)
+        {
+            var sortedLetters = _indexedFrequency[index].OrderByDescending(x => x.Value).Select(x => x.Key);
+            return sortedLetters.First(letters.Contains);
+        }
+
+        public char WorstLetterOverall(char[] letters)
+        {
+            var sortedLetters = _totalFrequency.OrderBy(x => x.Value).Select(x => x.Key);
+            return sortedLetters.First(letters.Contains);
         }
     }
 }

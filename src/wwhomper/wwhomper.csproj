@@ -98,6 +98,7 @@
     <Compile Include="Screens\BonusGameComplete.cs" />
     <Compile Include="Screens\BonusGameWaiting.cs" />
     <Compile Include="Screens\Controls\TemplateCoordinate.cs" />
+    <Compile Include="Screens\NewGearFull.cs" />
     <Compile Include="Screens\PaintBrush.cs" />
     <Compile Include="Screens\InBonusGame.cs" />
     <Compile Include="Screens\InPuzzleGame.cs" />

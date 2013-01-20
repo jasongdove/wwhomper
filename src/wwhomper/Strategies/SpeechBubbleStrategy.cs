@@ -17,6 +17,7 @@ namespace wwhomper.Strategies
             RegisterNestedScreen<BonusAcorns, AcceptDialogWithTransitionStrategy>();
             RegisterNestedScreen<BlowTorch, AcceptDialogWithTransitionStrategy>();
             RegisterNestedScreen<PaintBrush, AcceptDialogWithTransitionStrategy>();
+            RegisterNestedScreen<NewGearFull, AcceptDialogWithoutWaitingStrategy>();
         }
 
         public void ExecuteStrategy(SpeechBubble screen)

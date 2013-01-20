@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using Ninject.Extensions.Logging;
@@ -58,6 +59,9 @@ namespace wwhomper.Screens
 
         private readonly Rectangle _torchSpot;
         private readonly Rectangle _paintSpot;
+
+        private readonly Rectangle _trash;
+        private readonly Button _trashConfirm;
 
         public InPuzzleGame(IAutoIt autoIt, IAssetCatalog assetCatalog, ILogger logger)
             : base(
@@ -172,11 +176,11 @@ namespace wwhomper.Screens
                 { new Rectangle(579, 487, 73, 75), new Rectangle(603, 511, 25, 27) },
             };
 
-            _gearOne = CreateCoordinateButton(231, 144, 23, 21);
-            _gearTwo = CreateCoordinateButton(288, 175, 23, 21);
-            _gearThree = CreateCoordinateButton(351, 165, 23, 21);
-            _gearFour = CreateCoordinateButton(407, 192, 23, 21);
-            _gearFive = CreateCoordinateButton(474, 187, 16, 14);
+            _gearOne = CreateCoordinateButton(237, 150, 9, 9);
+            _gearTwo = CreateCoordinateButton(295, 180, 8, 7);
+            _gearThree = CreateCoordinateButton(357, 172, 11, 8);
+            _gearFour = CreateCoordinateButton(415, 198, 9, 10);
+            _gearFive = CreateCoordinateButton(479, 190, 7, 6);
 
             _gearSpotOne = new Rectangle(206, 119, 71, 73);
             _gearSpotTwo = new Rectangle(265, 150, 69, 69);
@@ -186,6 +190,9 @@ namespace wwhomper.Screens
 
             _torchSpot = new Rectangle(188, 288, 65, 98);
             _paintSpot = new Rectangle(10, 282, 192, 113);
+
+            _trash = new Rectangle(690, 516, 32, 29);
+            _trashConfirm = CreateCoordinateButton(527, 291, 98, 23);
         }
 
         public Button Submit
@@ -473,10 +480,7 @@ namespace wwhomper.Screens
                 var step = steps[i];
                 if (step.Tool != null)
                 {
-                    AutoIt.Click(step.Tool.PickupArea);
-                    AutoIt.Click(step.Gear.PickupArea);
-
-                    System.Threading.Thread.Sleep(2500); // TODO: Validate this delay
+                    ApplyTool(step.Tool, step.Gear);
                 }
 
                 AutoIt.Click(step.Gear.PickupArea);
@@ -486,6 +490,22 @@ namespace wwhomper.Screens
             }
 
             _submit.Click();
+        }
+
+        public void ApplyTool(PuzzleTool tool, PuzzleGear gear)
+        {
+            AutoIt.Click(tool.PickupArea);
+            AutoIt.Click(gear.PickupArea);
+
+            Thread.Sleep(2500);
+        }
+
+        public void Trash(PuzzleGear gear)
+        {
+            AutoIt.Click(gear.PickupArea);
+            AutoIt.Click(_trash);
+            AutoIt.WaitAfterInput();
+            _trashConfirm.Click();
         }
     }
 }
