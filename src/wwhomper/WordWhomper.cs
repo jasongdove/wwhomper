@@ -22,7 +22,7 @@ namespace wwhomper
             RegisterScreen<MainMenu, AcceptDialogWithTransitionStrategy>();
             RegisterScreen<Intro, AcceptDialogWithoutWaitingStrategy>();
             RegisterScreen<IntroComplete, AcceptDialogWithoutWaitingStrategy>();
-            RegisterScreen<Map, AcceptDialogWithoutWaitingStrategy>();
+            RegisterScreen<Map, MapStrategy>();
             RegisterScreen<Paused, AcceptDialogWithoutWaitingStrategy>();
             RegisterScreen<SpeechBubble, SpeechBubbleStrategy>();
             RegisterScreen<InGame, GamePakDictionaryStrategy>();

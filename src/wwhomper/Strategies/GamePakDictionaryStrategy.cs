@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using Combinatorics.Collections;
+using Ninject.Extensions.Logging;
 using sharperbot.AutoIt;
 using sharperbot.Screens;
 using sharperbot.Strategies;
@@ -14,14 +16,16 @@ namespace wwhomper.Strategies
     public class GamePakDictionaryStrategy : ScreenStrategy, IScreenStrategy<InGame>
     {
         private readonly IAutoIt _autoIt;
+        private readonly ILogger _logger;
         private readonly IPakDictionary _pakDictionary;
         private readonly PuzzleGameState _puzzleGameState;
 
         private readonly Random _random;
 
-        public GamePakDictionaryStrategy(IAutoIt autoIt, IPakDictionary pakDictionary, PuzzleGameState puzzleGameState)
+        public GamePakDictionaryStrategy(IAutoIt autoIt, ILogger logger, IPakDictionary pakDictionary, PuzzleGameState puzzleGameState)
         {
             _autoIt = autoIt;
+            _logger = logger;
             _pakDictionary = pakDictionary;
             _puzzleGameState = puzzleGameState;
 
@@ -30,8 +34,10 @@ namespace wwhomper.Strategies
 
         public void ExecuteStrategy(InGame screen)
         {
-            if (_puzzleGameState.GearWeNeed != null)
+            if (CheckForWrongArea(screen))
             {
+                _logger.Debug("We're in the wrong area, let's go back to the map");
+
                 screen.Menu.Click();
                 Wait(TimeSpan.FromSeconds(1));
 
@@ -76,6 +82,25 @@ namespace wwhomper.Strategies
                 _autoIt.Type("{ENTER}" + guess + "{ENTER}");
                 Wait(TimeSpan.FromMilliseconds(_random.Next(20, 100)));
             }
+        }
+
+        private bool CheckForWrongArea(InGame screen)
+        {
+            var gearWeNeed = _puzzleGameState.GearWeNeed;
+            if (gearWeNeed != null)
+            {
+                var searchArea = _autoIt.GetWindowImage().Copy(screen.BackgroundSearchArea);
+                var currentBackground = screen.Backgrounds.FirstOrDefault(x => _autoIt.IsTemplateInWindow(searchArea, x).Success);
+                if (currentBackground == null)
+                {
+                    return false;
+                }
+
+                var areaIndex = screen.Backgrounds.IndexOf(currentBackground);
+                return areaIndex != gearWeNeed.Index;
+            }
+
+            return false;
         }
     }
 }

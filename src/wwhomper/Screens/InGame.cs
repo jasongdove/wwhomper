@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using Emgu.CV;
 using Emgu.CV.Structure;
 using Ninject.Extensions.Logging;
 using sharperbot.Assets;
@@ -18,6 +20,10 @@ namespace wwhomper.Screens
         private readonly Button _menuButton;
         private readonly Button _mapButton;
         private readonly Button _exitConfirmButton;
+
+        private readonly List<Image<Bgra, byte>> _backgrounds;
+
+        private readonly Rectangle _backgroundSearchArea;
 
         public InGame(IAutoIt autoIt, IAssetCatalog assetCatalog, ILogger logger)
             : base(
@@ -38,6 +44,25 @@ namespace wwhomper.Screens
             _menuButton = CreateCoordinateButton(15, 564, 73, 16);
             _mapButton = CreateCoordinateButton(15, 497, 73, 14);
             _exitConfirmButton = CreateCoordinateButton(211, 368, 149, 34);
+
+            var backgroundRectangle = new Rectangle(351, 274, 69, 26);
+            _backgrounds = new List<Image<Bgra, byte>>
+            {
+                assetCatalog.GetCompositeImage(@"Images\ALL\Game\backgrounds\BG_01.jpg")
+                    .Copy(backgroundRectangle),
+                assetCatalog.GetCompositeImage(@"Images\ALL\Game\backgrounds\BG_02.jpg")
+                    .Copy(backgroundRectangle),
+                assetCatalog.GetCompositeImage(@"Images\ALL\Game\backgrounds\BG_03.jpg")
+                    .Copy(backgroundRectangle),
+                assetCatalog.GetCompositeImage(@"Images\ALL\Game\backgrounds\BG_04.jpg")
+                    .Copy(backgroundRectangle),
+                assetCatalog.GetCompositeImage(@"Images\ALL\Game\backgrounds\BG_05.jpg")
+                    .Copy(backgroundRectangle),
+                assetCatalog.GetCompositeImage(@"Images\ALL\Game\backgrounds\BG_06.jpg")
+                    .Copy(backgroundRectangle),
+            };
+
+            _backgroundSearchArea = new Rectangle(341, 289, 104, 68);
         }
 
         public Button Menu
@@ -53,6 +78,16 @@ namespace wwhomper.Screens
         public Button ExitConfirm
         {
             get { return _exitConfirmButton; }
+        }
+
+        public List<Image<Bgra, byte>> Backgrounds
+        {
+            get { return _backgrounds; }
+        }
+
+        public Rectangle BackgroundSearchArea
+        {
+            get { return _backgroundSearchArea; }
         }
 
         public string GetLetters()
