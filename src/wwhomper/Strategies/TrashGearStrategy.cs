@@ -42,9 +42,9 @@ namespace wwhomper.Strategies
 
         private PuzzleGear FindGearWithWorstLetter(List<PuzzleGear> gears)
         {
-            var letters = gears.Select(x => x.Letter[0]).ToArray();
+            var letters = gears.Select(x => x.Letter).ToArray();
             var targetLetter = _pakDictionary.WorstLetterOverall(letters);
-            return gears.First(x => x.Letter[0] == targetLetter);
+            return gears.First(x => x.Letter == targetLetter);
         }
     }
 }

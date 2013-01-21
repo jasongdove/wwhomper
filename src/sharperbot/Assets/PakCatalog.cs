@@ -128,24 +128,9 @@ namespace sharperbot.Assets
             }
 
             var jpgImage = GetEntryImage(fileName);
+            var pngImage = GetEntryImage(pngFileName);
 
-            // Convert png to grayscale so we get an intensity value
-            var pngImage = GetEntryImage(pngFileName).Convert<Gray, byte>();
-
-            for (int y = 0; y < jpgImage.Data.GetLength(0); y++)
-            {
-                for (int x = 0; x < jpgImage.Data.GetLength(1); x++)
-                {
-                    var existing = jpgImage[y, x];
-                    jpgImage[y, x] = new Bgra(
-                        existing.Blue,
-                        existing.Green,
-                        existing.Red,
-                        pngImage[y, x].Intensity);
-                }
-            }
-
-            return jpgImage;
+            return jpgImage.CombineAlpha(pngImage);
         }
 
         private byte[] GetEntryBytes(PakEntry entry)

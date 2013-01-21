@@ -18,5 +18,25 @@ namespace sharperbot
                 }
             }
         }
+
+        public static Image<Bgra, byte> CombineAlpha(this Image<Bgra, byte> image, Image<Bgra, byte> alpha)
+        {
+            var intensity = alpha.Convert<Gray, byte>();
+
+            for (int y = 0; y < image.Data.GetLength(0); y++)
+            {
+                for (int x = 0; x < image.Data.GetLength(1); x++)
+                {
+                    var existing = image[y, x];
+                    image[y, x] = new Bgra(
+                        existing.Blue,
+                        existing.Green,
+                        existing.Red,
+                        intensity[y, x].Intensity);
+                }
+            }
+
+            return image;
+        }
     }
 }

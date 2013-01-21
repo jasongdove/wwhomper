@@ -11,7 +11,7 @@ namespace sharperbot.Font
     {
         private readonly List<FontCharacter> _characters = new List<FontCharacter>();
 
-        public Image<Bgr, byte> Bitmap { get; set; }
+        public Image<Bgra, byte> Bitmap { get; set; }
         public int Ascent { get; set; }
 
         public List<FontCharacter> Characters

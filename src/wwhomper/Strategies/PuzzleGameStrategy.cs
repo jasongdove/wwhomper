@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using Ninject.Extensions.Logging;
 using sharperbot.AutoIt;
@@ -87,7 +86,7 @@ namespace wwhomper.Strategies
                 {
                     PuzzleStep answerStep = null;
 
-                    var letter = answer[gearSpot.Index].ToString(CultureInfo.InvariantCulture);
+                    var letter = answer[gearSpot.Index];
                     
                     // Prefer actual letters over wildcards
                     var availableGear = availableGears.FirstOrDefault(x => x.Letter == letter && x.Size.HasFlag(gearSpot.Size) && x.Color.HasFlag(gearSpot.Color))
@@ -157,10 +156,31 @@ namespace wwhomper.Strategies
             if (answerSteps.Any())
             {
                 screen.SubmitAnswer(answerSteps);
+
                 foreach (var step in answerSteps)
                 {
                     var gear = step.Gear;
-                    _logger.Debug("Using gear {0}/{1}/{2}{3}", gear.Size, gear.Color, gear.Letter, step.Tool != null ? "/tool" : String.Empty);
+
+                    var tool = String.Empty;
+                    if (step.Tool is PuzzleTorch)
+                    {
+                        tool = "/torch";
+                    }
+                    else
+                    {
+                        var paint = step.Tool as PuzzlePaint;
+                        if (paint != null)
+                        {
+                            tool = String.Format("/{0} paint", paint.Color.ToString().ToLowerInvariant());
+                        }
+                    }
+
+                    _logger.Debug(
+                        "Using gear {0}/{1}/{2}{3}",
+                        gear.Size,
+                        gear.Color,
+                        gear.Letter,
+                        tool);
                 }
 
                 // No idea what we need until we get the next puzzle
@@ -228,8 +248,8 @@ namespace wwhomper.Strategies
                     {
                         ////_logger.Debug("We have gears with the correct color");
 
-                        var targetGearLetter = _pakDictionary.BestLetterForIndex(targetGears.Select(x => x.Letter[0]).ToArray(), targetSpot.Index);
-                        var targetGear = targetGears.First(x => x.Letter[0] == targetGearLetter);
+                        var targetGearLetter = _pakDictionary.BestLetterForIndex(targetGears.Select(x => x.Letter).ToArray(), targetSpot.Index);
+                        var targetGear = targetGears.First(x => x.Letter == targetGearLetter);
                         if (targetGear != null)
                         {
                             _logger.Debug("Changing size of gear with letter {0} and color {1}", targetGear.Letter, targetGear.Color);
@@ -251,8 +271,8 @@ namespace wwhomper.Strategies
                     {
                         ////_logger.Debug("We have gears with the correct color");
 
-                        var targetGearLetter = _pakDictionary.BestLetterForIndex(targetGears.Select(x => x.Letter[0]).ToArray(), targetSpot.Index);
-                        var targetGear = targetGears.First(x => x.Letter[0] == targetGearLetter);
+                        var targetGearLetter = _pakDictionary.BestLetterForIndex(targetGears.Select(x => x.Letter).ToArray(), targetSpot.Index);
+                        var targetGear = targetGears.First(x => x.Letter == targetGearLetter);
                         if (targetGear != null)
                         {
                             _logger.Debug("Changing size of gear with letter {0} and color {1}", targetGear.Letter, targetGear.Color);
@@ -275,8 +295,8 @@ namespace wwhomper.Strategies
                         var targetGears = availableGears.Where(x => !x.Size.HasFlag(PuzzleGearSize.Large)).ToList();
                         if (targetGears.Any())
                         {
-                            var targetGearLetter = _pakDictionary.BestLetterForIndex(targetGears.Select(x => x.Letter[0]).ToArray(), targetSpot.Index);
-                            var targetGear = targetGears.First(x => x.Letter[0] == targetGearLetter);
+                            var targetGearLetter = _pakDictionary.BestLetterForIndex(targetGears.Select(x => x.Letter).ToArray(), targetSpot.Index);
+                            var targetGear = targetGears.First(x => x.Letter == targetGearLetter);
                             if (targetGear != null)
                             {
                                 _logger.Debug("Changing size of gear with letter {0} and color {1}", targetGear.Letter, targetGear.Color);
@@ -296,8 +316,8 @@ namespace wwhomper.Strategies
                         var targetGears = availableGears.Where(x => !x.Size.HasFlag(PuzzleGearSize.Small)).ToList();
                         if (targetGears.Any())
                         {
-                            var targetGearLetter = _pakDictionary.BestLetterForIndex(targetGears.Select(x => x.Letter[0]).ToArray(), targetSpot.Index);
-                            var targetGear = targetGears.First(x => x.Letter[0] == targetGearLetter);
+                            var targetGearLetter = _pakDictionary.BestLetterForIndex(targetGears.Select(x => x.Letter).ToArray(), targetSpot.Index);
+                            var targetGear = targetGears.First(x => x.Letter == targetGearLetter);
                             if (targetGear != null)
                             {
                                 _logger.Debug("Changing size of gear with letter {0} and color {1}", targetGear.Letter, targetGear.Color);
@@ -335,8 +355,8 @@ namespace wwhomper.Strategies
                         {
                             ////_logger.Debug("We have gears with the correct size");
 
-                            var targetGearLetter = _pakDictionary.BestLetterForIndex(targetGears.Select(x => x.Letter[0]).ToArray(), targetSpot.Index);
-                            var targetGear = targetGears.First(x => x.Letter[0] == targetGearLetter);
+                            var targetGearLetter = _pakDictionary.BestLetterForIndex(targetGears.Select(x => x.Letter).ToArray(), targetSpot.Index);
+                            var targetGear = targetGears.First(x => x.Letter == targetGearLetter);
                             if (targetGear != null)
                             {
                                 _logger.Debug("Changing color of gear with letter {0} and size {1}", targetGear.Letter, targetGear.Size);
@@ -374,8 +394,8 @@ namespace wwhomper.Strategies
                         {
                             ////_logger.Debug("We have gears with the correct size");
 
-                            var targetGearLetter = _pakDictionary.BestLetterForIndex(targetGears.Select(x => x.Letter[0]).ToArray(), targetSpot.Index);
-                            var targetGear = targetGears.First(x => x.Letter[0] == targetGearLetter);
+                            var targetGearLetter = _pakDictionary.BestLetterForIndex(targetGears.Select(x => x.Letter).ToArray(), targetSpot.Index);
+                            var targetGear = targetGears.First(x => x.Letter == targetGearLetter);
                             if (targetGear != null)
                             {
                                 _logger.Debug("Changing color of gear with letter {0} and size {1}", targetGear.Letter, targetGear.Size);
@@ -413,8 +433,8 @@ namespace wwhomper.Strategies
                         {
                             ////_logger.Debug("We have gears with the correct size");
 
-                            var targetGearLetter = _pakDictionary.BestLetterForIndex(targetGears.Select(x => x.Letter[0]).ToArray(), targetSpot.Index);
-                            var targetGear = targetGears.First(x => x.Letter[0] == targetGearLetter);
+                            var targetGearLetter = _pakDictionary.BestLetterForIndex(targetGears.Select(x => x.Letter).ToArray(), targetSpot.Index);
+                            var targetGear = targetGears.First(x => x.Letter == targetGearLetter);
                             if (targetGear != null)
                             {
                                 _logger.Debug("Changing color of gear with letter {0} and size {1}", targetGear.Letter, targetGear.Size);

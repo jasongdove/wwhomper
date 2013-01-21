@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -11,17 +12,18 @@ namespace sharperbot.Font
 {
     public class FontLoader
     {
-        private readonly string _gameRoot;
+        private readonly string _fontsFolder;
 
-        public FontLoader(string gameRoot)
+        public FontLoader()
         {
-            _gameRoot = gameRoot;
+            _fontsFolder = ConfigurationManager.AppSettings["sharperbot.FontsFolder"];
         }
 
         public BitmapFont LoadFont(string fontName)
         {
-            string bitmapFileName = Path.Combine(_gameRoot, String.Format(@"Fonts\_{0}.png", fontName));
-            string definitionFileName = Path.Combine(_gameRoot, String.Format(@"Fonts\{0}.txt", fontName));
+            string bitmapFileName = Path.Combine(_fontsFolder, String.Format(@"{0}.png", fontName));
+            string bitmapAlphaFileName = Path.Combine(_fontsFolder, String.Format(@"_{0}.png", fontName));
+            string definitionFileName = Path.Combine(_fontsFolder, String.Format(@"{0}.txt", fontName));
 
             if (!File.Exists(bitmapFileName))
             {
@@ -33,7 +35,9 @@ namespace sharperbot.Font
                 throw new FileNotFoundException(definitionFileName);
             }
 
-            var font = new BitmapFont { Bitmap = new Image<Bgr, byte>(bitmapFileName) };
+            var bitmap = new Image<Bgra, byte>(bitmapFileName);
+            var alphaBitmap = new Image<Bgra, byte>(bitmapAlphaFileName);
+            var font = new BitmapFont { Bitmap = bitmap.CombineAlpha(alphaBitmap) };
 
             var definition = File.ReadAllText(definitionFileName, Encoding.GetEncoding(1252));
 
@@ -118,6 +122,30 @@ namespace sharperbot.Font
                     Int32.Parse(r[3]));
 
                 font.Characters[i].Rectangle = rect;
+
+                var matchImage = font.Bitmap.Copy(new Rectangle(rect.X, 6, rect.Width, 29));
+
+                for (int x = 0; x < matchImage.Width; x++)
+                {
+                    for (int y = 0; y < matchImage.Height; y++)
+                    {
+                        var current = matchImage[y, x];
+                        if (current.Alpha < 255)
+                        {
+                            matchImage[y, x] = new Bgra(0, 0, 0, 255);
+                        }
+                        else
+                        {
+                            matchImage[y, x] = new Bgra(
+                                current.Blue,
+                                current.Green,
+                                current.Red,
+                                255);
+                        }
+                    }
+                }
+
+                font.Characters[i].MatchImage = matchImage;
             }
         }
 

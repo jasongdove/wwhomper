@@ -78,7 +78,7 @@ namespace wwhomper.Data
                     var gears = Gears.Where(x => x.Color.HasFlag(spot.Key.Color) && x.Size.HasFlag(spot.Key.Size)).ToList();
                     foreach (var s in spot)
                     {
-                        var gearChoice = gears.FirstOrDefault(x => _pakDictionary.GetLetterRankingForIndex(x.Letter[0], s.Index) < 5);
+                        var gearChoice = gears.FirstOrDefault(x => _pakDictionary.GetLetterRankingForIndex(x.Letter, s.Index) < 5);
                         if (gearChoice == null)
                         {
                             _logger.Debug(
@@ -100,7 +100,7 @@ namespace wwhomper.Data
                 foreach (var spot in gearType)
                 {
                     var gears = Gears.Where(x => x.Color.HasFlag(spot.Key.Color) && x.Size.HasFlag(spot.Key.Size)).ToList();
-                    if (gears.All(x => vowels.Contains(x.Letter[0])))
+                    if (gears.All(x => vowels.Contains(x.Letter)))
                     {
                         _logger.Debug(
                             "We need a consonant gear {0}/{1}",

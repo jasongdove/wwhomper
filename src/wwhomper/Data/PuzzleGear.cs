@@ -8,7 +8,7 @@ namespace wwhomper.Data
         private readonly PuzzleGearColor _color;
         private readonly Rectangle _pickupArea;
 
-        public PuzzleGear(string letter, PuzzleGearSize size, PuzzleGearColor color, Rectangle pickupArea)
+        public PuzzleGear(char letter, PuzzleGearSize size, PuzzleGearColor color, Rectangle pickupArea)
         {
             Letter = letter;
             _size = size;
@@ -16,7 +16,7 @@ namespace wwhomper.Data
             _pickupArea = pickupArea;
         }
 
-        public string Letter { get; set; }
+        public char Letter { get; set; }
 
         public PuzzleGearSize Size
         {
@@ -35,7 +35,7 @@ namespace wwhomper.Data
 
         public bool IsWildcard
         {
-            get { return Letter == "*"; }
+            get { return Letter == '*'; }
         }
     }
 }

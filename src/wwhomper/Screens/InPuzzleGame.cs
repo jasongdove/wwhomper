@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using Ninject.Extensions.Logging;
-using sharperbot;
 using sharperbot.Assets;
 using sharperbot.AutoIt;
+using sharperbot.Font;
 using sharperbot.Screens;
 using sharperbot.Screens.Controls;
 using wwhomper.Data;
@@ -63,7 +62,9 @@ namespace wwhomper.Screens
         private readonly Rectangle _trash;
         private readonly Button _trashConfirm;
 
-        public InPuzzleGame(IAutoIt autoIt, IAssetCatalog assetCatalog, ILogger logger)
+        private readonly BitmapFont _gearFont;
+
+        public InPuzzleGame(IAutoIt autoIt, IAssetCatalog assetCatalog, ILogger logger, FontLoader fontLoader)
             : base(
                 autoIt,
                 assetCatalog,
@@ -157,10 +158,7 @@ namespace wwhomper.Screens
             _letterSearchAreaTesseractArea = new Dictionary<Rectangle, Rectangle>
             {
                 // top row
-                { new Rectangle(32, 395, 76, 82), new Rectangle(58, 423, 25, 27) },
-                { new Rectangle(122, 393, 79, 86), new Rectangle(149, 423, 25, 27) },
-                { new Rectangle(217, 398, 73, 78), new Rectangle(241, 423, 25, 27) },
-                { new Rectangle(304, 398, 75, 77), new Rectangle(329, 423, 25, 27) },
+                { new Rectangle(32, 395, 76, 82), new Rectangle(58, 423, 25, 27) },                { new Rectangle(122, 393, 79, 86), new Rectangle(149, 423, 25, 27) },                { new Rectangle(217, 398, 73, 78), new Rectangle(241, 423, 25, 27) },                { new Rectangle(304, 398, 75, 77), new Rectangle(329, 423, 25, 27) },
                 { new Rectangle(395, 397, 76, 79), new Rectangle(420, 423, 25, 27) },
                 { new Rectangle(486, 396, 76, 83), new Rectangle(512, 423, 25, 27) },
                 { new Rectangle(580, 400, 73, 76), new Rectangle(603, 423, 25, 27) },
@@ -193,6 +191,8 @@ namespace wwhomper.Screens
 
             _trash = new Rectangle(690, 516, 32, 29);
             _trashConfirm = CreateCoordinateButton(527, 291, 98, 23);
+
+            _gearFont = fontLoader.LoadFont(@"PG_GearLtr_Large23");
         }
 
         public Button Submit
@@ -350,7 +350,6 @@ namespace wwhomper.Screens
             var gears = new List<PuzzleGear>();
 
             var windowContents = AutoIt.GetWindowImage();
-            var letters = new List<Image<Gray, byte>>();
 
             foreach (var entry in _letterSearchAreaTesseractArea)
             {
@@ -360,7 +359,7 @@ namespace wwhomper.Screens
                 if (AutoIt.IsTemplateInWindow(searchArea, _largeWildcardGear).Success)
                 {
                     gear = new PuzzleGear(
-                        "*",
+                        '*',
                         PuzzleGearSize.Large | PuzzleGearSize.Small,
                         PuzzleGearColor.Copper | PuzzleGearColor.Silver | PuzzleGearColor.Gold,
                         entry.Value);
@@ -368,7 +367,7 @@ namespace wwhomper.Screens
                 else if (AutoIt.IsTemplateInWindow(searchArea, _smallWildcardGear).Success)
                 {
                     gear = new PuzzleGear(
-                        "*",
+                        '*',
                         PuzzleGearSize.Large | PuzzleGearSize.Small,
                         PuzzleGearColor.Copper | PuzzleGearColor.Silver | PuzzleGearColor.Gold,
                         entry.Value);
@@ -376,97 +375,56 @@ namespace wwhomper.Screens
                 else if (AutoIt.IsTemplateInWindow(searchArea, _largeCopperGear).Success)
                 {
                     gear = new PuzzleGear(
-                        String.Empty,
+                        GetLetterForGear(searchArea),
                         PuzzleGearSize.Large,
                         PuzzleGearColor.Copper,
                         entry.Value);
-                    
-                    var letterImage = windowContents.Copy(entry.Value).Convert<Gray, byte>();
-                    letterImage.Floor(245);
-                    letters.Add(letterImage);
                 }
                 else if (AutoIt.IsTemplateInWindow(searchArea, _smallCopperGear).Success)
                 {
                     gear = new PuzzleGear(
-                        String.Empty,
+                        GetLetterForGear(searchArea),
                         PuzzleGearSize.Small,
                         PuzzleGearColor.Copper,
                         entry.Value);
-
-                    var letterImage = windowContents.Copy(entry.Value).Convert<Gray, byte>();
-                    letterImage.Floor(245);
-                    letters.Add(letterImage);
                 }
                 else if (AutoIt.IsTemplateInWindow(searchArea, _largeSilverGear).Success)
                 {
                     gear = new PuzzleGear(
-                        String.Empty,
+                        GetLetterForGear(searchArea),
                         PuzzleGearSize.Large,
                         PuzzleGearColor.Silver,
                         entry.Value);
-
-                    var letterImage = windowContents.Copy(entry.Value).Convert<Gray, byte>();
-                    letterImage.Floor(245);
-                    letters.Add(letterImage);
                 }
                 else if (AutoIt.IsTemplateInWindow(searchArea, _smallSilverGear).Success)
                 {
                     gear = new PuzzleGear(
-                        String.Empty,
+                        GetLetterForGear(searchArea),
                         PuzzleGearSize.Small,
                         PuzzleGearColor.Silver,
                         entry.Value);
-
-                    var letterImage = windowContents.Copy(entry.Value).Convert<Gray, byte>();
-                    letterImage.Floor(245);
-                    letters.Add(letterImage);
                 }
                 else if (AutoIt.IsTemplateInWindow(searchArea, _largeGoldGear).Success)
                 {
                     gear = new PuzzleGear(
-                        String.Empty,
+                        GetLetterForGear(searchArea),
                         PuzzleGearSize.Large,
                         PuzzleGearColor.Gold,
                         entry.Value);
-
-                    var letterImage = windowContents.Copy(entry.Value).Convert<Gray, byte>();
-                    letterImage.Floor(245);
-                    letters.Add(letterImage);
                 }
                 else if (AutoIt.IsTemplateInWindow(searchArea, _smallGoldGear).Success)
                 {
                     gear = new PuzzleGear(
-                        String.Empty,
+                        GetLetterForGear(searchArea),
                         PuzzleGearSize.Small,
                         PuzzleGearColor.Gold,
                         entry.Value);
-
-                    var letterImage = windowContents.Copy(entry.Value).Convert<Gray, byte>();
-                    letterImage.Floor(245);
-                    letters.Add(letterImage);
                 }
 
                 if (gear != null)
                 {
                     gears.Add(gear);
                 }
-            }
-
-            if (letters.Any())
-            {
-                var combined = Combine(letters);
-                var allText = GetZoomedOutTextThreshold(combined, 2, 60, 255).Trim().Replace(" ", String.Empty);
-                var withoutWildcards = gears.Where(x => !x.IsWildcard).ToList();
-                if (allText.Length == withoutWildcards.Count)
-                {
-                    foreach (var r in withoutWildcards.Where(x => String.IsNullOrEmpty(x.Letter)).ToList())
-                    {
-                        r.Letter = allText[withoutWildcards.IndexOf(r)].ToString(CultureInfo.InvariantCulture);
-                    }
-                }
-
-                ////SaveDebugImage(windowContents, "badGearTesseract", "window.png");
-                ////SaveDebugImage(combined, "badGearTesseract", DateTime.Now.Ticks + ".png");
             }
 
             return gears;
@@ -506,6 +464,29 @@ namespace wwhomper.Screens
             AutoIt.Click(_trash);
             AutoIt.WaitAfterInput();
             _trashConfirm.Click();
+        }
+
+        private char GetLetterForGear(Image<Bgra, byte> gearImage)
+        {
+            double max = 0;
+            char bestCharacter = '?';
+
+            const string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            foreach (var character in _gearFont.Characters.Where(x => alphabet.Contains(x.Character)))
+            {
+                var match = gearImage.MatchTemplate(character.MatchImage, Emgu.CV.CvEnum.TM_TYPE.CV_TM_CCOEFF_NORMED);
+                double[] currentMins, currentMaxes;
+                Point[] minPoints, maxPoints;
+                match.MinMax(out currentMins, out currentMaxes, out minPoints, out maxPoints);
+
+                if (currentMaxes[0] > max)
+                {
+                    max = currentMaxes[0];
+                    bestCharacter = character.Character;
+                }
+            }
+
+            return bestCharacter;
         }
     }
 }
