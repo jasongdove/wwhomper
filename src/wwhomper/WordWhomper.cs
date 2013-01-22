@@ -1,5 +1,4 @@
-﻿using System;
-using Ninject;
+﻿using Ninject;
 using Ninject.Extensions.Logging;
 using sharperbot;
 using sharperbot.AutoIt;

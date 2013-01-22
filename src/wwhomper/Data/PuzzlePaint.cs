@@ -16,5 +16,27 @@ namespace wwhomper.Data
         {
             get { return _color; }
         }
+
+        public override string ToString()
+        {
+            string result = "Paint/";
+
+            if (Color.HasFlag(PuzzleGearColor.Copper))
+            {
+                result += "C";
+            }
+
+            if (Color.HasFlag(PuzzleGearColor.Silver))
+            {
+                result += "S";
+            }
+
+            if (Color.HasFlag(PuzzleGearColor.Gold))
+            {
+                result += "G";
+            }
+
+            return result;
+        }
     }
 }

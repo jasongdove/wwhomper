@@ -34,12 +34,7 @@ namespace wwhomper.Strategies
             // Clear out our last guess if it was a while ago
             if (_lastGuess != null && (DateTime.Now - _lastGuess.Time) > TimeSpan.FromSeconds(10))
             {
-                _logger.Debug("Clearing out last guess");
                 _lastGuess = null;
-            }
-            else if (_lastGuess != null)
-            {
-                _logger.Debug("Last guess: " + String.Join(String.Empty, _lastGuess.Letters));
             }
 
             // Clear out any bad data
@@ -54,7 +49,7 @@ namespace wwhomper.Strategies
             string scrambled = screen.GetNextScrambledWord();
             if (String.IsNullOrEmpty(scrambled))
             {
-                _logger.Debug("Nothing to do in the bonus game");
+                _logger.Debug("Bonus game is already complete");
                 return;
             }
 
@@ -89,6 +84,10 @@ namespace wwhomper.Strategies
                 // Type a random guess from the list
                 _autoIt.Type(guesses.ToList()[_random.Next(guesses.Count)]);
                 Wait(TimeSpan.FromMilliseconds(_random.Next(20, 100)));
+            }
+            else
+            {
+                _logger.Debug("Unable to formulate guess - scrambled={0}", scrambled);
             }
         }
 

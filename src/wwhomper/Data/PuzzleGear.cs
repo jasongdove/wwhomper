@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace wwhomper.Data
 {
@@ -36,6 +37,42 @@ namespace wwhomper.Data
         public bool IsWildcard
         {
             get { return Letter == '*'; }
+        }
+
+        public override string ToString()
+        {
+            var result = String.Empty;
+
+            if (Size.HasFlag(PuzzleGearSize.Small))
+            {
+                result += "S";
+            }
+
+            if (Size.HasFlag(PuzzleGearSize.Large))
+            {
+                result += "L";
+            }
+
+            result += "/";
+
+            if (Color.HasFlag(PuzzleGearColor.Copper))
+            {
+                result += "C";
+            }
+
+            if (Color.HasFlag(PuzzleGearColor.Silver))
+            {
+                result += "S";
+            }
+
+            if (Color.HasFlag(PuzzleGearColor.Gold))
+            {
+                result += "G";
+            }
+
+            result += "/" + Letter;
+
+            return result;
         }
     }
 }

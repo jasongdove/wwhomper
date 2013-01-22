@@ -158,7 +158,10 @@ namespace wwhomper.Screens
             _letterSearchAreaTesseractArea = new Dictionary<Rectangle, Rectangle>
             {
                 // top row
-                { new Rectangle(32, 395, 76, 82), new Rectangle(58, 423, 25, 27) },                { new Rectangle(122, 393, 79, 86), new Rectangle(149, 423, 25, 27) },                { new Rectangle(217, 398, 73, 78), new Rectangle(241, 423, 25, 27) },                { new Rectangle(304, 398, 75, 77), new Rectangle(329, 423, 25, 27) },
+                { new Rectangle(32, 395, 76, 82), new Rectangle(58, 423, 25, 27) },
+                { new Rectangle(122, 393, 79, 86), new Rectangle(149, 423, 25, 27) },
+                { new Rectangle(217, 398, 73, 78), new Rectangle(241, 423, 25, 27) },
+                { new Rectangle(304, 398, 75, 77), new Rectangle(329, 423, 25, 27) },
                 { new Rectangle(395, 397, 76, 79), new Rectangle(420, 423, 25, 27) },
                 { new Rectangle(486, 396, 76, 83), new Rectangle(512, 423, 25, 27) },
                 { new Rectangle(580, 400, 73, 76), new Rectangle(603, 423, 25, 27) },
@@ -207,6 +210,8 @@ namespace wwhomper.Screens
 
         public void ClearAllGears()
         {
+            Logger.Debug("Clearing all gear spots");
+
             _gearOne.Click();
             AutoIt.Type("{BACKSPACE}");
             AutoIt.WaitAfterInput();
@@ -240,48 +245,60 @@ namespace wwhomper.Screens
                 var allGearSpots = new List<Rectangle> { _gearSpotOne, _gearSpotTwo, _gearSpotThree, _gearSpotFour, _gearSpotFive };
                 for (int i = 0; i < allGearSpots.Count; i++)
                 {
-                    var gearSpotSearchArea = windowContents.Copy(allGearSpots[i]);
-                    if (AutoIt.IsTemplateInWindow(gearSpotSearchArea, _inactiveGearSpot).Success)
+                    windowContents.ROI = allGearSpots[i];
+                    if (AutoIt.IsTemplateInWindow(windowContents, _inactiveGearSpot).Success)
                     {
                         ////Logger.Debug("Found inactive gear in spot {0}", i);
                     }
-                    else if (AutoIt.IsTemplateInWindow(gearSpotSearchArea, _largeCopperGearSpot).Success)
+                    else if (AutoIt.IsTemplateInWindow(windowContents, _largeCopperGearSpot).Success)
                     {
                         ////Logger.Debug("Found large copper gear in spot {0}", i);
                         gearSpots.Add(new PuzzleGearSpot(PuzzleGearSize.Large, PuzzleGearColor.Copper, i));
                     }
-                    else if (AutoIt.IsTemplateInWindow(gearSpotSearchArea, _smallCopperGearSpot).Success)
+                    else if (AutoIt.IsTemplateInWindow(windowContents, _smallCopperGearSpot).Success)
                     {
                         ////Logger.Debug("Found small copper gear in spot {0}", i);
                         gearSpots.Add(new PuzzleGearSpot(PuzzleGearSize.Small, PuzzleGearColor.Copper, i));
                     }
-                    else if (AutoIt.IsTemplateInWindow(gearSpotSearchArea, _largeSilverGearSpot).Success)
+                    else if (AutoIt.IsTemplateInWindow(windowContents, _largeSilverGearSpot).Success)
                     {
                         ////Logger.Debug("Found large silver gear in spot {0}", i);
                         gearSpots.Add(new PuzzleGearSpot(PuzzleGearSize.Large, PuzzleGearColor.Silver, i));
                     }
-                    else if (AutoIt.IsTemplateInWindow(gearSpotSearchArea, _smallSilverGearSpot).Success)
+                    else if (AutoIt.IsTemplateInWindow(windowContents, _smallSilverGearSpot).Success)
                     {
                         ////Logger.Debug("Found small silver gear in spot {0}", i);
                         gearSpots.Add(new PuzzleGearSpot(PuzzleGearSize.Small, PuzzleGearColor.Silver, i));
                     }
-                    else if (AutoIt.IsTemplateInWindow(gearSpotSearchArea, _largeGoldGearSpot).Success)
+                    else if (AutoIt.IsTemplateInWindow(windowContents, _largeGoldGearSpot).Success)
                     {
                         ////Logger.Debug("Found large gold gear in spot {0}", i);
                         gearSpots.Add(new PuzzleGearSpot(PuzzleGearSize.Large, PuzzleGearColor.Gold, i));
                     }
-                    else if (AutoIt.IsTemplateInWindow(gearSpotSearchArea, _smallGoldGearSpot).Success)
+                    else if (AutoIt.IsTemplateInWindow(windowContents, _smallGoldGearSpot).Success)
                     {
                         ////Logger.Debug("Found small gold gear in spot {0}", i);
                         gearSpots.Add(new PuzzleGearSpot(PuzzleGearSize.Small, PuzzleGearColor.Gold, i));
                     }
                     else
                     {
-                        Logger.Warn("Unable to detect gear for spot {0}", i);
-                        SaveDebugImage(gearSpotSearchArea, "problemGearArea", String.Format("{0}.png", i));
+                        Logger.Warn("Unable to detect gear spot - spot={0}", i);
+                        SaveDebugImage(windowContents, "problemGearArea", String.Format("{0}.png", i));
                     }
                 }
             } while (gearSpots.Count < 4); // this helps us retry if the "hint" highlight interferes
+
+            Func<int, string> gearSpotMessage = x => gearSpots.Any(y => y.Index == x)
+                ? gearSpots.First(y => y.Index == x).ToString()
+                : "inactive";
+
+            Logger.Debug(
+                "Detected gear spots - one={0}, two={1}, three={2}, four={3}, five={4}",
+                gearSpotMessage(1),
+                gearSpotMessage(2),
+                gearSpotMessage(3),
+                gearSpotMessage(4),
+                gearSpotMessage(5));
 
             return gearSpots;
         }
@@ -341,6 +358,13 @@ namespace wwhomper.Screens
 
                 tools.Add(new PuzzlePaint(PuzzleGearColor.Gold, pickupArea));
             }
+
+            Logger.Debug(
+                "Detected tools - copperPaint={0}, silverPaint={1}, goldPaint={2}, torch={3}",
+                tools.OfType<PuzzlePaint>().Any(x => x.Color.HasFlag(PuzzleGearColor.Copper)),
+                tools.OfType<PuzzlePaint>().Any(x => x.Color.HasFlag(PuzzleGearColor.Silver)),
+                tools.OfType<PuzzlePaint>().Any(x => x.Color.HasFlag(PuzzleGearColor.Gold)),
+                tools.OfType<PuzzleTorch>().Any());
 
             return tools;
         }
@@ -427,11 +451,25 @@ namespace wwhomper.Screens
                 }
             }
 
+            Logger.Debug("Detected gears - {0}", String.Join(" ", gears));
+
             return gears;
         }
 
         public void SubmitAnswer(List<PuzzleStep> steps)
         {
+            Func<int, string> puzzleString = i => i < steps.Count
+                ? steps[i].Gear.ToString() + (steps[i].Tool != null ? "/" + steps[i].Tool.ToString() : String.Empty)
+                : "nothing";
+
+            Logger.Debug(
+                "Solved puzzle - one={0}, two={1}, three={2}, four={3}, five={4}",
+                puzzleString(0),
+                puzzleString(1),
+                puzzleString(2),
+                puzzleString(3),
+                puzzleString(4));
+
             var allGearButtons = new[] { _gearOne, _gearTwo, _gearThree, _gearFour, _gearFive };
             for (int i = 0; i < steps.Count; i++)
             {
@@ -452,6 +490,11 @@ namespace wwhomper.Screens
 
         public void ApplyTool(PuzzleTool tool, PuzzleGear gear)
         {
+            Logger.Debug(
+                "Applying tool - tool={0}, gear={1}",
+                tool.ToString(),
+                gear.ToString());
+
             AutoIt.Click(tool.PickupArea);
             AutoIt.Click(gear.PickupArea);
 
@@ -460,6 +503,8 @@ namespace wwhomper.Screens
 
         public void Trash(PuzzleGear gear)
         {
+            Logger.Debug("Trashing gear - gear={1}", gear.ToString());
+
             AutoIt.Click(gear.PickupArea);
             AutoIt.Click(_trash);
             AutoIt.WaitAfterInput();

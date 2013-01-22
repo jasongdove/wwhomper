@@ -113,10 +113,15 @@ namespace wwhomper.Screens
             if (!String.IsNullOrEmpty(raw))
             {
                 result = raw.Trim().Replace(" ", String.Empty);
-                if (result.Length == 8)
+                if (result.Length == 8 || result.Length == 10)
                 {
                     result = result.Replace("IVI", "M");
                 }
+
+                Logger.Debug(
+                    "Fixed tesseract errors - in={0}, out={1}",
+                    raw.Replace("\r\n", @"\r\n").Replace("\n", @"\n"),
+                    result);
             }
 
             return result;

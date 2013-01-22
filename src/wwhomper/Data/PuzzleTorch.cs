@@ -8,5 +8,10 @@ namespace wwhomper.Data
             : base(pickupArea)
         {
         }
+
+        public override string ToString()
+        {
+            return "Torch";
+        }
     }
 }

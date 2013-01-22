@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using Combinatorics.Collections;
 using Ninject.Extensions.Logging;
@@ -36,8 +35,6 @@ namespace wwhomper.Strategies
         {
             if (CheckForWrongArea(screen))
             {
-                _logger.Debug("We're in the wrong area, let's go back to the map");
-
                 screen.Menu.Click();
                 Wait(TimeSpan.FromSeconds(1));
 
@@ -54,6 +51,9 @@ namespace wwhomper.Strategies
             // If we didn't correctly detect all letters, just give up
             if (letters.Count != 6)
             {
+                _logger.Warn(
+                    "Unable to detect six letters - count={0}",
+                    letters.Count);
                 return;
             }
 

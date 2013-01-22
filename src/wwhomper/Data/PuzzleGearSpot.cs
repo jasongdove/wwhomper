@@ -1,4 +1,6 @@
-﻿namespace wwhomper.Data
+﻿using System;
+
+namespace wwhomper.Data
 {
     public class PuzzleGearSpot
     {
@@ -26,6 +28,40 @@
         public int Index
         {
             get { return _index; }
+        }
+
+        public override string ToString()
+        {
+            var result = String.Empty;
+            
+            if (Size.HasFlag(PuzzleGearSize.Small))
+            {
+                result += "S";
+            }
+
+            if (Size.HasFlag(PuzzleGearSize.Large))
+            {
+                result += "L";
+            }
+
+            result += "/";
+
+            if (Color.HasFlag(PuzzleGearColor.Copper))
+            {
+                result += "C";
+            }
+
+            if (Color.HasFlag(PuzzleGearColor.Silver))
+            {
+                result += "S";
+            }
+
+            if (Color.HasFlag(PuzzleGearColor.Gold))
+            {
+                result += "G";
+            }
+
+            return result;
         }
     }
 }

@@ -15,8 +15,8 @@ namespace wwhomper.Screens
 {
     public class InBonusGame : TemplateScreen
     {
-        private readonly Dictionary<TemplateSearchArea, List<TemplateCoordinate>> _letterGroups =
-            new Dictionary<TemplateSearchArea, List<TemplateCoordinate>>();
+        private readonly List<KeyValuePair<TemplateSearchArea, List<TemplateCoordinate>>> _letterGroups =
+            new List<KeyValuePair<TemplateSearchArea, List<TemplateCoordinate>>>();
 
         public InBonusGame(IAutoIt autoIt, IAssetCatalog assetCatalog, ILogger logger)
             : base(
@@ -87,23 +87,30 @@ namespace wwhomper.Screens
             var bonusFour = new TemplateSearchArea(rightTemplate, new Rectangle(276, 437, 230, 81));
             var bonusFive = new TemplateSearchArea(straightTemplate, new Rectangle(13, 444, 252, 45));
 
-            _letterGroups.Add(bonusOne, one);
-            _letterGroups.Add(bonusTwo, two);
-            _letterGroups.Add(bonusThree, three);
-            _letterGroups.Add(bonusFour, four);
-            _letterGroups.Add(bonusFive, five);
+            _letterGroups.Add(new KeyValuePair<TemplateSearchArea,List<TemplateCoordinate>>(bonusOne, one));
+            _letterGroups.Add(new KeyValuePair<TemplateSearchArea,List<TemplateCoordinate>>(bonusTwo, two));
+            _letterGroups.Add(new KeyValuePair<TemplateSearchArea,List<TemplateCoordinate>>(bonusThree, three));
+            _letterGroups.Add(new KeyValuePair<TemplateSearchArea,List<TemplateCoordinate>>(bonusFour, four));
+            _letterGroups.Add(new KeyValuePair<TemplateSearchArea,List<TemplateCoordinate>>(bonusFive, five));
         }
 
         public string GetNextScrambledWord()
         {
             var windowContents = AutoIt.GetWindowImage();
 
-            foreach (var group in _letterGroups)
+            for (int i = 0; i < _letterGroups.Count; i++)
             {
+                var group = _letterGroups[i];
+
                 // Make sure we haven't already completed this word
-                var search = AutoIt.IsTemplateInWindow(windowContents.Copy(group.Key.SearchArea), group.Key.Template);
+                windowContents.ROI = group.Key.SearchArea;
+                var search = AutoIt.IsTemplateInWindow(windowContents, group.Key.Template);
                 if (!search.Success)
                 {
+                    Logger.Debug("Bonus group is unsolved - group={0}", i);
+
+                    windowContents.ROI = Rectangle.Empty;
+
                     var letters = group.Value.Select(letter => letter.Grab(windowContents));
                     var combined = Combine(letters);
 
@@ -115,8 +122,15 @@ namespace wwhomper.Screens
                     var text = GetZoomedOutText(gray, 2).Trim().Replace(" ", String.Empty);
                     if (text.Length > group.Value.Count)
                     {
+                        var input = text;
+
                         // TODO: Figure out a better way to match characters
                         text = text.Replace("II", "U");
+
+                        Logger.Debug(
+                            "Fixed tesseract errors - in={0}, out={1}",
+                            input.Replace("\r\n", @"\r\n").Replace("\n", @"\n"),
+                            text);
                     }
 
                     // If we've already solved any of the bonus words,

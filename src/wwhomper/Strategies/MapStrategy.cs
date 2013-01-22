@@ -28,6 +28,7 @@ namespace wwhomper.Strategies
             var gearWeNeed = _puzzleGameState.GearWeNeed;
             if (gearWeNeed != null)
             {
+                int currentZone = -1;
                 var inWrongZone = false;
                 var windowContents = _autoIt.GetWindowImage();
                 var searchResult = _autoIt.IsTemplateInWindow(windowContents, screen.CurrentLocation);
@@ -37,6 +38,7 @@ namespace wwhomper.Strategies
                     {
                         if (screen.Zones[i].Contains(searchResult.Point))
                         {
+                            currentZone = i;
                             inWrongZone = gearWeNeed.Index != i;
                             break;
                         }
@@ -45,7 +47,10 @@ namespace wwhomper.Strategies
 
                 if (inWrongZone)
                 {
-                    _logger.Debug("We're in the wrong zone; searching for the right one");
+                    _logger.Debug(
+                        "Wrong zone for target gear - zone={0}, targetZone={1}",
+                        currentZone,
+                        gearWeNeed.Index);
 
                     // Start by moving somewhere in the first zone. This avoids
                     // issues caused by holes that are too close in later zones

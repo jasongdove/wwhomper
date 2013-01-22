@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Ninject.Extensions.Logging;
 using wwhomper.Data;
 using wwhomper.Dictionary;
 
@@ -8,10 +10,12 @@ namespace wwhomper.Strategies
     public class TrashGearStrategy
     {
         private readonly IPakDictionary _pakDictionary;
+        private readonly ILogger _logger;
 
-        public TrashGearStrategy(IPakDictionary pakDictionary)
+        public TrashGearStrategy(IPakDictionary pakDictionary, ILogger logger)
         {
             _pakDictionary = pakDictionary;
+            _logger = logger;
         }
 
         public PuzzleGear FindGearToTrash(List<PuzzleGearSpot> gearSpots, List<PuzzleGear> gears)
@@ -27,7 +31,12 @@ namespace wwhomper.Strategies
             var wrongTypeGears = allGears.Where(g => gearTypes.All(x => !g.Color.HasFlag(x.Key.Color) || !g.Size.HasFlag(x.Key.Size))).ToList();
             if (wrongTypeGears.Any())
             {
-                return FindGearWithWorstLetter(wrongTypeGears);
+                var worstGearWrongType = FindGearWithWorstLetter(wrongTypeGears);
+                
+                _logger.Debug(
+                    "Determined worst letter - letters={0}, worst={1}, type=wrong",
+                    String.Join(String.Empty, wrongTypeGears.Select(x => x.Letter)),
+                    worstGearWrongType);
             }
 
             ////// Make sure we don't throw away a gear we need
@@ -37,7 +46,14 @@ namespace wwhomper.Strategies
             ////    availableGears = availableGears.Where(x => !x.Color.HasFlag(gearWeNeed.Color) && !x.Size.HasFlag(gearWeNeed.Size)).ToList();
             ////}
 
-            return FindGearWithWorstLetter(availableGears);
+            var result = FindGearWithWorstLetter(availableGears);
+
+            _logger.Debug(
+                "Determined worst letter - letters={0}, worst={1}, type=all",
+                String.Join(String.Empty, availableGears.Select(x => x.Letter)),
+                result);
+
+            return result;
         }
 
         private PuzzleGear FindGearWithWorstLetter(List<PuzzleGear> gears)

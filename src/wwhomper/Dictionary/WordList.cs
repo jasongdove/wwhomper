@@ -2,17 +2,22 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Ninject.Extensions.Logging;
 
 namespace wwhomper.Dictionary
 {
     public class WordList : IWordList
     {
+        private readonly ILogger _logger;
+
         private readonly HashSet<string> _words;
         private readonly Dictionary<char, int> _totalFrequency;
         private readonly Dictionary<int, Dictionary<char, int>> _indexedFrequency;
 
-        public WordList()
+        public WordList(ILogger logger)
         {
+            _logger = logger;
+
             _words = new HashSet<string>();
             _totalFrequency = new Dictionary<char, int>();
             _indexedFrequency = new Dictionary<int, Dictionary<char, int>>
@@ -28,6 +33,8 @@ namespace wwhomper.Dictionary
 
         public void Load(string fileName)
         {
+            _logger.Debug("Loading word list - filename={0}", fileName);
+
             using (var file = new StreamReader(fileName))
             {
                 string line;
@@ -44,6 +51,8 @@ namespace wwhomper.Dictionary
 
         protected void LoadFromDictionary(string dictionary)
         {
+            _logger.Debug("Loading word list from dictionary string");
+
             using (var reader = new StringReader(dictionary))
             {
                 string line;

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Ninject.Extensions.Logging;
 using wwhomper.Dictionary;
@@ -42,10 +41,7 @@ namespace wwhomper.Data
                 {
                     if (spot.Count() > Gears.Count(x => x.Color.HasFlag(spot.Key.Color) && x.Size.HasFlag(spot.Key.Size)))
                     {
-                        _logger.Debug(
-                            "We need a gear {0}/{1}",
-                            spot.Key.Size,
-                            spot.Key.Color);
+                        _logger.Debug("Target gear - gearSpot={0}, type=any", new PuzzleGearSpot(spot.Key.Size, spot.Key.Color, -1));
 
                         return new PuzzleGearSpot(
                             spot.Key.Size,
@@ -60,10 +56,7 @@ namespace wwhomper.Data
                 {
                     if (Gears.Where(x => x.Color.HasFlag(spot.Key.Color) && x.Size.HasFlag(spot.Key.Size)).All(x => !vowels.Contains(x.Letter)))
                     {
-                        _logger.Debug(
-                            "We need a vowel gear {0}/{1}",
-                            spot.Key.Size,
-                            spot.Key.Color);
+                        _logger.Debug("Target gear - gearSpot={0}, type=vowel", new PuzzleGearSpot(spot.Key.Size, spot.Key.Color, -1));
 
                         return new PuzzleGearSpot(
                             spot.Key.Size,
@@ -81,10 +74,7 @@ namespace wwhomper.Data
                         var gearChoice = gears.FirstOrDefault(x => _pakDictionary.GetLetterRankingForIndex(x.Letter, s.Index) < 5);
                         if (gearChoice == null)
                         {
-                            _logger.Debug(
-                                "We need a top 5 gear {0}/{1}",
-                                spot.Key.Size,
-                                spot.Key.Color);
+                            _logger.Debug("Target gear - gearSpot={0}, type=top5", new PuzzleGearSpot(spot.Key.Size, spot.Key.Color, -1));
 
                             return new PuzzleGearSpot(
                                 s.Size,
@@ -102,10 +92,7 @@ namespace wwhomper.Data
                     var gears = Gears.Where(x => x.Color.HasFlag(spot.Key.Color) && x.Size.HasFlag(spot.Key.Size)).ToList();
                     if (gears.All(x => vowels.Contains(x.Letter)))
                     {
-                        _logger.Debug(
-                            "We need a consonant gear {0}/{1}",
-                            spot.Key.Size,
-                            spot.Key.Color);
+                        _logger.Debug("Target gear - gearSpot={0}, type=consonant", new PuzzleGearSpot(spot.Key.Size, spot.Key.Color, -1));
 
                         return new PuzzleGearSpot(
                             spot.Key.Size,
