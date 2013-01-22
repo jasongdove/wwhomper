@@ -98,7 +98,7 @@
     <Compile Include="Screens\Controls\Button.cs" />
     <Compile Include="Screens\Controls\CoordinateButton.cs" />
     <Compile Include="Screens\Controls\TemplateButton.cs" />
-    <Compile Include="Screens\DialogScreen.cs" />
+    <Compile Include="Screens\IDialogScreen.cs" />
     <Compile Include="Screens\GameScreen.cs" />
     <Compile Include="Screens\IGameScreen.cs" />
     <Compile Include="Screens\IScreenStrategy.cs" />

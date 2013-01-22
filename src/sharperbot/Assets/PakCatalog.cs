@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using Ninject.Extensions.Logging;
 
 namespace sharperbot.Assets
 {
@@ -15,16 +16,22 @@ namespace sharperbot.Assets
         private const byte PakKey = 0xf7;
         private const byte EndOfContents = 0x80;
 
+        private readonly ILogger _logger;
+
         private readonly string _fileName;
         private readonly List<PakEntry> _entries;
 
-        public PakCatalog()
+        public PakCatalog(ILogger logger)
         {
+            _logger = logger;
             _fileName = ConfigurationManager.AppSettings["sharperbot.PakCatalog"];
             _entries = new List<PakEntry>();
 
+            _logger.Debug("Loading PAK catalog - filename={0}", _fileName);
+
             if (!File.Exists(_fileName))
             {
+                _logger.Error("File not found - filename={0}", _fileName);
                 throw new FileNotFoundException(_fileName);
             }
 
@@ -45,7 +52,8 @@ namespace sharperbot.Assets
                         var actual = br.ReadByte();
                         if (actual != expectedHeader[i])
                         {
-                            throw new FormatException("pak file is an unexpected format");
+                            _logger.Error("Invalid PAK header - filename={0}", _fileName);
+                            throw new FormatException("Invalid PAK header");
                         }
                     }
 
@@ -84,6 +92,11 @@ namespace sharperbot.Assets
 
         public void Dump(string targetDirectory)
         {
+            _logger.Debug(
+                "Dumping PAK catalog - filename={0}, targetDirectory={1}",
+                _fileName,
+                targetDirectory);
+
             foreach (var entry in _entries)
             {
                 var fileName = Path.Combine(targetDirectory, entry.Name);
@@ -94,6 +107,10 @@ namespace sharperbot.Assets
                     {
                         Directory.CreateDirectory(directory);
                     }
+
+                    _logger.Debug(
+                        "Dumping PAK entry - filename={0}",
+                        fileName);
 
                     using (var file = File.Create(fileName))
                     {
@@ -135,6 +152,13 @@ namespace sharperbot.Assets
 
         private byte[] GetEntryBytes(PakEntry entry)
         {
+            _logger.Debug(
+                "Reading PAK entry - filename={0}, entry={1}, offset={2}, bytes={3}",
+                _fileName,
+                entry.Name,
+                entry.Offset,
+                entry.Length);
+
             using (var file = File.OpenRead(_fileName))
             {
                 file.Seek((int)entry.Offset, SeekOrigin.Begin);

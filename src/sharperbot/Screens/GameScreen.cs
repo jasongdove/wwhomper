@@ -46,6 +46,11 @@ namespace sharperbot.Screens
 
         protected void SaveDebugImage<T>(Image<T, byte> image, string folder, string fileName) where T : struct, IColor
         {
+            _logger.Debug(
+                "Saving debug image - folder={0}, filename={1}",
+                folder,
+                fileName);
+
             var root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             if (root != null)
             {
@@ -62,12 +67,12 @@ namespace sharperbot.Screens
 
         protected Button CreateCoordinateButton(int x, int y, int width, int height)
         {
-            return new CoordinateButton(_autoIt, x, y, width, height);
+            return new CoordinateButton(_autoIt, _logger, x, y, width, height);
         }
 
         protected Button CreateTemplateButton(string assetFileName, int x, int y, int width, int height)
         {
-            return new TemplateButton(_autoIt, _assetCatalog, assetFileName, new Rectangle(x, y, width, height));
+            return new TemplateButton(_autoIt, _logger, _assetCatalog, assetFileName, new Rectangle(x, y, width, height));
         }
 
         protected Image<T, byte> Combine<T>(IEnumerable<Image<T, byte>> images) where T : struct, IColor
@@ -108,14 +113,33 @@ namespace sharperbot.Screens
         {
             var grayscale = image.Convert<Gray, byte>();
 
-            var tesseract = new Tesseract("tessdata", "eng", Tesseract.OcrEngineMode.OEM_TESSERACT_ONLY);
-            tesseract.SetVariable("tessedit_char_whitelist", "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + additionalLetters);
+            var tesseract = new Tesseract(
+                "tessdata",
+                "eng",
+                Tesseract.OcrEngineMode.OEM_TESSERACT_ONLY);
+
+            tesseract.SetVariable(
+                "tessedit_char_whitelist",
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + additionalLetters);
+
             tesseract.Recognize(grayscale);
             var result = tesseract.GetText();
 
             if (!String.IsNullOrWhiteSpace(result))
             {
-                _logger.Debug("Tesseract recognized: {0}", result.Trim());
+                if (!String.IsNullOrEmpty(additionalLetters))
+                {
+                    _logger.Debug(
+                        "Tesseract recognized text - result={0}, additionalLetters={1}",
+                        result.Trim(),
+                        additionalLetters);
+                }
+                else
+                {
+                    _logger.Debug(
+                        "Tesseract recognized text - result={0}",
+                        result.Trim());
+                }
             }
 
             if (debug)

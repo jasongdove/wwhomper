@@ -41,8 +41,8 @@ namespace sharperbot.Screens
         {
             var template = Template;
 
-            var activeContents = windowContents.Copy(_activeRectangle);
-            var searchResult = _autoIt.IsTemplateInWindow(activeContents, template);
+            windowContents.ROI = _activeRectangle;
+            var searchResult = _autoIt.IsTemplateInWindow(windowContents, template);
 
 #if DEBUG
             if (searchResult.Success)

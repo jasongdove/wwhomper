@@ -7,15 +7,18 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using Ninject.Extensions.Logging;
 
 namespace sharperbot.Font
 {
     public class FontLoader
     {
+        private readonly ILogger _logger;
         private readonly string _fontsFolder;
 
-        public FontLoader()
+        public FontLoader(ILogger logger)
         {
+            _logger = logger;
             _fontsFolder = ConfigurationManager.AppSettings["sharperbot.FontsFolder"];
         }
 
@@ -24,6 +27,13 @@ namespace sharperbot.Font
             string bitmapFileName = Path.Combine(_fontsFolder, String.Format(@"{0}.png", fontName));
             string bitmapAlphaFileName = Path.Combine(_fontsFolder, String.Format(@"_{0}.png", fontName));
             string definitionFileName = Path.Combine(_fontsFolder, String.Format(@"{0}.txt", fontName));
+
+            _logger.Debug(
+                "Loading font - fontname={0}, filename={1}, alphafilename={2}, definitionfilename={3}",
+                fontName,
+                bitmapFileName,
+                bitmapAlphaFileName,
+                definitionFileName);
 
             if (!File.Exists(bitmapFileName))
             {
