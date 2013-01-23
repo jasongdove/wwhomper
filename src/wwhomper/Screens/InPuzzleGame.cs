@@ -71,10 +71,10 @@ namespace wwhomper.Screens
                 logger,
                 @"Images\ALL\Game\puzzle_game\PuzzleGame_Background.jpg",
                 11, 556, 277, 35,
-                0, 569, 304, 60)
+                0, 550, 320, 50)
         {
-            _submit = CreateCoordinateButton(271, 330, 93, 41);
-            _back = CreateCoordinateButton(78, 66, 72, 22);
+            _submit = CreateCoordinateButton(269, 303, 92, 41);
+            _back = CreateCoordinateButton(73, 40, 76, 22);
 
             // Gear spots
             _inactiveGearSpot = assetCatalog
@@ -158,42 +158,42 @@ namespace wwhomper.Screens
             _letterSearchAreaTesseractArea = new Dictionary<Rectangle, Rectangle>
             {
                 // top row
-                { new Rectangle(32, 395, 76, 82), new Rectangle(58, 423, 25, 27) },
-                { new Rectangle(122, 393, 79, 86), new Rectangle(149, 423, 25, 27) },
-                { new Rectangle(217, 398, 73, 78), new Rectangle(241, 423, 25, 27) },
-                { new Rectangle(304, 398, 75, 77), new Rectangle(329, 423, 25, 27) },
-                { new Rectangle(395, 397, 76, 79), new Rectangle(420, 423, 25, 27) },
-                { new Rectangle(486, 396, 76, 83), new Rectangle(512, 423, 25, 27) },
-                { new Rectangle(580, 400, 73, 76), new Rectangle(603, 423, 25, 27) },
-                { new Rectangle(673, 400, 72, 74), new Rectangle(696, 423, 25, 27) },
+                { new Rectangle(29, 370, 76, 82), new Rectangle(55, 398, 25, 27) },
+                { new Rectangle(119, 368, 79, 86), new Rectangle(146, 398, 25, 27) },
+                { new Rectangle(214, 373, 73, 78), new Rectangle(238, 398, 25, 27) },
+                { new Rectangle(301, 373, 75, 77), new Rectangle(326, 398, 25, 27) },
+                { new Rectangle(392, 372, 76, 79), new Rectangle(417, 398, 25, 27) },
+                { new Rectangle(483, 371, 76, 83), new Rectangle(509, 398, 25, 27) },
+                { new Rectangle(577, 375, 73, 76), new Rectangle(600, 398, 25, 27) },
+                { new Rectangle(670, 375, 72, 74), new Rectangle(693, 398, 25, 27) },
 
                 // bottom row
-                { new Rectangle(36, 490, 72, 73), new Rectangle(59, 511, 25, 27) },
-                { new Rectangle(126, 486, 71, 78), new Rectangle(149, 511, 25, 27) },
-                { new Rectangle(218, 488, 71, 74), new Rectangle(240, 511, 25, 27) },
-                { new Rectangle(303, 488, 74, 73), new Rectangle(328, 511, 25, 27) },
-                { new Rectangle(397, 490, 70, 72), new Rectangle(419, 511, 25, 27) },
-                { new Rectangle(488, 486, 73, 77), new Rectangle(512, 511, 25, 27) },
-                { new Rectangle(579, 487, 73, 75), new Rectangle(603, 511, 25, 27) },
+                { new Rectangle(33, 465, 72, 73), new Rectangle(56, 486, 25, 27) },
+                { new Rectangle(123, 461, 71, 78), new Rectangle(146, 486, 25, 27) },
+                { new Rectangle(215, 463, 71, 74), new Rectangle(237, 486, 25, 27) },
+                { new Rectangle(300, 463, 74, 73), new Rectangle(325, 486, 25, 27) },
+                { new Rectangle(394, 465, 70, 72), new Rectangle(416, 486, 25, 27) },
+                { new Rectangle(485, 461, 73, 77), new Rectangle(509, 486, 25, 27) },
+                { new Rectangle(576, 462, 73, 75), new Rectangle(600, 486, 25, 27) },
             };
 
-            _gearOne = CreateCoordinateButton(237, 150, 9, 9);
-            _gearTwo = CreateCoordinateButton(295, 180, 8, 7);
-            _gearThree = CreateCoordinateButton(357, 172, 11, 8);
-            _gearFour = CreateCoordinateButton(415, 198, 9, 10);
-            _gearFive = CreateCoordinateButton(479, 190, 7, 6);
+            _gearOne = CreateCoordinateButton(234, 125, 9, 9);
+            _gearTwo = CreateCoordinateButton(292, 155, 8, 7);
+            _gearThree = CreateCoordinateButton(354, 147, 11, 8);
+            _gearFour = CreateCoordinateButton(412, 173, 9, 10);
+            _gearFive = CreateCoordinateButton(476, 165, 7, 6);
 
-            _gearSpotOne = new Rectangle(206, 119, 71, 73);
-            _gearSpotTwo = new Rectangle(265, 150, 69, 69);
-            _gearSpotThree = new Rectangle(327, 138, 71, 73);
-            _gearSpotFour = new Rectangle(380, 164, 74, 74);
-            _gearSpotFive = new Rectangle(448, 156, 70, 75);
+            _gearSpotOne = new Rectangle(203, 92, 72, 74);
+            _gearSpotTwo = new Rectangle(260, 123, 72, 72);
+            _gearSpotThree = new Rectangle(322, 114, 73, 72);
+            _gearSpotFour = new Rectangle(380, 139, 70, 73);
+            _gearSpotFive = new Rectangle(443, 130, 72, 75);
 
-            _torchSpot = new Rectangle(188, 288, 65, 98);
-            _paintSpot = new Rectangle(10, 282, 192, 113);
+            _torchSpot = new Rectangle(179, 259, 76, 117);
+            _paintSpot = new Rectangle(0, 241, 208, 155);
 
-            _trash = new Rectangle(690, 516, 32, 29);
-            _trashConfirm = CreateCoordinateButton(527, 291, 98, 23);
+            _trash = new Rectangle(676, 474, 51, 59);
+            _trashConfirm = CreateCoordinateButton(524, 266, 98, 23);
 
             _gearFont = fontLoader.LoadFont(@"PG_GearLtr_Large23");
         }
@@ -294,11 +294,11 @@ namespace wwhomper.Screens
 
             Logger.Debug(
                 "Detected gear spots - one={0}, two={1}, three={2}, four={3}, five={4}",
+                gearSpotMessage(0),
                 gearSpotMessage(1),
                 gearSpotMessage(2),
                 gearSpotMessage(3),
-                gearSpotMessage(4),
-                gearSpotMessage(5));
+                gearSpotMessage(4));
 
             return gearSpots;
         }

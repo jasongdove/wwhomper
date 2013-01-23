@@ -110,6 +110,7 @@
     <Compile Include="Strategies\ScreenSearchStrategy.cs" />
     <Compile Include="Strategies\ScreenStrategy.cs" />
     <Compile Include="Strategies\ShutdownStrategy.cs" />
+    <Compile Include="User32.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

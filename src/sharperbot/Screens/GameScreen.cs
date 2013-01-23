@@ -131,14 +131,14 @@ namespace sharperbot.Screens
                 {
                     _logger.Debug(
                         "Tesseract recognized text - result={0}, additionalLetters={1}",
-                        result.Trim(),
+                        result.Replace("\r\n", @"\r\n").Replace("\n", @"\n"),
                         additionalLetters);
                 }
                 else
                 {
                     _logger.Debug(
                         "Tesseract recognized text - result={0}",
-                        result.Trim());
+                        result.Replace("\r\n", @"\r\n").Replace("\n", @"\n"));
                 }
             }
 

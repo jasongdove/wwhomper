@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Combinatorics.Collections;
 using Ninject.Extensions.Logging;
 using sharperbot.AutoIt;
@@ -59,8 +60,8 @@ namespace wwhomper.Strategies
                 currentLetters.Contains('R') &&
                 _lastGuess.Letters.SequenceEqual(currentLetters))
             {
-                scrambled = scrambled.Remove(scrambled.IndexOf('R'));
-                scrambled += 'A';
+                var regex = new Regex("R");
+                scrambled = regex.Replace(scrambled, "A", 1);
             }
             else
             {

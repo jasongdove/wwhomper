@@ -15,13 +15,13 @@ namespace wwhomper.Screens
                 autoIt,
                 assetCatalog,
                 logger,
-                478, 164, 189, 22,
+                475, 139, 189, 22,
                 "YOU FOUND A BLOW TORCH!")
         {
             AdditionalCharacters = "!";
             RequiresZoom = true;
 
-            _ok = CreateCoordinateButton(491, 250, 96, 23);
+            _ok = CreateCoordinateButton(488, 225, 96, 23);
         }
 
         public Button Accept

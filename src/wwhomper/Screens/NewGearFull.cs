@@ -15,7 +15,7 @@ namespace wwhomper.Screens
                 autoIt,
                 assetCatalog,
                 logger,
-                350, 186, 81, 23,
+                347, 161, 81, 23,
                 "NOW FULL!")
         {
             AdditionalCharacters = "!";

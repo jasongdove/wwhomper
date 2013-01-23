@@ -14,7 +14,7 @@ namespace wwhomper.Screens
                 logger,
                 @"Images\ALL\Game\Common\Dialog_SpeechBubble_GS_Sm.jpg",
                 18, 13, 242, 20,
-                319, 116, 487, 275)
+                377, 79, 423, 303)
         {
         }
     }

@@ -17,9 +17,9 @@ namespace wwhomper.Screens
                 logger,
                 @"Images\EN_US\Menu\MainMenu_Button_PogoLogo.jpg",
                 0, 0, 72, 40,
-                0, 300, 400, 300)
+                0, 418, 231, 97)
         {
-            _play = CreateCoordinateButton(24, 351, 135, 41);
+            _play = CreateCoordinateButton(20, 323, 128, 38);
         }
 
         public Button Accept

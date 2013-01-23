@@ -17,9 +17,9 @@ namespace wwhomper.Screens
                 logger,
                 @"Images\ALL\Dialog\Dialog_565x540.jpg",
                 15, 20, 580, 63,
-                93, 31, 614, 102)
+                86, 3, 623, 122)
         {
-            _ok = CreateCoordinateButton(333, 494, 128, 38);
+            _ok = CreateCoordinateButton(333, 471, 124, 34);
         }
 
         public Button Accept

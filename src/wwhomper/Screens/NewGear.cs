@@ -8,7 +8,6 @@ namespace wwhomper.Screens
 {
     public class NewGear : TextScreen, IDialogScreen
     {
-        private readonly Button _no;
         private readonly Button _yes;
 
         public NewGear(IAutoIt autoIt, IAssetCatalog assetCatalog, ILogger logger)
@@ -16,19 +15,13 @@ namespace wwhomper.Screens
                 autoIt,
                 assetCatalog,
                 logger,
-                492, 166, 168, 25,
+                489, 141, 168, 25,
                 "YOU FOUND A NEW GEAR!")
         {
             AdditionalCharacters = "!";
             RequiresZoom = true;
 
-            _no = CreateCoordinateButton(615, 254, 93, 24);
-            _yes = CreateCoordinateButton(492, 250, 96, 22);
-        }
-
-        public Button No
-        {
-            get { return _no; }
+            _yes = CreateCoordinateButton(488, 224, 97, 21);
         }
 
         public Button Accept

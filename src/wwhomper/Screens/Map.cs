@@ -24,7 +24,7 @@ namespace wwhomper.Screens
                 logger,
                 @"Images\ALL\Game\Map\MapScreen_Hole_Idle.jpg",
                 94, 61, 33, 43,
-                20, 47, 740, 561)
+                0, 0, 800, 600)
         {
             _gopherHole = CreateTemplateButton(
                 @"Images\ALL\Game\Map\MapScreen_Gopher_Idle.jpg",
@@ -40,12 +40,12 @@ namespace wwhomper.Screens
 
             _zones = new List<Rectangle>
             {
-                new Rectangle(110, 48, 155, 290),
-                new Rectangle(55, 332, 237, 277),
-                new Rectangle(305, 281, 227, 316),
-                new Rectangle(310, 18, 237, 285),
-                new Rectangle(540, 14, 209, 297),
-                new Rectangle(513, 307, 227, 270)
+                new Rectangle(108, 45, 147, 261),
+                new Rectangle(50, 294, 235, 284),
+                new Rectangle(300, 238, 204, 333),
+                new Rectangle(298, 0, 240, 275),
+                new Rectangle(540, 0, 249, 306),
+                new Rectangle(513, 278, 287, 322)
             };
         }
 

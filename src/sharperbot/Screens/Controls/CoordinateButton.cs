@@ -24,12 +24,12 @@ namespace sharperbot.Screens.Controls
 
         public override void Click()
         {
-            _logger.Debug(
-                "Clicking coordinate button - x={0}, y={1}, width={2}, height={3}",
-                _rectangle.X,
-                _rectangle.Y,
-                _rectangle.Width,
-                _rectangle.Height);
+            ////_logger.Debug(
+            ////    "Clicking coordinate button - x={0}, y={1}, width={2}, height={3}",
+            ////    _rectangle.X,
+            ////    _rectangle.Y,
+            ////    _rectangle.Width,
+            ////    _rectangle.Height);
 
             _autoIt.Click(_rectangle);
         }

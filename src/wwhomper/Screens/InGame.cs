@@ -32,18 +32,18 @@ namespace wwhomper.Screens
                 logger,
                 @"Images\ALL\Game\gophers\burrow\Gopher_BUR_IDLE.jpg",
                 15, 40, 12, 24,
-                140, 581, 31, 40)
+                133, 517, 45, 79)
         {
-            _gamePieces.Add(new TemplateCoordinate(184, 425, 58, 34));
-            _gamePieces.Add(new TemplateCoordinate(261, 420, 58, 34));
-            _gamePieces.Add(new TemplateCoordinate(338, 425, 58, 34));
-            _gamePieces.Add(new TemplateCoordinate(415, 420, 58, 34));
-            _gamePieces.Add(new TemplateCoordinate(492, 425, 58, 34));
-            _gamePieces.Add(new TemplateCoordinate(569, 420, 58, 34));
+            _gamePieces.Add(new TemplateCoordinate(182, 399, 53, 35));
+            _gamePieces.Add(new TemplateCoordinate(259, 394, 53, 35));
+            _gamePieces.Add(new TemplateCoordinate(336, 399, 53, 35));
+            _gamePieces.Add(new TemplateCoordinate(413, 394, 53, 35));
+            _gamePieces.Add(new TemplateCoordinate(490, 399, 53, 35));
+            _gamePieces.Add(new TemplateCoordinate(567, 394, 53, 35));
 
-            _menuButton = CreateCoordinateButton(15, 564, 73, 16);
-            _mapButton = CreateCoordinateButton(15, 497, 73, 14);
-            _exitConfirmButton = CreateCoordinateButton(211, 368, 149, 34);
+            _menuButton = CreateCoordinateButton(12, 537, 74, 18);
+            _mapButton = CreateCoordinateButton(12, 472, 73, 14);
+            _exitConfirmButton = CreateCoordinateButton(208, 343, 149, 34);
 
             var backgroundRectangle = new Rectangle(351, 274, 69, 26);
             _backgrounds = new List<Image<Bgra, byte>>
@@ -62,7 +62,7 @@ namespace wwhomper.Screens
                     .Copy(backgroundRectangle),
             };
 
-            _backgroundSearchArea = new Rectangle(341, 289, 104, 68);
+            _backgroundSearchArea = new Rectangle(338, 264, 104, 68);
         }
 
         public Button Menu

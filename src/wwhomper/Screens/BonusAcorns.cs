@@ -15,13 +15,13 @@ namespace wwhomper.Screens
                 autoIt,
                 assetCatalog,
                 logger,
-                497, 192, 221, 21,
+                493, 160, 211, 22,
                 "LET'S TAKE THEM TO THE BONUS")
         {
             AdditionalCharacters = "'";
             RequiresZoom = true;
 
-            _ok = CreateCoordinateButton(550, 249, 99, 23);
+            _ok = CreateCoordinateButton(548, 223, 96, 22);
         }
 
         public Button Accept

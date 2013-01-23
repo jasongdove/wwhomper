@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using Emgu.CV;
 using Emgu.CV.Structure;
@@ -18,7 +19,7 @@ namespace sharperbot.AutoIt
 
         static AutoIt()
         {
-            AutoItNative.AU3_AutoItSetOption("MouseCoordMode", 0);
+            AutoItNative.AU3_AutoItSetOption("MouseCoordMode", 2);
         }
 
         public AutoIt()
@@ -33,12 +34,10 @@ namespace sharperbot.AutoIt
 
         public Rectangle GetWindowRectangle()
         {
-            var x = AutoItNative.AU3_WinGetPosX(_windowTitle, String.Empty);
-            var y = AutoItNative.AU3_WinGetPosY(_windowTitle, String.Empty);
-            var width = AutoItNative.AU3_WinGetPosWidth(_windowTitle, String.Empty);
-            var height = AutoItNative.AU3_WinGetPosHeight(_windowTitle, String.Empty);
-
-            return new Rectangle(x, y, width, height);
+            var sb = new StringBuilder(16);
+            AutoItNative.AU3_WinGetHandle(_windowTitle, String.Empty, sb, 16);
+            var handle = new IntPtr(Convert.ToInt32(sb.ToString(), 16));
+            return User32.GetClientRect(handle);
         }
 
         public void ActivateWindow()
@@ -167,7 +166,7 @@ namespace sharperbot.AutoIt
             if (AutoItNative.AU3_MouseGetPosY() > 20)
             {
                 int x = _random.Next(0, 500);
-                int y = _random.Next(0, 20);
+                int y = _random.Next(-20, -10);
                 int speed = _random.Next(2, 6);
 
                 AutoItNative.AU3_MouseMove(x, y, speed);

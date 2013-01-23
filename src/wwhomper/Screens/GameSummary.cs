@@ -14,7 +14,7 @@ namespace wwhomper.Screens
                 logger,
                 @"Images\ALL\Game\GameSummary\Dialog_GS_BG.jpg",
                 506, 97, 79, 32,
-                527, 116, 93, 45)
+                527, 90, 89, 43)
         {
         }
     }

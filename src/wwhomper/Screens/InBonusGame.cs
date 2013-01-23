@@ -25,48 +25,48 @@ namespace wwhomper.Screens
                 logger,
                 @"Images\ALL\Game\bonus_game\BG_Background.jpg",
                 266, 372, 74, 38,
-                259, 390, 94, 54)
+                256, 363, 95, 56)
         {
             var one = new List<TemplateCoordinate>
             {
-                new TemplateCoordinate(523, 42, 23, 24),
-                new TemplateCoordinate(565, 48, 23, 24),
-                new TemplateCoordinate(605, 54, 23, 24)
+                new TemplateCoordinate(520, 17, 23, 24),
+                new TemplateCoordinate(562, 23, 23, 24),
+                new TemplateCoordinate(602, 29, 23, 24)
             };
 
             var two = new List<TemplateCoordinate>
             {
-                new TemplateCoordinate(331, 195, 23, 24),
-                new TemplateCoordinate(370, 189, 23, 24),
-                new TemplateCoordinate(417, 183, 23, 24),
-                new TemplateCoordinate(460, 177, 23, 24)
+                new TemplateCoordinate(328, 170, 23, 24),
+                new TemplateCoordinate(367, 164, 23, 24),
+                new TemplateCoordinate(414, 158, 23, 24),
+                new TemplateCoordinate(457, 152, 23, 24)
             };
 
             var three = new List<TemplateCoordinate>
             {
-                new TemplateCoordinate(503, 302, 23, 24),
-                new TemplateCoordinate(546, 308, 23, 24),
-                new TemplateCoordinate(584, 313, 23, 24), // TODO: double check this area
-                new TemplateCoordinate(626, 320, 23, 24)
+                new TemplateCoordinate(500, 277, 23, 24),
+                new TemplateCoordinate(543, 283, 23, 24),
+                new TemplateCoordinate(581, 288, 23, 24), // TODO: double check this area
+                new TemplateCoordinate(623, 295, 23, 24)
             };
 
             var four = new List<TemplateCoordinate>
             {
-                new TemplateCoordinate(291, 465, 23, 24),
-                new TemplateCoordinate(333, 459, 23, 24),
-                new TemplateCoordinate(375, 453, 23, 24),
-                new TemplateCoordinate(417, 447, 23, 24),
-                new TemplateCoordinate(460, 441, 23, 24),
+                new TemplateCoordinate(288, 440, 23, 24),
+                new TemplateCoordinate(330, 434, 23, 24),
+                new TemplateCoordinate(372, 428, 23, 24),
+                new TemplateCoordinate(414, 422, 23, 24),
+                new TemplateCoordinate(457, 416, 23, 24),
             };
 
             var five = new List<TemplateCoordinate>
             {
-                new TemplateCoordinate(27, 455, 23, 24),
-                new TemplateCoordinate(68, 455, 23, 24),
-                new TemplateCoordinate(109, 455, 23, 24),
-                new TemplateCoordinate(148, 455, 23, 24),
-                new TemplateCoordinate(190, 455, 23, 24),
-                new TemplateCoordinate(230, 455, 23, 24)
+                new TemplateCoordinate(24, 430, 23, 24),
+                new TemplateCoordinate(65, 430, 23, 24),
+                new TemplateCoordinate(106, 430, 23, 24),
+                new TemplateCoordinate(145, 430, 23, 24),
+                new TemplateCoordinate(187, 430, 23, 24),
+                new TemplateCoordinate(227, 430, 23, 24)
             };
 
             var rightTemplate = assetCatalog
@@ -81,11 +81,11 @@ namespace wwhomper.Screens
                 .GetCompositeImage(@"Images\ALL\Game\bonus_game\BG_LetterTile_Angle_Straight_Up.jpg")
                 .Copy(new Rectangle(7, 8, 34, 34));
 
-            var bonusOne = new TemplateSearchArea(leftTemplate, new Rectangle(502, 33, 153, 61));
-            var bonusTwo = new TemplateSearchArea(rightTemplate, new Rectangle(314, 169, 190, 69));
-            var bonusThree = new TemplateSearchArea(leftTemplate, new Rectangle(481, 290, 198, 77));
-            var bonusFour = new TemplateSearchArea(rightTemplate, new Rectangle(276, 437, 230, 81));
-            var bonusFive = new TemplateSearchArea(straightTemplate, new Rectangle(13, 444, 252, 45));
+            var bonusOne = new TemplateSearchArea(leftTemplate, new Rectangle(499, 8, 153, 61));
+            var bonusTwo = new TemplateSearchArea(rightTemplate, new Rectangle(311, 144, 190, 69));
+            var bonusThree = new TemplateSearchArea(leftTemplate, new Rectangle(478, 265, 198, 77));
+            var bonusFour = new TemplateSearchArea(rightTemplate, new Rectangle(273, 412, 230, 81));
+            var bonusFive = new TemplateSearchArea(straightTemplate, new Rectangle(10, 419, 252, 45));
 
             _letterGroups.Add(new KeyValuePair<TemplateSearchArea,List<TemplateCoordinate>>(bonusOne, one));
             _letterGroups.Add(new KeyValuePair<TemplateSearchArea,List<TemplateCoordinate>>(bonusTwo, two));

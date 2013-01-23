@@ -14,7 +14,7 @@ namespace wwhomper.Screens
                 logger,
                 @"Images\ALL\Game\bonus_game\BG_Background.jpg",
                 98, 386, 96, 23,
-                93, 407, 111, 32)
+                90, 382, 111, 32)
         {
         }
     }

@@ -48,6 +48,11 @@ namespace wwhomper.Strategies
             // Identify all gears (letter, size, color, clickable area)
             var gears = screen.GetGears();
 
+            _puzzleGameState.Gears.Clear();
+            _puzzleGameState.Gears.AddRange(gears);
+            _puzzleGameState.GearSpots.Clear();
+            _puzzleGameState.GearSpots.AddRange(gearSpots);
+
             if (gears.Count < gearSpots.Count())
             {
                 _logger.Debug(
@@ -132,11 +137,6 @@ namespace wwhomper.Strategies
 
                 answerSteps.Clear();
             }
-
-            _puzzleGameState.Gears.Clear();
-            _puzzleGameState.Gears.AddRange(gears);
-            _puzzleGameState.GearSpots.Clear();
-            _puzzleGameState.GearSpots.AddRange(gearSpots);
 
             if (answerSteps.Any())
             {

@@ -17,9 +17,9 @@ namespace wwhomper.Screens
                 logger,
                 @"Images\ALL\Game\puzzle_game\PuzzleGame_Background.jpg",
                 11, 556, 277, 35,
-                0, 547, 389, 82)
+                0, 540, 370, 60)
         {
-            _ok = CreateCoordinateButton(603, 326, 97, 24);
+            _ok = CreateCoordinateButton(600, 301, 98, 23);
         }
 
         public Button Accept

@@ -15,10 +15,10 @@ namespace wwhomper.Screens
                 autoIt,
                 assetCatalog,
                 logger,
-                255, 223, 288, 37,
+                252, 198, 288, 37,
                 "BONUS GAME")
         {
-            _ok = CreateCoordinateButton(329, 382, 154, 43);
+            _ok = CreateCoordinateButton(328, 360, 150, 38);
         }
 
         public Button Accept
