@@ -8,7 +8,7 @@ namespace wwhomper.Screens
 {
     public class FinaleTwo : TemplateScreen, IDialogScreen
     {
-        private readonly Button _forward;
+        private readonly Button _accept;
 
         public FinaleTwo(IAutoIt autoIt, IAssetCatalog assetCatalog, ILogger logger)
             : base(
@@ -17,14 +17,14 @@ namespace wwhomper.Screens
                 logger,
                 @"Images\EN_US\Dialog\Dialog_Finale\Story_02.jpg",
                 496, 20, 261, 22,
-                468, 33, 331, 92)
+                465, 8, 331, 92)
         {
-            _forward = CreateCoordinateButton(678, 549, 60, 30);
+            _accept = CreateTemplateButton(@"Images\ALL\Dialog\Dialog_Arrow_Right_Idle.jpg", 10, 14, 74, 35);
         }
 
         public Button Accept
         {
-            get { return _forward; }
+            get { return _accept; }
         }
     }
 }

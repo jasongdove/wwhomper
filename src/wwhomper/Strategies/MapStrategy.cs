@@ -36,7 +36,9 @@ namespace wwhomper.Strategies
                 {
                     for (int i = 0; i < screen.Zones.Count; i++)
                     {
-                        if (screen.Zones[i].Contains(searchResult.Point))
+                        windowContents.ROI = screen.Zones[i];
+                        var zoneResult = _autoIt.IsTemplateInWindow(windowContents, screen.CurrentLocation);
+                        if (zoneResult.Success)
                         {
                             currentZone = i;
                             inWrongZone = gearWeNeed.Index != i;
@@ -44,6 +46,8 @@ namespace wwhomper.Strategies
                         }
                     }
                 }
+
+                windowContents.ROI = Rectangle.Empty;
 
                 if (inWrongZone)
                 {

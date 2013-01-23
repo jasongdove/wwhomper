@@ -15,7 +15,7 @@ namespace wwhomper.Screens
                 autoIt,
                 assetCatalog,
                 logger,
-                494, 167, 221, 21,
+                493, 160, 211, 22,
                 "WANT TO SEE IF WE CAN FIX THE")
         {
             RequiresZoom = true;

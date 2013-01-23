@@ -45,7 +45,7 @@ namespace wwhomper.Screens
                 new Rectangle(300, 238, 204, 333),
                 new Rectangle(298, 0, 240, 275),
                 new Rectangle(540, 0, 249, 306),
-                new Rectangle(513, 278, 287, 322)
+                new Rectangle(513, 290, 287, 310)
             };
         }
 
