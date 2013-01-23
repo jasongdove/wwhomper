@@ -112,7 +112,11 @@ namespace wwhomper.Screens
             
             if (!String.IsNullOrEmpty(raw))
             {
-                result = raw.Trim().Replace(" ", String.Empty);
+                result = raw.Trim()
+                    .Replace("\r\n", String.Empty)
+                    .Replace("\n", String.Empty)
+                    .Replace(" ", String.Empty);
+
                 if (result.Length == 8 || result.Length == 10)
                 {
                     result = result.Replace("IVI", "M");

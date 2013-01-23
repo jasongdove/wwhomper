@@ -451,7 +451,10 @@ namespace wwhomper.Screens
                 }
             }
 
-            Logger.Debug("Detected gears - {0}", String.Join(" ", gears));
+            Logger.Debug(
+                "Detected gears - count={0}, gears={1}",
+                gears.Count,
+                String.Join(" ", gears));
 
             return gears;
         }

@@ -23,9 +23,9 @@ namespace sharperbot
         {
             var intensity = alpha.Convert<Gray, byte>();
 
-            for (int y = 0; y < image.Data.GetLength(0); y++)
+            for (int y = 0; y < image.Height; y++)
             {
-                for (int x = 0; x < image.Data.GetLength(1); x++)
+                for (int x = 0; x < image.Width; x++)
                 {
                     var existing = image[y, x];
                     image[y, x] = new Bgra(
