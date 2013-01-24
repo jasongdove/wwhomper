@@ -31,19 +31,15 @@ namespace wwhomper.Strategies
                 int currentZone = -1;
                 var inWrongZone = false;
                 var windowContents = _autoIt.GetWindowImage();
-                var searchResult = _autoIt.IsTemplateInWindow(windowContents, screen.CurrentLocation);
-                if (searchResult.Success)
+                for (int i = 0; i < screen.Zones.Count; i++)
                 {
-                    for (int i = 0; i < screen.Zones.Count; i++)
+                    windowContents.ROI = screen.Zones[i];
+                    var zoneResult = _autoIt.IsTemplateInWindow(windowContents, screen.CurrentLocation);
+                    if (zoneResult.Success)
                     {
-                        windowContents.ROI = screen.Zones[i];
-                        var zoneResult = _autoIt.IsTemplateInWindow(windowContents, screen.CurrentLocation);
-                        if (zoneResult.Success)
-                        {
-                            currentZone = i;
-                            inWrongZone = gearWeNeed.Index != i;
-                            break;
-                        }
+                        currentZone = i;
+                        inWrongZone = gearWeNeed.Index != i;
+                        break;
                     }
                 }
 
