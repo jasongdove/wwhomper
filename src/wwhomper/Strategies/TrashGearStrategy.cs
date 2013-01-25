@@ -32,11 +32,13 @@ namespace wwhomper.Strategies
             if (wrongTypeGears.Any())
             {
                 var worstGearWrongType = FindGearWithWorstLetter(wrongTypeGears);
-                
+
                 _logger.Debug(
                     "Determined worst letter - letters={0}, worst={1}, type=wrong",
                     String.Join(String.Empty, wrongTypeGears.Select(x => x.Letter)),
                     worstGearWrongType);
+
+                return worstGearWrongType;
             }
 
             ////// Make sure we don't throw away a gear we need
