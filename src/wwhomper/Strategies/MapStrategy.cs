@@ -4,7 +4,6 @@ using Ninject.Extensions.Logging;
 using sharperbot.AutoIt;
 using sharperbot.Screens;
 using sharperbot.Strategies;
-using wwhomper.Data;
 using wwhomper.Screens;
 
 namespace wwhomper.Strategies
@@ -13,19 +12,22 @@ namespace wwhomper.Strategies
     {
         private readonly IAutoIt _autoIt;
         private readonly ILogger _logger;
-        private readonly PuzzleGameState _puzzleGameState;
+        private readonly IAcquireGearStrategy _acquireGearStrategy;
 
-        public MapStrategy(IAutoIt autoIt, ILogger logger, PuzzleGameState puzzleGameState)
+        public MapStrategy(
+            IAutoIt autoIt,
+            ILogger logger,
+            IAcquireGearStrategy acquireGearStrategy)
         {
             _autoIt = autoIt;
             _logger = logger;
-            _puzzleGameState = puzzleGameState;
+            _acquireGearStrategy = acquireGearStrategy;
         }
 
         public void ExecuteStrategy(Map screen)
         {
             // If we need a gear type, let's make sure we're in the right zone
-            var gearWeNeed = _puzzleGameState.GearWeNeed;
+            var gearWeNeed = _acquireGearStrategy.FindGearWeNeed();
             if (gearWeNeed != null)
             {
                 int currentZone = -1;

@@ -1,6 +1,8 @@
 ﻿using Ninject.Modules;
 using wwhomper.Data;
 using wwhomper.Dictionary;
+using wwhomper.Screens;
+using wwhomper.Strategies;
 
 namespace wwhomper
 {
@@ -10,6 +12,10 @@ namespace wwhomper
         {
             Bind<IPakDictionary>().To<PakDictionary>().InSingletonScope();
             Bind<PuzzleGameState>().ToSelf().InSingletonScope();
+
+            Bind<ITrashGearStrategy>().To<TrashGearStrategy>();
+            Bind<IAcquireGearStrategy>().To<AcquireGearStrategy>();
+            Bind<IInPuzzleGame>().To<InPuzzleGame>();
         }
     }
 }

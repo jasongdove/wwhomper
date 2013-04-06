@@ -15,7 +15,7 @@ using wwhomper.Data;
 
 namespace wwhomper.Screens
 {
-    public class InPuzzleGame : TemplateScreen
+    public class InPuzzleGame : TemplateScreen, IInPuzzleGame
     {
         private readonly Button _submit;
         private readonly Button _back;
@@ -231,6 +231,8 @@ namespace wwhomper.Screens
             _gearFive.Click();
             AutoIt.Type("{BACKSPACE}");
             AutoIt.WaitAfterInput();
+
+            AutoIt.MoveMouseOffscreen();
         }
 
         public List<PuzzleGearSpot> GetGearSpots()

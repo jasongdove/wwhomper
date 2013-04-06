@@ -6,7 +6,6 @@ using Ninject.Extensions.Logging;
 using sharperbot.AutoIt;
 using sharperbot.Screens;
 using sharperbot.Strategies;
-using wwhomper.Data;
 using wwhomper.Dictionary;
 using wwhomper.Screens;
 
@@ -17,16 +16,20 @@ namespace wwhomper.Strategies
         private readonly IAutoIt _autoIt;
         private readonly ILogger _logger;
         private readonly IPakDictionary _pakDictionary;
-        private readonly PuzzleGameState _puzzleGameState;
+        private readonly IAcquireGearStrategy _acquireGearStrategy;
 
         private readonly Random _random;
 
-        public GamePakDictionaryStrategy(IAutoIt autoIt, ILogger logger, IPakDictionary pakDictionary, PuzzleGameState puzzleGameState)
+        public GamePakDictionaryStrategy(
+            IAutoIt autoIt,
+            ILogger logger,
+            IPakDictionary pakDictionary,
+            IAcquireGearStrategy acquireGearStrategy)
         {
             _autoIt = autoIt;
             _logger = logger;
             _pakDictionary = pakDictionary;
-            _puzzleGameState = puzzleGameState;
+            _acquireGearStrategy = acquireGearStrategy;
 
             _random = new Random();
         }
@@ -86,7 +89,7 @@ namespace wwhomper.Strategies
 
         private bool CheckForWrongArea(InGame screen)
         {
-            var gearWeNeed = _puzzleGameState.GearWeNeed;
+            var gearWeNeed = _acquireGearStrategy.FindGearWeNeed();
             if (gearWeNeed != null)
             {
                 var searchArea = _autoIt.GetWindowImage().Copy(screen.BackgroundSearchArea);

@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wwhomper", "..\..\src\wwhomper\wwhomper.csproj", "{D0D03E5D-55A0-4381-B4A1-A6AED7B9466C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wwhomper-console", "..\..\src\wwhomper-console\wwhomper-console.csproj", "{5413EA16-F539-4861-BCAB-A0285177D6BA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wwhomper.console", "..\..\src\wwhomper-console\wwhomper.console.csproj", "{5413EA16-F539-4861-BCAB-A0285177D6BA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sharperbot", "..\..\src\sharperbot\sharperbot.csproj", "{5E817A6C-DCDD-4718-9592-D6D3014C74F1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wwhomper.tests", "..\..\src\wwhomper.tests\wwhomper.tests.csproj", "{67EBFC92-69A7-4855-BC0B-912B2939A004}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wwhomper.simulator", "wwhomper.simulator\wwhomper.simulator.csproj", "{44F385AC-2F51-4F97-B38E-4663D651205C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,6 +66,16 @@ Global
 		{67EBFC92-69A7-4855-BC0B-912B2939A004}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{67EBFC92-69A7-4855-BC0B-912B2939A004}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{67EBFC92-69A7-4855-BC0B-912B2939A004}.Release|x86.ActiveCfg = Release|Any CPU
+		{44F385AC-2F51-4F97-B38E-4663D651205C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44F385AC-2F51-4F97-B38E-4663D651205C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44F385AC-2F51-4F97-B38E-4663D651205C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{44F385AC-2F51-4F97-B38E-4663D651205C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{44F385AC-2F51-4F97-B38E-4663D651205C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{44F385AC-2F51-4F97-B38E-4663D651205C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44F385AC-2F51-4F97-B38E-4663D651205C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44F385AC-2F51-4F97-B38E-4663D651205C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{44F385AC-2F51-4F97-B38E-4663D651205C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{44F385AC-2F51-4F97-B38E-4663D651205C}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

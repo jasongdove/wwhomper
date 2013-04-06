@@ -7,7 +7,7 @@ using wwhomper.Dictionary;
 
 namespace wwhomper.Strategies
 {
-    public class TrashGearStrategy
+    public class TrashGearStrategy : ITrashGearStrategy
     {
         private readonly IPakDictionary _pakDictionary;
         private readonly ILogger _logger;

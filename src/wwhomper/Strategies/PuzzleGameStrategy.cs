@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Ninject.Extensions.Logging;
-using sharperbot.AutoIt;
 using sharperbot.Screens;
 using sharperbot.Strategies;
 using wwhomper.Data;
@@ -11,33 +10,28 @@ using wwhomper.Screens;
 
 namespace wwhomper.Strategies
 {
-    public class PuzzleGameStrategy : ScreenStrategy, IScreenStrategy<InPuzzleGame>
+    public class PuzzleGameStrategy : ScreenStrategy, IScreenStrategy<IInPuzzleGame>
     {
-        private readonly IAutoIt _autoIt;
         private readonly ILogger _logger;
         private readonly IPakDictionary _pakDictionary;
         private readonly PuzzleGameState _puzzleGameState;
-        private readonly TrashGearStrategy _trashGearStrategy;
+        private readonly ITrashGearStrategy _trashGearStrategy;
 
         public PuzzleGameStrategy(
-            IAutoIt autoIt,
             ILogger logger,
             IPakDictionary pakDictionary,
             PuzzleGameState puzzleGameState,
-            TrashGearStrategy trashGearStrategy)
+            ITrashGearStrategy trashGearStrategy)
         {
-            _autoIt = autoIt;
             _logger = logger;
             _pakDictionary = pakDictionary;
             _puzzleGameState = puzzleGameState;
             _trashGearStrategy = trashGearStrategy;
         }
 
-        public void ExecuteStrategy(InPuzzleGame screen)
+        public void ExecuteStrategy(IInPuzzleGame screen)
         {
             screen.ClearAllGears();
-
-            _autoIt.MoveMouseOffscreen();
 
             // Identify all gear spots (size, color, index)
             var gearSpots = screen.GetGearSpots();

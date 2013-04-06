@@ -102,6 +102,7 @@
     <Compile Include="Screens\FinaleOne.cs" />
     <Compile Include="Screens\FinaleThree.cs" />
     <Compile Include="Screens\FinaleTwo.cs" />
+    <Compile Include="Screens\IInPuzzleGame.cs" />
     <Compile Include="Screens\NewGearFull.cs" />
     <Compile Include="Screens\PaintBrush.cs" />
     <Compile Include="Screens\InBonusGame.cs" />
@@ -118,12 +119,15 @@
     <Compile Include="Screens\Map.cs" />
     <Compile Include="Screens\MainMenu.cs" />
     <Compile Include="Strategies\AcceptDialogWithTransitionStrategy.cs" />
+    <Compile Include="Strategies\AcquireGearStrategy.cs" />
     <Compile Include="Strategies\BonusGameStrategy.cs" />
     <Compile Include="Strategies\BonusGameWaitingStrategy.cs" />
     <Compile Include="Strategies\GameSummaryStrategy.cs" />
     <Compile Include="Strategies\GamePakDictionaryStrategy.cs" />
     <Compile Include="Dictionary\IWordList.cs" />
     <Compile Include="Dictionary\WordList.cs" />
+    <Compile Include="Strategies\IAcquireGearStrategy.cs" />
+    <Compile Include="Strategies\ITrashGearStrategy.cs" />
     <Compile Include="Strategies\MapStrategy.cs" />
     <Compile Include="Strategies\PuzzleGameStrategy.cs" />
     <Compile Include="Strategies\SpeechBubbleStrategy.cs" />
