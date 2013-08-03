@@ -105,3 +105,6 @@ Backup*/
 UpgradeLog*.XML
 
 *.DotSettings
+
+# NuGet
+packages/
